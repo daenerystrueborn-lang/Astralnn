@@ -2,6 +2,9 @@
 
 Working doc for **Astral Dungeon · The Bell Below** (this repo) and for any block/pixel game after it.
 
+**Agents/models:** read [`AGENTS.md`](AGENTS.md) first — it is the binding execution contract
+(read order, hard rules, smoke list, stop conditions, session command).
+
 How to use it: work **top to bottom, one phase at a time**. Tick boxes as you go. Do not start Phase 3
 while Phase 1 is still "nearly fun". Every line below exists because skipping it is the usual reason
 hobby games die at 80%.
