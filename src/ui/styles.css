@@ -270,6 +270,26 @@ button { font-family: inherit; }
 }
 
 .combatant { margin: 6px 0 10px; }
+
+.stage {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 4px;
+  min-height: 120px;
+}
+.stage-foe {
+  font-size: 64px;
+  line-height: 1;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
+}
+.stage-hero { line-height: 0; }
+.stage-vs {
+  font-size: 20px;
+  opacity: 0.7;
+  letter-spacing: 0.2em;
+}
 .combatant .cname {
   display: flex;
   justify-content: space-between;
@@ -340,3 +360,32 @@ button { font-family: inherit; }
 .muted { color: var(--ink-dim); font-size: 12px; }
 .center { text-align: center; }
 .mt { margin-top: 12px; }
+
+/* ── Manifest assets ──────────────────────────────────────────── */
+.i {
+  height: 1.05em;
+  width: auto;
+  vertical-align: -0.18em;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.battler {
+  display: inline-block;
+  width: calc(var(--fw) * var(--scale, 1));
+  height: calc(var(--fh) * var(--scale, 1));
+  overflow: hidden;
+  line-height: 0;
+}
+.battler > img {
+  width: calc(var(--fw) * var(--frames) * var(--scale, 1));
+  height: calc(var(--fh) * var(--scale, 1));
+  image-rendering: pixelated;
+  animation: battler-play var(--dur) steps(var(--frames)) infinite;
+}
+@keyframes battler-play {
+  to { transform: translateX(-100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .battler > img { animation: none; }
+}

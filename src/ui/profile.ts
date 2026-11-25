@@ -6,6 +6,7 @@ import { getTotalStats } from '../engine/stats'
 import { addAllocation, getRankForLevel, trainCostPerPoint, trainPlayer, statPointCap, getXpProgress } from '../engine/progression'
 import { claimDaily } from '../engine/daily'
 import { getCurrentStep, recordTutorialEvent, skipTutorial, tutorialProgress } from '../engine/tutorial'
+import { classBattler, iconOr } from './icon'
 import type { UiContext } from './app'
 import type { StatKey } from '../engine/stats'
 
@@ -53,8 +54,11 @@ export function renderProfile(root: HTMLElement, ctx: UiContext): void {
         <h3>${rank.emoji} ${rank.title}</h3>
         <p class="muted">${rank.epithet} · Lv ${p.level} · 🏆 ${p.stats.wins}W / ${p.stats.losses}L</p>
         <div class="bar xp"><i style="width:${xpPct(p)}%"></i><span>XP ${p.xp} → Lv ${p.level + 1}</span></div>
+        <div class="mt">${classBattler(p.classId, { scale: 0.75 })}</div>
         <p class="muted" style="margin-top:6px">
-          ☀️ ${Math.floor(p.wallet.solars)} · 💎 ${p.wallet.gems} · ⚡ ${p.stamina.current}/${p.stamina.max}
+          ${iconOr('icons/coin_crown', '☀️')} ${Math.floor(p.wallet.solars)} ·
+          ${iconOr('icons/gem_blue', '💎')} ${p.wallet.gems} ·
+          ⚡ ${p.stamina.current}/${p.stamina.max}
         </p>
       </div>
 

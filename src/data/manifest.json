@@ -1,0 +1,993 @@
+{
+  "version": 1,
+  "assets": {
+    "characters/kunoichi/sheets": {
+      "path": "assets/characters/kunoichi/",
+      "frame": [
+        128,
+        128
+      ],
+      "animations": {
+        "attack_1": {
+          "frames": 6,
+          "fps": 10
+        },
+        "attack_2": {
+          "frames": 8,
+          "fps": 10
+        },
+        "cast": {
+          "frames": 6,
+          "fps": 10
+        },
+        "dead": {
+          "frames": 5,
+          "fps": 8
+        },
+        "eating": {
+          "frames": 9,
+          "fps": 6
+        },
+        "hurt": {
+          "frames": 2,
+          "fps": 8
+        },
+        "idle": {
+          "frames": 9,
+          "fps": 6
+        },
+        "jump": {
+          "frames": 10,
+          "fps": 10
+        },
+        "run": {
+          "frames": 8,
+          "fps": 10
+        },
+        "spine": {
+          "frames": 1,
+          "fps": 6
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8
+        }
+      },
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "characters/ninja_monk/sheets": {
+      "path": "assets/characters/ninja_monk/",
+      "frame": [
+        96,
+        96
+      ],
+      "animations": {
+        "attack_1": {
+          "frames": 5,
+          "fps": 10
+        },
+        "attack_2": {
+          "frames": 5,
+          "fps": 10
+        },
+        "blade": {
+          "frames": 6,
+          "fps": 10
+        },
+        "cast": {
+          "frames": 5,
+          "fps": 10
+        },
+        "dead": {
+          "frames": 5,
+          "fps": 8
+        },
+        "hurt": {
+          "frames": 4,
+          "fps": 8
+        },
+        "idle": {
+          "frames": 7,
+          "fps": 6
+        },
+        "jump": {
+          "frames": 9,
+          "fps": 10
+        },
+        "kunai": {
+          "frames": 3,
+          "fps": 12
+        },
+        "run": {
+          "frames": 8,
+          "fps": 10
+        },
+        "walk": {
+          "frames": 7,
+          "fps": 8
+        }
+      },
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "characters/ninja_peasant/sheets": {
+      "path": "assets/characters/ninja_peasant/",
+      "frame": [
+        96,
+        96
+      ],
+      "animations": {
+        "attack_1": {
+          "frames": 6,
+          "fps": 10
+        },
+        "attack_2": {
+          "frames": 4,
+          "fps": 10
+        },
+        "dart": {
+          "frames": 1,
+          "fps": 12
+        },
+        "dead": {
+          "frames": 4,
+          "fps": 8
+        },
+        "disguise": {
+          "frames": 9,
+          "fps": 8
+        },
+        "hurt": {
+          "frames": 2,
+          "fps": 8
+        },
+        "idle": {
+          "frames": 6,
+          "fps": 6
+        },
+        "jump": {
+          "frames": 8,
+          "fps": 10
+        },
+        "run": {
+          "frames": 6,
+          "fps": 10
+        },
+        "shot": {
+          "frames": 6,
+          "fps": 12
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8
+        }
+      },
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "characters/samurai/sheets": {
+      "path": "assets/characters/samurai/",
+      "frame": [
+        128,
+        128
+      ],
+      "animations": {
+        "attack_1": {
+          "frames": 4,
+          "fps": 10
+        },
+        "attack_2": {
+          "frames": 5,
+          "fps": 10
+        },
+        "attack_3": {
+          "frames": 4,
+          "fps": 10
+        },
+        "dead": {
+          "frames": 6,
+          "fps": 8
+        },
+        "hurt": {
+          "frames": 3,
+          "fps": 8
+        },
+        "idle": {
+          "frames": 6,
+          "fps": 6
+        },
+        "jump": {
+          "frames": 9,
+          "fps": 10
+        },
+        "protection": {
+          "frames": 2,
+          "fps": 8
+        },
+        "run": {
+          "frames": 8,
+          "fps": 10
+        },
+        "walk": {
+          "frames": 9,
+          "fps": 8
+        }
+      },
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "characters/samurai_archer/sheets": {
+      "path": "assets/characters/samurai_archer/",
+      "frame": [
+        64,
+        64
+      ],
+      "animations": {
+        "arrow": {
+          "frames": 1,
+          "fps": 1
+        },
+        "attack_1": {
+          "frames": 5,
+          "fps": 10
+        },
+        "attack_2": {
+          "frames": 5,
+          "fps": 10
+        },
+        "attack_3": {
+          "frames": 6,
+          "fps": 10
+        },
+        "dead": {
+          "frames": 5,
+          "fps": 8
+        },
+        "hurt": {
+          "frames": 3,
+          "fps": 8
+        },
+        "idle": {
+          "frames": 9,
+          "fps": 6
+        },
+        "jump": {
+          "frames": 9,
+          "fps": 10
+        },
+        "run": {
+          "frames": 8,
+          "fps": 10
+        },
+        "shot": {
+          "frames": 14,
+          "fps": 12
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8
+        }
+      },
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "characters/samurai_commander/sheets": {
+      "path": "assets/characters/samurai_commander/",
+      "frame": [
+        128,
+        128
+      ],
+      "animations": {
+        "attack_1": {
+          "frames": 4,
+          "fps": 10
+        },
+        "attack_2": {
+          "frames": 5,
+          "fps": 10
+        },
+        "attack_3": {
+          "frames": 4,
+          "fps": 10
+        },
+        "dead": {
+          "frames": 6,
+          "fps": 8
+        },
+        "hurt": {
+          "frames": 2,
+          "fps": 8
+        },
+        "idle": {
+          "frames": 5,
+          "fps": 6
+        },
+        "jump": {
+          "frames": 7,
+          "fps": 10
+        },
+        "protect": {
+          "frames": 2,
+          "fps": 8
+        },
+        "run": {
+          "frames": 8,
+          "fps": 10
+        },
+        "walk": {
+          "frames": 9,
+          "fps": 8
+        }
+      },
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/anvil": {
+      "path": "assets/icons/anvil.png",
+      "size": [
+        115,
+        90
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/armor_red_gold": {
+      "path": "assets/icons/armor_red_gold.png",
+      "size": [
+        146,
+        148
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/backpack": {
+      "path": "assets/icons/backpack.png",
+      "size": [
+        113,
+        110
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/banner_black_skull": {
+      "path": "assets/icons/banner_black_skull.png",
+      "size": [
+        102,
+        161
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/banner_blue": {
+      "path": "assets/icons/banner_blue.png",
+      "size": [
+        304,
+        165
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/banner_blue_lion": {
+      "path": "assets/icons/banner_blue_lion.png",
+      "size": [
+        104,
+        174
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/banner_green": {
+      "path": "assets/icons/banner_green.png",
+      "size": [
+        301,
+        164
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/banner_green_leaf": {
+      "path": "assets/icons/banner_green_leaf.png",
+      "size": [
+        104,
+        173
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/banner_purple": {
+      "path": "assets/icons/banner_purple.png",
+      "size": [
+        299,
+        164
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/banner_purple_star": {
+      "path": "assets/icons/banner_purple_star.png",
+      "size": [
+        105,
+        173
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/banner_red_dragon": {
+      "path": "assets/icons/banner_red_dragon.png",
+      "size": [
+        105,
+        173
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/boots_leather": {
+      "path": "assets/icons/boots_leather.png",
+      "size": [
+        123,
+        133
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/bow_gold": {
+      "path": "assets/icons/bow_gold.png",
+      "size": [
+        124,
+        183
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/button_green_plus": {
+      "path": "assets/icons/button_green_plus.png",
+      "size": [
+        216,
+        220
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/campfire": {
+      "path": "assets/icons/campfire.png",
+      "size": [
+        97,
+        112
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/character_card_frame": {
+      "path": "assets/icons/character_card_frame.png",
+      "size": [
+        250,
+        253
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/character_card_panel": {
+      "path": "assets/icons/character_card_panel.png",
+      "size": [
+        298,
+        373
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/codex_button": {
+      "path": "assets/icons/codex_button.png",
+      "size": [
+        116,
+        116
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/coin_crown": {
+      "path": "assets/icons/coin_crown.png",
+      "size": [
+        207,
+        209
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/currency_crystal_bar": {
+      "path": "assets/icons/currency_crystal_bar.png",
+      "size": [
+        224,
+        65
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/currency_gem_bar": {
+      "path": "assets/icons/currency_gem_bar.png",
+      "size": [
+        223,
+        57
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/currency_gold_bar": {
+      "path": "assets/icons/currency_gold_bar.png",
+      "size": [
+        221,
+        61
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/dialogue_panel": {
+      "path": "assets/icons/dialogue_panel.png",
+      "size": [
+        326,
+        160
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/equipment_panel": {
+      "path": "assets/icons/equipment_panel.png",
+      "size": [
+        277,
+        387
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/gem_blue": {
+      "path": "assets/icons/gem_blue.png",
+      "size": [
+        64,
+        104
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/gem_green": {
+      "path": "assets/icons/gem_green.png",
+      "size": [
+        40,
+        56
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/gem_pink_lotus": {
+      "path": "assets/icons/gem_pink_lotus.png",
+      "size": [
+        231,
+        228
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/gem_purple": {
+      "path": "assets/icons/gem_purple.png",
+      "size": [
+        63,
+        101
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/gem_red": {
+      "path": "assets/icons/gem_red.png",
+      "size": [
+        65,
+        104
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/gem_yellow": {
+      "path": "assets/icons/gem_yellow.png",
+      "size": [
+        47,
+        103
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/health_bar": {
+      "path": "assets/icons/health_bar.png",
+      "size": [
+        373,
+        77
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/health_potion": {
+      "path": "assets/icons/health_potion.png",
+      "size": [
+        89,
+        131
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/helmet_steel": {
+      "path": "assets/icons/helmet_steel.png",
+      "size": [
+        93,
+        145
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/icon_crown": {
+      "path": "assets/icons/icon_crown.png",
+      "size": [
+        104,
+        98
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/icon_heart": {
+      "path": "assets/icons/icon_heart.png",
+      "size": [
+        250,
+        218
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/icon_help": {
+      "path": "assets/icons/icon_help.png",
+      "size": [
+        101,
+        98
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/icon_lock": {
+      "path": "assets/icons/icon_lock.png",
+      "size": [
+        108,
+        104
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/icon_mana_drop": {
+      "path": "assets/icons/icon_mana_drop.png",
+      "size": [
+        196,
+        255
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/icon_padlock": {
+      "path": "assets/icons/icon_padlock.png",
+      "size": [
+        203,
+        240
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/icon_star": {
+      "path": "assets/icons/icon_star.png",
+      "size": [
+        100,
+        96
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/icon_xp_star": {
+      "path": "assets/icons/icon_xp_star.png",
+      "size": [
+        234,
+        241
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/level_experience_bar": {
+      "path": "assets/icons/level_experience_bar.png",
+      "size": [
+        381,
+        119
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/mail_button": {
+      "path": "assets/icons/mail_button.png",
+      "size": [
+        119,
+        113
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/mana_bar": {
+      "path": "assets/icons/mana_bar.png",
+      "size": [
+        376,
+        91
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/minimap_compass": {
+      "path": "assets/icons/minimap_compass.png",
+      "size": [
+        289,
+        314
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/panel_parchment_square": {
+      "path": "assets/icons/panel_parchment_square.png",
+      "size": [
+        258,
+        280
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/panel_parchment_tall": {
+      "path": "assets/icons/panel_parchment_tall.png",
+      "size": [
+        230,
+        327
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/panel_parchment_wide": {
+      "path": "assets/icons/panel_parchment_wide.png",
+      "size": [
+        347,
+        223
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/pause_button": {
+      "path": "assets/icons/pause_button.png",
+      "size": [
+        118,
+        116
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/pickaxe": {
+      "path": "assets/icons/pickaxe.png",
+      "size": [
+        95,
+        95
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/portrait_frame_helmet": {
+      "path": "assets/icons/portrait_frame_helmet.png",
+      "size": [
+        176,
+        185
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/portrait_frame_large": {
+      "path": "assets/icons/portrait_frame_large.png",
+      "size": [
+        277,
+        283
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/portrait_frame_ornate": {
+      "path": "assets/icons/portrait_frame_ornate.png",
+      "size": [
+        190,
+        186
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/portrait_frame_small": {
+      "path": "assets/icons/portrait_frame_small.png",
+      "size": [
+        204,
+        207
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/quest_panel": {
+      "path": "assets/icons/quest_panel.png",
+      "size": [
+        267,
+        348
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/settings_button": {
+      "path": "assets/icons/settings_button.png",
+      "size": [
+        116,
+        115
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/shield_royal": {
+      "path": "assets/icons/shield_royal.png",
+      "size": [
+        111,
+        150
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/shop_panel": {
+      "path": "assets/icons/shop_panel.png",
+      "size": [
+        399,
+        380
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/slot_wood": {
+      "path": "assets/icons/slot_wood.png",
+      "size": [
+        249,
+        241
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/speech_bubble": {
+      "path": "assets/icons/speech_bubble.png",
+      "size": [
+        262,
+        187
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/staff_blue_crystal": {
+      "path": "assets/icons/staff_blue_crystal.png",
+      "size": [
+        132,
+        168
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/sword_dark": {
+      "path": "assets/icons/sword_dark.png",
+      "size": [
+        113,
+        180
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/sword_ice": {
+      "path": "assets/icons/sword_ice.png",
+      "size": [
+        139,
+        171
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "icons/sword_iron": {
+      "path": "assets/icons/sword_iron.png",
+      "size": [
+        91,
+        126
+      ],
+      "license": "unrecorded",
+      "source": "astral-fantasy"
+    },
+    "items/potion_01": {
+      "path": "assets/items/potion_01.png",
+      "size": [
+        512,
+        512
+      ],
+      "license": "craftpix-file-license",
+      "source": "craftpix-potions-pack"
+    },
+    "items/potion_10": {
+      "path": "assets/items/potion_10.png",
+      "size": [
+        512,
+        512
+      ],
+      "license": "craftpix-file-license",
+      "source": "craftpix-potions-pack"
+    },
+    "items/potion_02": {
+      "path": "assets/items/potion_02.png",
+      "size": [
+        512,
+        512
+      ],
+      "license": "craftpix-file-license",
+      "source": "craftpix-potions-pack"
+    },
+    "items/potion_03": {
+      "path": "assets/items/potion_03.png",
+      "size": [
+        512,
+        512
+      ],
+      "license": "craftpix-file-license",
+      "source": "craftpix-potions-pack"
+    },
+    "items/potion_04": {
+      "path": "assets/items/potion_04.png",
+      "size": [
+        512,
+        512
+      ],
+      "license": "craftpix-file-license",
+      "source": "craftpix-potions-pack"
+    },
+    "items/potion_05": {
+      "path": "assets/items/potion_05.png",
+      "size": [
+        512,
+        512
+      ],
+      "license": "craftpix-file-license",
+      "source": "craftpix-potions-pack"
+    },
+    "items/potion_06": {
+      "path": "assets/items/potion_06.png",
+      "size": [
+        512,
+        512
+      ],
+      "license": "craftpix-file-license",
+      "source": "craftpix-potions-pack"
+    },
+    "items/potion_07": {
+      "path": "assets/items/potion_07.png",
+      "size": [
+        512,
+        512
+      ],
+      "license": "craftpix-file-license",
+      "source": "craftpix-potions-pack"
+    },
+    "items/potion_08": {
+      "path": "assets/items/potion_08.png",
+      "size": [
+        512,
+        512
+      ],
+      "license": "craftpix-file-license",
+      "source": "craftpix-potions-pack"
+    },
+    "items/potion_09": {
+      "path": "assets/items/potion_09.png",
+      "size": [
+        512,
+        512
+      ],
+      "license": "craftpix-file-license",
+      "source": "craftpix-potions-pack"
+    }
+  }
+}

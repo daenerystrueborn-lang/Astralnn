@@ -3,6 +3,7 @@
 
 import { skillMap } from '../data/index'
 import { playerAction, type BattleSession, type BattleAction } from '../engine/battle'
+import { classBattler } from './icon'
 import type { UiContext } from './app'
 
 export function renderBattle(root: HTMLElement, ctx: UiContext): void {
@@ -26,6 +27,8 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
           .map((e) => `<div class="ev-${e.kind}">${escapeHtml(e.text)}</div>`)
           .join('')
 
+  const playerSprite = classBattler(player.classId, { scale: 0.9 })
+
   root.innerHTML = `
     <h1>BATTLE</h1>
     <p class="subtitle">${session.locationId} · Floor ${session.floor} · Turn ${session.turn}</p>
@@ -37,6 +40,12 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
           <span class="tier-tag ${tierClass}">${enemy.tier}</span>
         </div>
         <div class="bar hp"><i style="width:${pct(enemy.hp, enemy.maxHp)}%"></i><span>${enemy.hp}/${enemy.maxHp}</span></div>
+      </div>
+
+      <div class="stage" aria-hidden="true">
+        <span class="stage-foe">${enemy.emoji}</span>
+        <span class="stage-vs">⚔️</span>
+        <span class="stage-hero">${playerSprite || '🛡️'}</span>
       </div>
 
       <div class="combatant">
