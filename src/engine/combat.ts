@@ -23,7 +23,6 @@ export interface EnemyLike {
   type?: string
   weakTo?: string[]
   resistTo?: string[]
-  [key: string]: unknown
 }
 
 /** The combat-primary stat value for a player (STR, AGI or INT by class). */
@@ -116,6 +115,9 @@ export function calcMonsterDamage(
   defending = false,
   rng: Rng = defaultRng,
 ): number {
+  // combat-engine.js:1110 — same +500 pivot and 0.80–1.20 variance as
+  // applyDefense (mirrored direction). rng is injectable for tests; the bot
+  // reads Math.random() directly — same behavior.
   const atk = Number.isFinite(Number(monsterAtk)) ? Number(monsterAtk) : 0
   const def = Math.max(0, Number.isFinite(Number(playerDef)) ? Number(playerDef) : 0)
   const variance = 0.80 + rng() * 0.40

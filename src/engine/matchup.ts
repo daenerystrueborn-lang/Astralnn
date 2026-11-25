@@ -102,8 +102,16 @@ interface EnemyTypeInfo {
   resistTo: string[]
 }
 
+/** Structural enemy shape the resolver reads (works with the battle Enemy). */
+interface EnemyTyped {
+  id?: unknown
+  type?: unknown
+  weakTo?: unknown
+  resistTo?: unknown
+}
+
 /** Enemy typing in one read; null when the enemy carries no type data. */
-export function enemyTypeInfo(enemy?: Record<string, unknown> | null): EnemyTypeInfo | null {
+export function enemyTypeInfo(enemy?: EnemyTyped | null): EnemyTypeInfo | null {
   if (!enemy) return null
   if (enemy.type) {
     return {
@@ -156,7 +164,7 @@ export interface MatchupResult {
  */
 export function skillMatchup(
   skill: Partial<SkillDef> | null | undefined,
-  enemy?: Record<string, unknown> | null,
+  enemy?: EnemyTyped | null,
 ): MatchupResult {
   const element = elementOfSkill(skill)
   const category = ELEMENT_CATEGORY[element] ?? categoryOfSkill(skill)
@@ -180,7 +188,7 @@ export function skillMatchup(
 /** Convenience for callers that only want the multiplier. */
 export function matchupMultiplier(
   skill: Partial<SkillDef> | null | undefined,
-  enemy?: Record<string, unknown> | null,
+  enemy?: EnemyTyped | null,
 ): number {
   return skillMatchup(skill, enemy).mult
 }
