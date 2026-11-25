@@ -1,0 +1,20 @@
+const {chromium}=require('playwright');const assert=require('node:assert/strict');
+(async()=>{
+ const b=await chromium.launch({channel:'msedge',headless:true,args:['--enable-unsafe-swiftshader']});
+ const c=await b.newContext({viewport:{width:667,height:375},isMobile:true,hasTouch:true,deviceScaleFactor:1});const p=await c.newPage();const errors=[];
+ p.on('pageerror',e=>{errors.push(e.message);console.error(e.message)});
+ await p.route('**/assets/world/ground.svg',r=>r.fulfill({status:404,body:'missing test terrain'}));
+ await p.route('**/assets/world/hero.svg',r=>r.fulfill({status:404,body:'missing test portrait'}));
+ await p.route('**/assets/parchment.svg',r=>r.fulfill({status:404,body:'missing test texture'}));
+ await p.addInitScript(()=>localStorage.setItem('astral-fantasy:save:v1',JSON.stringify({version:1,storyNode:'prelude',choices:{choice:'together'},lastRestAt:Date.now()})));
+ await p.goto('http://localhost:5173');await p.locator('.ticket-season').tap();await p.locator('[data-screen="cutscene"]').tap();await p.locator('.cutscene-caption [data-screen="dungeon"]').tap();
+ await p.waitForFunction(()=>document.querySelector('[data-stat="phase"]')?.textContent?.includes('celestial ward'));await p.waitForTimeout(300);
+ const marker=p.locator('[data-stat="map-player"]');const before=await marker.getAttribute('transform');await p.touchscreen.tap(365,190);await p.waitForTimeout(800);const after=await marker.getAttribute('transform');assert.notEqual(after,before,'Ground taps move the actual player');
+ await p.locator('[data-action="skill"][data-index="3"]').tap();await p.waitForTimeout(150);await p.locator('[data-action="menu"][data-menu="settings"]').tap();const cd=await p.locator('[data-cooldown="3"]').textContent();await p.waitForTimeout(1400);assert.equal(await p.locator('[data-cooldown="3"]').textContent(),cd,'Modal pause freezes cooldown');await p.locator('[data-action="motion"]').tap();await p.locator('.modal-close').tap();
+ assert.equal(await p.evaluate(()=>JSON.parse(localStorage.getItem('astral-fantasy:save:v1')).reducedMotion),true);
+ const bounds=await p.locator('[data-action="skill"],[data-action="auto"]').evaluateAll(nodes=>nodes.map(n=>({width:n.getBoundingClientRect().width,height:n.getBoundingClientRect().height})));assert(bounds.every(r=>r.width>=44&&r.height>=44),'Every combat control is touch sized');
+ await p.screenshot({path:'test-results/dungeon-phone-fallback.png'});
+ await p.setViewportSize({width:390,height:844});await p.waitForTimeout(150);const pausedPosition=await marker.getAttribute('transform');await p.waitForTimeout(1200);assert.equal(await marker.getAttribute('transform'),pausedPosition,'Phone portrait pauses movement');assert.equal(await p.locator('.rotate-screen').isVisible(),true);
+ await p.setViewportSize({width:667,height:375});await p.waitForTimeout(200);await p.locator('[data-action="leaveDungeon"]').tap();assert.equal(await p.locator('canvas').count(),0);
+ console.log(JSON.stringify({touchMovement:true,modalPause:true,rotationPause:true,illustratedTerrainAndHeroFallback:true,materialFallback:true,touchTargets:bounds,errors}));assert.deepEqual(errors,[]);await b.close();
+})().catch(e=>{console.error(e);process.exit(1)});

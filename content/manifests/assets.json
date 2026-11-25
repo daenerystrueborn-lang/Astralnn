@@ -1,0 +1,492 @@
+[
+  {
+    "id": "characters.ember",
+    "url": "/assets/characters/ember.svg",
+    "category": "portrait",
+    "width": 800,
+    "height": 1100
+  },
+  {
+    "id": "characters.kael",
+    "url": "/assets/characters/kael.svg",
+    "category": "portrait",
+    "width": 800,
+    "height": 1100
+  },
+  {
+    "id": "characters.lyra-concerned",
+    "url": "/assets/characters/lyra-concerned.svg",
+    "category": "portrait",
+    "width": 800,
+    "height": 1200
+  },
+  {
+    "id": "characters.lyra-determined",
+    "url": "/assets/characters/lyra-determined.svg",
+    "category": "portrait",
+    "width": 800,
+    "height": 1200
+  },
+  {
+    "id": "characters.lyra-happy",
+    "url": "/assets/characters/lyra-happy.svg",
+    "category": "portrait",
+    "width": 800,
+    "height": 1200
+  },
+  {
+    "id": "characters.lyra",
+    "url": "/assets/characters/lyra.svg",
+    "category": "portrait",
+    "width": 800,
+    "height": 1200
+  },
+  {
+    "id": "characters.miri",
+    "url": "/assets/characters/miri.svg",
+    "category": "portrait",
+    "width": 800,
+    "height": 1100
+  },
+  {
+    "id": "characters.orion",
+    "url": "/assets/characters/orion.svg",
+    "category": "portrait",
+    "width": 800,
+    "height": 1100
+  },
+  {
+    "id": "characters.sylvie",
+    "url": "/assets/characters/sylvie.svg",
+    "category": "portrait",
+    "width": 800,
+    "height": 1100
+  },
+  {
+    "id": "forest",
+    "url": "/assets/forest.svg",
+    "category": "scene",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "id": "icons.auto",
+    "url": "/assets/icons/auto.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.bag",
+    "url": "/assets/icons/bag.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.bind",
+    "url": "/assets/icons/bind.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.bolt",
+    "url": "/assets/icons/bolt.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.crescent",
+    "url": "/assets/icons/crescent.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.dash",
+    "url": "/assets/icons/dash.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.eclipse",
+    "url": "/assets/icons/eclipse.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.gold",
+    "url": "/assets/icons/gold.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.gravity",
+    "url": "/assets/icons/gravity.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.heal",
+    "url": "/assets/icons/heal.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.heart",
+    "url": "/assets/icons/heart.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.map",
+    "url": "/assets/icons/map.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.meteor",
+    "url": "/assets/icons/meteor.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.missions",
+    "url": "/assets/icons/missions.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.party",
+    "url": "/assets/icons/party.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.recruit",
+    "url": "/assets/icons/recruit.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.season",
+    "url": "/assets/icons/season.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.settings",
+    "url": "/assets/icons/settings.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.shard",
+    "url": "/assets/icons/shard.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.shield",
+    "url": "/assets/icons/shield.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.shop",
+    "url": "/assets/icons/shop.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.stamina",
+    "url": "/assets/icons/stamina.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "icons.story",
+    "url": "/assets/icons/story.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "logo",
+    "url": "/assets/logo.svg",
+    "category": "icon",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "observatory",
+    "url": "/assets/observatory.svg",
+    "category": "scene",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "id": "parchment",
+    "url": "/assets/parchment.svg",
+    "category": "material",
+    "width": 512,
+    "height": 512
+  },
+  {
+    "id": "slate",
+    "url": "/assets/slate.svg",
+    "category": "material",
+    "width": 512,
+    "height": 512
+  },
+  {
+    "id": "uikit.banner-jade",
+    "url": "/assets/uikit/banner-jade.svg",
+    "category": "material",
+    "width": 620,
+    "height": 150
+  },
+  {
+    "id": "uikit.banner-night",
+    "url": "/assets/uikit/banner-night.svg",
+    "category": "material",
+    "width": 620,
+    "height": 150
+  },
+  {
+    "id": "uikit.banner",
+    "url": "/assets/uikit/banner.svg",
+    "category": "material",
+    "width": 620,
+    "height": 150
+  },
+  {
+    "id": "uikit.button-jade",
+    "url": "/assets/uikit/button-jade.svg",
+    "category": "material",
+    "width": 340,
+    "height": 112
+  },
+  {
+    "id": "uikit.button-night",
+    "url": "/assets/uikit/button-night.svg",
+    "category": "material",
+    "width": 340,
+    "height": 112
+  },
+  {
+    "id": "uikit.button",
+    "url": "/assets/uikit/button.svg",
+    "category": "material",
+    "width": 340,
+    "height": 112
+  },
+  {
+    "id": "uikit.card-jade",
+    "url": "/assets/uikit/card-jade.svg",
+    "category": "material",
+    "width": 420,
+    "height": 560
+  },
+  {
+    "id": "uikit.card-night",
+    "url": "/assets/uikit/card-night.svg",
+    "category": "material",
+    "width": 420,
+    "height": 560
+  },
+  {
+    "id": "uikit.card",
+    "url": "/assets/uikit/card.svg",
+    "category": "material",
+    "width": 420,
+    "height": 560
+  },
+  {
+    "id": "uikit.medallion-jade",
+    "url": "/assets/uikit/medallion-jade.svg",
+    "category": "material",
+    "width": 240,
+    "height": 240
+  },
+  {
+    "id": "uikit.medallion-night",
+    "url": "/assets/uikit/medallion-night.svg",
+    "category": "material",
+    "width": 240,
+    "height": 240
+  },
+  {
+    "id": "uikit.medallion",
+    "url": "/assets/uikit/medallion.svg",
+    "category": "material",
+    "width": 240,
+    "height": 240
+  },
+  {
+    "id": "uikit.panel-jade",
+    "url": "/assets/uikit/panel-jade.svg",
+    "category": "material",
+    "width": 960,
+    "height": 400
+  },
+  {
+    "id": "uikit.panel-night",
+    "url": "/assets/uikit/panel-night.svg",
+    "category": "material",
+    "width": 960,
+    "height": 400
+  },
+  {
+    "id": "uikit.panel",
+    "url": "/assets/uikit/panel.svg",
+    "category": "material",
+    "width": 960,
+    "height": 400
+  },
+  {
+    "id": "uikit.ribbon-jade",
+    "url": "/assets/uikit/ribbon-jade.svg",
+    "category": "material",
+    "width": 900,
+    "height": 200
+  },
+  {
+    "id": "uikit.ribbon-night",
+    "url": "/assets/uikit/ribbon-night.svg",
+    "category": "material",
+    "width": 900,
+    "height": 200
+  },
+  {
+    "id": "uikit.ribbon",
+    "url": "/assets/uikit/ribbon.svg",
+    "category": "material",
+    "width": 900,
+    "height": 200
+  },
+  {
+    "id": "uikit.tab-jade",
+    "url": "/assets/uikit/tab-jade.svg",
+    "category": "material",
+    "width": 240,
+    "height": 112
+  },
+  {
+    "id": "uikit.tab-night",
+    "url": "/assets/uikit/tab-night.svg",
+    "category": "material",
+    "width": 240,
+    "height": 112
+  },
+  {
+    "id": "uikit.tab",
+    "url": "/assets/uikit/tab.svg",
+    "category": "material",
+    "width": 240,
+    "height": 112
+  },
+  {
+    "id": "uikit.ticket-jade",
+    "url": "/assets/uikit/ticket-jade.svg",
+    "category": "material",
+    "width": 640,
+    "height": 220
+  },
+  {
+    "id": "uikit.ticket-night",
+    "url": "/assets/uikit/ticket-night.svg",
+    "category": "material",
+    "width": 640,
+    "height": 220
+  },
+  {
+    "id": "uikit.ticket",
+    "url": "/assets/uikit/ticket.svg",
+    "category": "material",
+    "width": 640,
+    "height": 220
+  },
+  {
+    "id": "village",
+    "url": "/assets/village.svg",
+    "category": "scene",
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "id": "world.boss",
+    "url": "/assets/world/boss.svg",
+    "category": "world",
+    "width": 384,
+    "height": 368
+  },
+  {
+    "id": "world.crystal",
+    "url": "/assets/world/crystal.svg",
+    "category": "world",
+    "width": 180,
+    "height": 210
+  },
+  {
+    "id": "world.ground",
+    "url": "/assets/world/ground.svg",
+    "category": "world",
+    "width": 512,
+    "height": 512
+  },
+  {
+    "id": "world.hero",
+    "url": "/assets/world/hero.svg",
+    "category": "world",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "world.ruin",
+    "url": "/assets/world/ruin.svg",
+    "category": "world",
+    "width": 320,
+    "height": 290
+  },
+  {
+    "id": "world.sentinel",
+    "url": "/assets/world/sentinel.svg",
+    "category": "world",
+    "width": 256,
+    "height": 256
+  },
+  {
+    "id": "world.tree",
+    "url": "/assets/world/tree.svg",
+    "category": "world",
+    "width": 320,
+    "height": 420
+  },
+  {
+    "id": "world.wisp",
+    "url": "/assets/world/wisp.svg",
+    "category": "world",
+    "width": 192,
+    "height": 180
+  }
+]

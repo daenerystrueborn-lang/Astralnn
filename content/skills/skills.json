@@ -1,0 +1,11 @@
+[
+  {"id":"crescent","name":"Crescent Slash","short":"Slash","icon":"crescent","cooldown":2.5,"mana":0,"kind":"damage","power":26,"description":"A quick celestial blade strike against the nearest foe."},
+  {"id":"bolt","name":"Astral Bolt","short":"Bolt","icon":"bolt","cooldown":5,"mana":10,"kind":"damage","power":42,"description":"A guided starbolt strikes a nearby enemy."},
+  {"id":"dash","name":"Comet Dash","short":"Dash","icon":"dash","cooldown":7,"mana":8,"kind":"dash","power":28,"description":"Dash toward your target, striking enemies along the way."},
+  {"id":"heal","name":"Healing Star","short":"Heal","icon":"heal","cooldown":12,"mana":20,"kind":"heal","power":55,"description":"Restore health with a warm constellation of healing light."},
+  {"id":"shield","name":"Crystal Aegis","short":"Aegis","icon":"shield","cooldown":14,"mana":14,"kind":"shield","power":5,"description":"Become protected by a crystal shield for five seconds."},
+  {"id":"gravity","name":"Gravity Well","short":"Gravity","icon":"gravity","cooldown":10,"mana":18,"kind":"aoe","power":36,"description":"A gravity pulse strikes foes around your nearest target."},
+  {"id":"meteor","name":"Meteor Rain","short":"Meteor","icon":"meteor","cooldown":18,"mana":25,"kind":"aoe","power":64,"description":"Call a shower of stars over surrounding enemies."},
+  {"id":"bind","name":"Luminous Bind","short":"Bind","icon":"bind","cooldown":10,"mana":12,"kind":"stun","power":22,"description":"Damage and briefly bind the nearest enemy."},
+  {"id":"eclipse","name":"Celestial Eclipse","short":"Ultimate","icon":"eclipse","cooldown":0,"mana":0,"kind":"ultimate","power":155,"description":"At 100 Astral energy, unleash an eclipse that strikes every nearby foe."}
+]
