@@ -27,10 +27,14 @@ export interface QuestState {
   milestoneClaimed: string[]
 }
 
+/** Bot's tutorial-engine shape: id-based, conditional, one-shot rewards. */
 export interface TutorialState {
-  step: number
-  completed: number[]
+  completed: string[]
+  graduated: boolean
   graduationRewarded: boolean
+  graduatedAt: number | null
+  startedAt: number
+  skipped: boolean
 }
 
 export interface StaminaState {
@@ -96,6 +100,9 @@ export interface Player {
 
   dailyStreak: number
   lastDailyClaim: number | null
+  /** One-time streak milestones already paid (3/7/14/30/60/100 days). */
+  streakMilestones: number[]
+  bestDailyStreak: number
 
   // V1 forward-compat (story mode reads these from day one).
   storyProgress: { volumes: Record<string, unknown> }
@@ -240,10 +247,19 @@ export function createNewPlayer(
       lifetime: {},
       milestoneClaimed: [],
     },
-    tutorial: { step: 0, completed: [], graduationRewarded: false },
+    tutorial: {
+      completed: [],
+      graduated: false,
+      graduationRewarded: false,
+      graduatedAt: null,
+      startedAt: now,
+      skipped: false,
+    },
 
     dailyStreak: 0,
     lastDailyClaim: null,
+    streakMilestones: [],
+    bestDailyStreak: 0,
 
     storyProgress: { volumes: {} },
     storyFlags: [],

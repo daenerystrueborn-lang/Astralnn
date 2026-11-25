@@ -111,4 +111,97 @@ describe('V0 playable loop (UI)', () => {
     await waitForText('Highest floor 1')
     expect(second.ctx.store.requireState().stats.wins).toBe(1)
   })
+
+  it('systems tour: dungeon, roster, quests, profile, inventory, settings all render', async () => {
+    // alert/confirm are used by claim/reset flows; happy-dom stubs them loudly.
+    const alerts: string[] = []
+    window.alert = ((msg: string) => { alerts.push(String(msg)) }) as never
+    window.confirm = (() => true) as never
+
+    const { ctx, start } = createContext()
+    start()
+    await waitFor('#reg-create')
+    const nameInput = document.querySelector<HTMLInputElement>('#reg-name')!
+    nameInput.value = 'TourTester'
+    nameInput.dispatchEvent(new Event('input'))
+    click('.pick[data-id="mage"]')
+    click('.chip[data-id="elf"]')
+    click('#reg-create')
+    await waitForText('Choose your battle')
+
+    // Tutorial card is open on the hub (claim_character banked at register).
+    expect(document.body.textContent).toContain('Tutorial')
+    expect(document.body.textContent).toContain('Claim Your Daily Reward')
+
+    // ── Dungeon ────────────────────────────────────────────────
+    click('[data-nav="dungeon"]')
+    await waitFor('#loc-list')
+    expect(document.body.textContent).toContain("Newcomer's Hollow")
+    expect(document.querySelectorAll('.loc').length).toBeGreaterThan(0)
+    click('[data-nav="hub"]')
+    await waitForText('Choose your battle')
+
+    // ── Roster (empty state + spin link) ───────────────────────
+    click('[data-nav="roster"]')
+    await waitForText('ROSTER')
+    expect(document.body.textContent).toContain('No characters yet')
+    click('[data-nav="spin"]')
+    await waitForText('RECRUITMENT')
+    expect(document.querySelectorAll('[data-banner]').length).toBeGreaterThan(5)
+    click('[data-nav="hub"]')
+    await waitForText('Choose your battle')
+
+    // ── Quests: today's seeded dailies + milestones ────────────
+    click('[data-nav="quests"]')
+    await waitForText('QUESTS')
+    expect(document.body.textContent).toContain('Daily — rotates at midnight')
+    expect(document.querySelectorAll('[data-claim], #claim-all').length).toBeGreaterThanOrEqual(0)
+    click('[data-nav="hub"]')
+    await waitForText('Choose your battle')
+
+    // ── Profile: stats, train, daily claim, tutorial ───────────
+    click('[data-nav="profile"]')
+    await waitForText('PROFILE')
+    expect(document.body.textContent).toContain('E-Rank') // level 1 rank title
+    expect(document.body.textContent).toContain('Daily reward')
+    const dailyBtn = await waitFor('#daily-claim')
+    dailyBtn.click()
+    await flush(2)
+    expect(alerts.join(' ')).toContain('Streak 1')
+    expect(ctx.store.requireState().lastDailyClaim).toBeTruthy()
+    expect(ctx.store.requireState().tutorial.completed).toContain('claim_daily')
+
+    // ── Inventory: equip the starting weapon ───────────────────
+    click('[data-nav="hub"]')
+    await waitForText('Choose your battle')
+    // Inventory is reached via Roster in V0 nav
+    click('[data-nav="roster"]')
+    await waitForText('ROSTER')
+    click('[data-nav="inventory"]')
+    await waitForText('INVENTORY')
+    const equipBtn = document.querySelector<HTMLButtonElement>('[data-equip]')
+    expect(equipBtn).toBeTruthy()
+    equipBtn!.click()
+    await flush(2)
+    expect(ctx.store.requireState().equipped.weapon).toBeTruthy()
+    expect(ctx.store.requireState().tutorial.completed).toContain('equip_weapon')
+    expect(ctx.store.requireState().tutorial.completed).toContain('check_inventory')
+
+    // ── Settings: export produces a valid save ─────────────────
+    click('[data-nav="hub"]')
+    await waitForText('Choose your battle')
+    click('[data-nav="settings"]')
+    await waitForText('SETTINGS')
+    click('#export')
+    const box = document.querySelector<HTMLTextAreaElement>('#export-box')!
+    expect(box.hidden).toBe(false)
+    const parsed = JSON.parse(box.value)
+    expect(parsed.schemaVersion).toBe(1)
+    expect(parsed.player.name).toBe('TourTester')
+
+    // Profile tab records profile_viewed
+    click('[data-nav="profile"]')
+    await waitForText('PROFILE')
+    expect(ctx.store.requireState().tutorial.completed).toContain('check_profile')
+  })
 })

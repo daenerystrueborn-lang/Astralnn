@@ -3,6 +3,7 @@
 
 import { classes, races } from '../data/index'
 import { getTotalStats } from '../engine/stats'
+import { syncTutorialProgress } from '../engine/tutorial'
 import { createNewPlayer, validateRegistration } from '../state/player'
 import type { UiContext } from './app'
 
@@ -123,6 +124,9 @@ export function renderRegister(root: HTMLElement, ctx: UiContext): void {
         classId: check.classId!,
         raceId: check.raceId!,
       })
+      // Bot's register flow runs the tutorial sync immediately, so the welcome
+      // card opens on the first step the player still has to DO.
+      syncTutorialProgress(player)
       ctx.store.setPlayer(player)
       ctx.navigate('hub')
     } catch (err) {

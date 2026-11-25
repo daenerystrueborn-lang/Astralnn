@@ -4,6 +4,8 @@ import { classes, locations, races } from '../data/index'
 import { getTotalStats } from '../engine/stats'
 import { getRankForLevel } from '../engine/progression'
 import { startBattle } from '../engine/battle'
+import { claimableCount, ensureQuestState } from '../engine/quests'
+import { getCurrentStep, rewardLabel, skipTutorial, tutorialProgress } from '../engine/tutorial'
 import type { UiContext } from './app'
 
 function xpIntoLevel(level: number, xp: number, xpFor: (l: number) => number): { into: number; need: number } {
@@ -16,6 +18,29 @@ export function renderHub(root: HTMLElement, ctx: UiContext): void {
   const cls = classes[player.classId]
   const race = races[player.raceId]
   const total = getTotalStats(player.classId, player.raceId, player.level)
+
+  // Tutorial card + quest badge (cheap reads; mutation happens elsewhere).
+  ensureQuestState(player)
+  const questBadge = claimableCount(player)
+  const tutStep = getCurrentStep(player)
+  const tut = tutorialProgress(player)
+
+  function tutorialCard(): string {
+    if (tut.graduated) return ''
+    if (!tutStep) return ''
+    return `
+      <div class="panel" style="border-color:var(--gold)">
+        <div class="row">
+          <div>
+            <h3>📖 Tutorial · ${tut.completed}/${tut.total}</h3>
+            <p class="muted"><b style="color:var(--ink)">${tutStep.title}</b> — ${tutStep.instruction}</p>
+            <p class="muted">🎁 ${rewardLabel(tutStep.reward) || 'no reward'}</p>
+          </div>
+          <button class="btn btn-sm btn-ghost" id="tut-skip-hub" type="button">Skip</button>
+        </div>
+        <div class="bar xp" style="margin-top:6px"><i style="width:${tut.percent}%"></i><span>${tut.percent}%</span></div>
+      </div>`
+  }
 
   // Import lazily to keep startup light.
   void import('../engine/xp').then(({ xpForLevel }) => {
@@ -39,13 +64,15 @@ export function renderHub(root: HTMLElement, ctx: UiContext): void {
     <div id="xp-box"><div class="bar xp"><i style="width:0%"></i><span>XP</span></div></div>
 
     <div class="tabs">
-      <button class="tab active" type="button">Battle</button>
-      <button class="tab" type="button" disabled title="Slice 4">Dungeon</button>
-      <button class="tab" type="button" disabled title="Slice 4">Roster</button>
-      <button class="tab" type="button" disabled title="Slice 5">Quests</button>
-      <button class="tab" type="button" disabled title="Slice 5">Profile</button>
-      <button class="tab" type="button" disabled title="Slice 5">Settings</button>
+      <button class="tab active" data-nav="hub" type="button">Battle</button>
+      <button class="tab" data-nav="dungeon" type="button">Dungeon</button>
+      <button class="tab" data-nav="roster" type="button">Roster</button>
+      <button class="tab" data-nav="quests" type="button">Quests${questBadge ? ` · ${questBadge}` : ''}</button>
+      <button class="tab" data-nav="profile" type="button">Profile</button>
+      <button class="tab" data-nav="settings" type="button">Settings</button>
     </div>
+
+    ${tutorialCard()}
 
     <div class="panel">
       <h3>Stats ${player.statPoints.unallocated > 0 ? `<span class="muted">(${player.statPoints.unallocated} points)</span>` : ''}</h3>
@@ -101,6 +128,17 @@ export function renderHub(root: HTMLElement, ctx: UiContext): void {
   const floorPanel = root.querySelector<HTMLElement>('#floor-panel')!
   let pickedLoc: string | null = null
   let pickedFloor = 1
+
+  root.querySelectorAll<HTMLElement>('[data-nav]').forEach((el) => {
+    el.addEventListener('click', () => ctx.navigate(el.dataset.nav as never))
+  })
+  root.querySelector('#tut-skip-hub')?.addEventListener('click', () => {
+    if (!confirm('Skip the tutorial? You will forfeit the graduation gift.')) return
+    ctx.store.update((p) => {
+      skipTutorial(p)
+    })
+    ctx.navigate('hub')
+  })
 
   root.querySelector('#loc-list')!.addEventListener('click', (e) => {
     const el = (e.target as HTMLElement).closest<HTMLElement>('.loc')

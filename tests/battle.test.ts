@@ -265,7 +265,9 @@ describe('turn flow', () => {
     expect(session.status).toBe('won')
     expect(r.rewards).toBeTruthy()
     expect(r.rewards!.xp).toBeGreaterThan(0)
-    expect(player.wallet.solars).toBe(100 + r.rewards!.solars)
+    // Tutorial hooks fire on the first win: claim_character (+100, stateCheck)
+    // and fight_monster (+125, trigger) — solars only, never XP.
+    expect(player.wallet.solars).toBe(100 + 100 + 125 + r.rewards!.solars)
     expect(player.stats.wins).toBe(1)
     expect(player.xp).toBe(340 + r.rewards!.xp)
     // survival xp at (1,1) = 87 → 427 ≥ 348 → level 2

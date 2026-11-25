@@ -122,7 +122,16 @@ describe('createNewPlayer', () => {
     expect(p.quests.day).toBe(new Date(NOW).setHours(0, 0, 0, 0))
     expect(p.quests.daily).toEqual({})
     expect(p.quests.lifetime).toEqual({})
-    expect(p.tutorial).toEqual({ step: 0, completed: [], graduationRewarded: false })
+    expect(p.tutorial).toEqual({
+      completed: [],
+      graduated: false,
+      graduationRewarded: false,
+      graduatedAt: null,
+      startedAt: p.tutorial.startedAt,
+      skipped: false,
+    })
+    expect(p.streakMilestones).toEqual([])
+    expect(p.bestDailyStreak).toBe(0)
   })
 
   it('throws on invalid registration', () => {

@@ -72,6 +72,35 @@ export function migrateSave(raw: unknown): SaveFile | null {
 }
 
 function migratePlayer(player: Player, _fromVersion: number): Player {
+  // v1 shape repair: the tutorial was briefly {step, completed:number[]} before
+  // Slice 4 ported the bot's id-based engine, and pre-Slice-4 saves lack the
+  // streak milestone fields. Normalise in place so ensureTutorial/claimDaily
+  // always see the current shape.
+  const t = player.tutorial as unknown as Record<string, unknown> | undefined
+  if (!t || typeof t !== 'object' || Array.isArray(t.completed) === false || typeof t.completed !== 'object') {
+    player.tutorial = {
+      completed: [],
+      graduated: false,
+      graduationRewarded: false,
+      graduatedAt: null,
+      startedAt: Date.now(),
+      skipped: false,
+    }
+  } else if ((t.completed as unknown[]).some((c) => typeof c !== 'string')) {
+    // Old numeric-step saves: achievements cannot be recovered per-id; keep
+    // graduationRewarded so a paid gift is never paid twice.
+    const rewarded = t.graduationRewarded === true
+    player.tutorial = {
+      completed: [],
+      graduated: false,
+      graduationRewarded: rewarded,
+      graduatedAt: null,
+      startedAt: typeof t.startedAt === 'number' ? t.startedAt : Date.now(),
+      skipped: false,
+    }
+  }
+  if (!Array.isArray(player.streakMilestones)) player.streakMilestones = []
+  if (typeof player.bestDailyStreak !== 'number') player.bestDailyStreak = 0
   // No-op for now; each future migration step transforms the record here.
   return player
 }

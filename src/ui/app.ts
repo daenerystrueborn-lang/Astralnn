@@ -7,7 +7,19 @@ import { GameStore } from '../state/store'
 import type { Player } from '../state/player'
 import type { TurnResult } from '../engine/battle'
 
-export type ScreenId = 'register' | 'hub' | 'battle' | 'results' | 'death'
+export type ScreenId =
+  | 'register'
+  | 'hub'
+  | 'battle'
+  | 'results'
+  | 'death'
+  | 'roster'
+  | 'spin'
+  | 'inventory'
+  | 'dungeon'
+  | 'quests'
+  | 'profile'
+  | 'settings'
 
 export interface UiContext {
   store: GameStore
@@ -69,6 +81,13 @@ export function createContext(): { ctx: UiContext; start(): void } {
     const { renderHub } = await import('./hub')
     const { renderBattle } = await import('./battle')
     const { renderResults, renderDeath } = await import('./results')
+    const { renderRoster } = await import('./roster')
+    const { renderSpin } = await import('./spin')
+    const { renderInventory } = await import('./inventory')
+    const { renderDungeon } = await import('./dungeon')
+    const { renderQuests } = await import('./quests')
+    const { renderProfile } = await import('./profile')
+    const { renderSettings } = await import('./settings')
 
     root.innerHTML = ''
     switch (screen) {
@@ -86,6 +105,27 @@ export function createContext(): { ctx: UiContext; start(): void } {
         break
       case 'death':
         renderDeath(root, ctx)
+        break
+      case 'roster':
+        renderRoster(root, ctx)
+        break
+      case 'spin':
+        renderSpin(root, ctx)
+        break
+      case 'inventory':
+        renderInventory(root, ctx)
+        break
+      case 'dungeon':
+        renderDungeon(root, ctx)
+        break
+      case 'quests':
+        renderQuests(root, ctx)
+        break
+      case 'profile':
+        renderProfile(root, ctx)
+        break
+      case 'settings':
+        renderSettings(root, ctx)
         break
     }
   }

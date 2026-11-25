@@ -14,6 +14,8 @@ import {
 import { skillMatchup } from './matchup'
 import { applyLevelUps, getRankForLevel, type ProgressPlayer } from './progression'
 import { expectedLevelAtFloor, regulateMonsterXp, survivalKillXp } from './xp'
+import { recordQuestEvent, type QuestStateShape } from './quests'
+import { recordTutorialEvent, type TutorialStateShape } from './tutorial'
 import { monsters, locations, skillMap, gearMap } from '../data'
 import type { MonsterDef } from '../data/types'
 import { defaultRng, type Rng } from './rng'
@@ -264,6 +266,8 @@ export function playerAction(
     inDungeon?: boolean
     battleState?: unknown
     dungeonProgress: Record<string, { highestFloor: number }>
+    quests: QuestStateShape
+    tutorial: TutorialStateShape
   },
   session: BattleSession,
   action: BattleAction,
@@ -336,10 +340,20 @@ export function playerAction(
     // handleVictory: the fight is over — clear the persisted battle state and
     // record dungeon progress (one-floor-one-win: highestFloor = floor beaten).
     player.battleState = null
+    let floorsCleared = false
     if (player.inDungeon) {
       const prog = player.dungeonProgress[session.locationId]
-      if (prog && session.floor > prog.highestFloor) prog.highestFloor = session.floor
+      if (prog && session.floor > prog.highestFloor) {
+        prog.highestFloor = session.floor
+        floorsCleared = true
+      }
     }
+    // combat-handlers creditKill hooks: kill always, level per level-up,
+    // floor only for dungeon battles.
+    recordQuestEvent(player, 'kill', 1)
+    if (rewards.levelMsgs.length) recordQuestEvent(player, 'level', rewards.levelMsgs.length)
+    if (floorsCleared) recordQuestEvent(player, 'floor', 1)
+    recordTutorialEvent(player, 'monster_killed')
     events.push({
       kind: 'win',
       text: `🏆 ${session.enemy.name} is defeated! +${rewards.xp} XP, +${rewards.solars} ☀️`,

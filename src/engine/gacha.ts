@@ -144,12 +144,12 @@ export function spinBalance(player: { wallet?: Record<string, number> }, banner:
 }
 
 /** Spins this player has already burned on a banner. */
-export function spinsUsed(player: Record<string, unknown>, banner: SpinBanner): number {
-  return Number(player?.[banner.spinField] ?? 0)
+export function spinsUsed(player: object, banner: SpinBanner): number {
+  return Number((player as Record<string, unknown>)?.[banner.spinField] ?? 0)
 }
 
 /** Spins left before the lifetime cap (V0: no Premium bonus). */
-export function spinsLeft(player: Record<string, unknown>, banner: SpinBanner): number {
+export function spinsLeft(player: object, banner: SpinBanner): number {
   return Math.max(0, banner.maxSpinsPerPlayer - spinsUsed(player, banner))
 }
 
