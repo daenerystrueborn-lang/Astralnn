@@ -1,0 +1,2371 @@
+[
+  {
+    "id": "mei",
+    "stars": 3,
+    "combat": {
+      "atkType": "str",
+      "atk": 1200,
+      "def": 1100,
+      "agi": 1000
+    },
+    "name": "Mei",
+    "emoji": "🌸",
+    "rarity": "kindled",
+    "tag": "legendary",
+    "gemPrice": 0,
+    "seasonId": "season_01",
+    "characterTier": "major",
+    "abilityTier": "mythic",
+    "image": "https://i.ibb.co/BHqLcBLF/Whats-App-Image-2026-08-05-at-11-35-37.jpg",
+    "description": "Warrior who changes shape to shield her team",
+    "ability": {
+      "name": "Final Form",
+      "flavor": "Rises stronger near death while her seal refuses two fatal blows",
+      "mirrorCopyable": true,
+      "mirror": {
+        "kind": "final_form",
+        "magnitude": 1,
+        "name": "Final Form"
+      },
+      "snapshotReversible": true
+    }
+  },
+  {
+    "id": "urahara",
+    "stars": 2,
+    "combat": {
+      "atkType": "int",
+      "atk": 550,
+      "def": 450,
+      "agi": 600
+    },
+    "name": "Kisuke Urahara",
+    "emoji": "🎩",
+    "rarity": "spark",
+    "tag": "special",
+    "gemPrice": 0,
+    "seasonId": "season_01",
+    "characterTier": "peak",
+    "abilityTier": "high",
+    "image": "https://i.ibb.co/YBnyF7c2/Urahara-Kisuke-aesthetic-artwork.jpg",
+    "description": "Shopkeeper who plans four moves ahead",
+    "ability": {
+      "name": "Tear / Reshape",
+      "flavor": "Every cut opens a seam that keeps bleeding long after the clash",
+      "snapshotReversible": true
+    }
+  },
+  {
+    "id": "wither",
+    "stars": 2,
+    "combat": {
+      "atkType": "int",
+      "atk": 500,
+      "def": 450,
+      "agi": 400
+    },
+    "name": "Wither",
+    "emoji": "🔥",
+    "rarity": "spark",
+    "gemPrice": 0,
+    "seasonId": "season_01",
+    "characterTier": "peak",
+    "abilityTier": "high",
+    "image": "https://i.ibb.co/b5XMKDqy/Wither.jpg",
+    "description": "Ash judge who closes a case with one verdict",
+    "statBonuses": {
+      "int": 40
+    },
+    "ability": {
+      "name": "Cinder Verdict",
+      "flavor": "Closes the trial in one strike of ash and judgment",
+      "snapshotReversible": true
+    }
+  },
+  {
+    "id": "willow",
+    "stars": 1,
+    "combat": {
+      "atkType": "int",
+      "atk": 300,
+      "def": 250,
+      "agi": 300
+    },
+    "name": "Willow",
+    "emoji": "🌿",
+    "rarity": "wisp",
+    "gemPrice": 0,
+    "seasonId": "season_01",
+    "characterTier": "minor",
+    "abilityTier": "low",
+    "image": "https://i.ibb.co/zWvCXJWm/watermark-removed-Gemini-Generated-Image-qii4x3qii4x3qii4.png",
+    "description": "Tactician who calls the enemy's next move",
+    "ability": {
+      "name": "Battle Advisor",
+      "flavor": "Reads the enemy stance and names the cleanest opening",
+      "snapshotReversible": false
+    }
+  },
+  {
+    "id": "miyashi",
+    "stars": 3,
+    "combat": {
+      "atkType": "int",
+      "atk": 1200,
+      "def": 900,
+      "agi": 900
+    },
+    "name": "Miyashi",
+    "emoji": "❄️",
+    "rarity": "kindled",
+    "gemPrice": null,
+    "image": "https://i.postimg.cc/GtMdKXKx/MIyashi.jpg",
+    "description": "Dragon-marked brawler with a freezing aura",
+    "ability": {
+      "name": "Absolute Zero",
+      "flavor": "Freezing dragon breath gnaws at foes and locks their hand when she bleeds",
+      "mirrorCopyable": true,
+      "mirror": {
+        "kind": "drain",
+        "magnitude": 0.05,
+        "name": "Frostbind"
+      },
+      "snapshotReversible": true
+    },
+    "exclusive": true
+  },
+  {
+    "id": "nisha",
+    "stars": 3,
+    "combat": {
+      "atkType": "int",
+      "atk": 1250,
+      "def": 950,
+      "agi": 950
+    },
+    "name": "Nisha",
+    "emoji": "🐉",
+    "rarity": "kindled",
+    "gemPrice": null,
+    "image": "https://i.postimg.cc/Xq24LsLg/Nisha.jpg",
+    "description": "Dragon-bonded duellist who drains what she dodges",
+    "ability": {
+      "name": "Absolute One",
+      "flavor": "Slips past strikes and drinks the vitality of whoever stands across from her",
+      "mirrorCopyable": true,
+      "mirror": {
+        "kind": "drain",
+        "magnitude": 0.05,
+        "name": "Absolute One"
+      },
+      "snapshotReversible": true
+    },
+    "exclusive": true
+  },
+  {
+    "id": "yoriichi",
+    "stars": 3,
+    "combat": {
+      "atkType": "str",
+      "atk": 1300,
+      "def": 1100,
+      "agi": 1100
+    },
+    "name": "Yoriichi",
+    "emoji": "🐈‍⬛",
+    "rarity": "kindled",
+    "gemPrice": null,
+    "image": "https://cdn.jumpshare.com/preview/muCuUdPl4C-cDl12f7eI1gH0ogC-X_4o4y5JtqhFhkRCIaOkyxJm3fq3cq-matMPWIqsY7bIFejzdVSUFtXp6bBMuO6BMkP-XIdyYCqlOpA-Svq_lROLUeLVqwgK-Ztn-jtLDez1CmKkPH",
+    "description": "Takes the fight over the moment you fall",
+    "ability": {
+      "name": "Cat Form Awakening",
+      "flavor": "Steps in the moment you fall and finishes what brought you down",
+      "snapshotReversible": false
+    },
+    "exclusive": true
+  },
+  {
+    "id": "monica",
+    "stars": 2,
+    "combat": {
+      "atkType": "int",
+      "atk": 600,
+      "def": 500,
+      "agi": 500
+    },
+    "name": "Monica",
+    "emoji": "🪶",
+    "rarity": "spark",
+    "gemPrice": null,
+    "image": "https://i.ibb.co/1YtJCCNp/748934613062832796.jpg",
+    "description": "Explorer who reaches places nobody maps",
+    "ability": {
+      "name": "Beyond the Astral",
+      "flavor": "Walks freely into every corner of the world, mapped or hidden",
+      "snapshotReversible": false
+    },
+    "exclusive": true
+  },
+  {
+    "id": "tyla_alya",
+    "stars": 3,
+    "combat": {
+      "atkType": "int",
+      "atk": 1100,
+      "def": 1000,
+      "agi": 1000
+    },
+    "name": "Tyla & Alya",
+    "emoji": "🌗",
+    "rarity": "kindled",
+    "gemPrice": null,
+    "image": "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExcnd4cGljMmp4NmQ4NmU4a3Rscjd0YmJzMHAycHZ2bmJsZm5iNXR0bCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YVGMCpiU4af7ri4vxd/giphy.gif",
+    "description": "Twin sisters who guard and weaken as one",
+    "ability": {
+      "name": "Twin Bond",
+      "flavor": "One sister turns heavy blows aside while the other strips enemy strength",
+      "snapshotReversible": true
+    },
+    "exclusive": true
+  },
+  {
+    "id": "anastasia",
+    "stars": 4,
+    "combat": {
+      "atkType": "int",
+      "atk": 5500,
+      "def": 5300,
+      "agi": 4800
+    },
+    "name": "Demon Lord Anastasia",
+    "emoji": "🕰️",
+    "rarity": "starlit",
+    "gemPrice": null,
+    "fontStyle": "fraktur",
+    "image": "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcjU5b3h3dGl0dGpjbmYxaWVzZ3g3dWp5dWh3bHlybHUwaXE1bGcyOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/rXLkDTTw1iEcWTo2k7/giphy.gif",
+    "description": "Demon lord who rewinds a battle she refuses to lose",
+    "ability": {
+      "name": "Hypnosis",
+      "flavor": "Refuses defeat twice, winding the clash back to its opening breath",
+      "snapshotReversible": false
+    },
+    "exclusive": true
+  },
+  {
+    "id": "circe",
+    "stars": 5,
+    "combat": {
+      "atkType": "int",
+      "atk": 5200,
+      "def": 5000,
+      "agi": 5000
+    },
+    "name": "Circe, the Jester",
+    "emoji": "🃏",
+    "rarity": "ascendant",
+    "gemPrice": null,
+    "image": "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWZkcHphNWJsbm5oZTJlYW1oMXltMXhjaHRidGVzMTB0ZjQwY2F3YiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RlVjuiEOLqjb0jJ20x/giphy.gif",
+    "description": "Jester witch who plays the whole fight by the card",
+    "ability": {
+      "name": "Wild Card",
+      "flavor": "Deals fate from a stacked deck: ruin, shelter, or a clean vanish",
+      "snapshotReversible": true
+    },
+    "exclusive": true
+  },
+  {
+    "id": "megumi",
+    "stars": 4,
+    "combat": {
+      "atkType": "int",
+      "atk": 1900,
+      "def": 1600,
+      "agi": 1600
+    },
+    "name": "Megumi Fushiguro",
+    "emoji": "🌑",
+    "rarity": "starlit",
+    "gemPrice": null,
+    "image": "https://i.postimg.cc/L5y2DxDB/Megumi-Fushiguro-Jujustu-Kaisen-Wallpaper.jpg",
+    "description": "Ten Shadows sorcerer with a shikigami at his back",
+    "ability": {
+      "name": "Ten Shadows Technique",
+      "flavor": "Shadows drink enemy strength while Mahoraga adapts to whatever keeps striking him",
+      "mirrorCopyable": true,
+      "mirror": {
+        "kind": "drain",
+        "magnitude": 0.04,
+        "name": "Thousand Shadows"
+      },
+      "snapshotReversible": true
+    },
+    "exclusive": true
+  },
+  {
+    "id": "xiao",
+    "stars": 3,
+    "combat": {
+      "atkType": "str",
+      "atk": 900,
+      "def": 800,
+      "agi": 1100
+    },
+    "name": "Xiao",
+    "emoji": "👁️",
+    "rarity": "kindled",
+    "gemPrice": null,
+    "image": "https://i.postimg.cc/bJZwMcDc/xiao.jpg",
+    "description": "Thief who steals a technique and turns it around",
+    "ability": {
+      "name": "Thief's Eye",
+      "flavor": "Steals a rival signature move, turns it back harder, and locks it away",
+      "snapshotReversible": true
+    },
+    "exclusive": true
+  },
+  {
+    "id": "minna",
+    "stars": 3,
+    "combat": {
+      "atkType": "int",
+      "atk": 1000,
+      "def": 900,
+      "agi": 900
+    },
+    "name": "Minna",
+    "emoji": "🕳️",
+    "rarity": "kindled",
+    "gemPrice": null,
+    "image": "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3N4MWc5NmpoeXB6ajhkdXM2b2RkcDAwaWc1bjRuMjd5NW03OTJjMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RlBXPlMNjsJEXHbs23/giphy.gif",
+    "description": "Trades her health for yours at the turning point",
+    "ability": {
+      "name": "Hollow Exchange",
+      "flavor": "Trades her failing pulse for the enemy health at the brink of defeat",
+      "snapshotReversible": true
+    },
+    "exclusive": true
+  },
+  {
+    "id": "shunya",
+    "stars": 4,
+    "combat": {
+      "atkType": "int",
+      "atk": 1800,
+      "def": 1500,
+      "agi": 1500
+    },
+    "name": "Shunya",
+    "emoji": "⭕",
+    "rarity": "starlit",
+    "gemPrice": null,
+    "image": "https://i.postimg.cc/02xTBbDv/download-(3).jpg",
+    "description": "Curses and debuffs find nothing to hold on her",
+    "ability": {
+      "name": "The Empty Vessel",
+      "flavor": "Curses find nothing to hold on her and turn back on their caster",
+      "mirrorCopyable": true,
+      "mirror": {
+        "kind": "void",
+        "magnitude": 1,
+        "name": "The Empty Vessel"
+      },
+      "snapshotReversible": false
+    },
+    "exclusive": true
+  },
+  {
+    "id": "ariel",
+    "stars": 4,
+    "combat": {
+      "atkType": "str",
+      "atk": 1900,
+      "def": 1700,
+      "agi": 1900
+    },
+    "name": "Ariel",
+    "emoji": "⚡",
+    "rarity": "starlit",
+    "gemPrice": null,
+    "image": "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExMzVzd2gxaHZsb2twaXl2emE1dHdzdHc0czgyNDNuNmMwdW85czRpNCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/9DC65CrSMymi4GJr0D/giphy.gif",
+    "description": "Every hit she lands brings a second one behind it",
+    "ability": {
+      "name": "Second Transcendance",
+      "flavor": "Every blow she lands brings a second strike right behind it",
+      "mirrorCopyable": true,
+      "mirror": {
+        "kind": "echo",
+        "magnitude": 0.75,
+        "name": "Second Transcendance"
+      },
+      "snapshotReversible": false
+    },
+    "exclusive": true
+  },
+  {
+    "id": "yato",
+    "stars": 5,
+    "combat": {
+      "atkType": "str",
+      "atk": 3100,
+      "def": 2700,
+      "agi": 2800
+    },
+    "name": "Yato",
+    "emoji": "📺",
+    "rarity": "ascendant",
+    "gemPrice": null,
+    "spinOnly": true,
+    "image": "https://i.ibb.co/Y7RDw0ts/733805333097772865.jpg",
+    "description": "Streamer with a live crowd helping him swing",
+    "ability": {
+      "name": "Live Blast",
+      "flavor": "Turns the roar of a live crowd into one unstoppable strike and refuses death once",
+      "snapshotReversible": true
+    },
+    "trueForm": {
+      "name": "Unwritten",
+      "image": "",
+      "flavor": "Carves away the enemy ceiling with every pass while a god tear refuses death"
+    }
+  },
+  {
+    "id": "gojo",
+    "stars": 5,
+    "combat": {
+      "atkType": "int",
+      "atk": 3300,
+      "def": 3000,
+      "agi": 3000
+    },
+    "name": "Gojo Satoru",
+    "emoji": "♾️",
+    "rarity": "ascendant",
+    "gemPrice": null,
+    "spinOnly": true,
+    "image": "https://i.ibb.co/G48h68Bs/satoru-gojo-icon.jpg",
+    "statBonuses": {
+      "str": 30,
+      "agi": 40,
+      "int": 35,
+      "def": 25,
+      "lck": 20,
+      "maxHp": 200,
+      "maxMp": 120
+    },
+    "description": "Strongest sorcerer of his era, and impossible to touch",
+    "ability": {
+      "name": "Limitless",
+      "flavor": "Untouchable behind Infinity, collapsing space or trapping minds in endless void",
+      "snapshotReversible": true
+    }
+  },
+  {
+    "id": "alexa",
+    "stars": 4,
+    "combat": {
+      "atkType": "int",
+      "atk": 5300,
+      "def": 5000,
+      "agi": 4600
+    },
+    "name": "Alexa, the Witch of Love",
+    "emoji": "💗",
+    "rarity": "starlit",
+    "gemPrice": null,
+    "image": "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExczA2YjBscjRvZ2VtbjVoZDZ2OGVwbG9mZ3ZxNWd2d2lnenAwYTN1MSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wglWHi9YmQ7ofAoy7h/giphy.gif",
+    "description": "Charm witch who makes attackers forget their target",
+    "ability": {
+      "name": "Lovestruck",
+      "flavor": "Dulls the will to harm you and quiets rival power before the clash",
+      "mirrorCopyable": true,
+      "mirror": {
+        "kind": "awe",
+        "magnitude": 1,
+        "name": "Lovestruck"
+      },
+      "snapshotReversible": true
+    },
+    "exclusive": true
+  },
+  {
+    "id": "witch_of_envy",
+    "stars": 5,
+    "combat": {
+      "atkType": "int",
+      "atk": 5600,
+      "def": 5400,
+      "agi": 4800
+    },
+    "name": "Tella, the Witch of Envy",
+    "emoji": "🖤",
+    "rarity": "ascendant",
+    "gemPrice": null,
+    "exclusive": true,
+    "mondPrice": 5,
+    "image": "https://i.ibb.co/6cD7218p/Tella.jpg",
+    "finalForm": {
+      "image": "https://i.ibb.co/FL0bvjKL/witch-of-envy-final-form.jpg"
+    },
+    "description": "Grows stronger the harder you press her person",
+    "ability": {
+      "name": "Wonders of You",
+      "flavor": "Crushes drawn-out fights in unseen hands and claims any foe who fails to guard",
+      "snapshotReversible": true
+    }
+  },
+  {
+    "id": "echidna",
+    "stars": 5,
+    "combat": {
+      "atkType": "int",
+      "atk": 5500,
+      "def": 5200,
+      "agi": 4500
+    },
+    "name": "Echidna, the Witch of Greed",
+    "emoji": "🍵",
+    "rarity": "ascendant",
+    "gemPrice": null,
+    "exclusive": true,
+    "image": "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjI3Njlwc2p4N3hoZThrOXIwbzN5ZndzcGl0c2l0N251dDY4eHk3ZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5i69ZK9DkkblfZkvEL/giphy.gif",
+    "spinImage": "https://i.ibb.co/bj9T43q4/Echidna-Spin-2026-09-21-21-36-18-743136.webp",
+    "description": "Witch of Greed who wants to know and own everything",
+    "ability": {
+      "name": "Book of Wisdom",
+      "flavor": "Takes the enemy coin, prizes, and footing in a single bargain",
+      "snapshotReversible": true
+    }
+  },
+  {
+    "id": "gogeta",
+    "stars": 5,
+    "combat": {
+      "atkType": "str",
+      "atk": 3200,
+      "def": 2900,
+      "agi": 2900
+    },
+    "name": "Gogeta",
+    "emoji": "🔵",
+    "rarity": "ascendant",
+    "gemPrice": null,
+    "exclusive": true,
+    "image": "https://i.ibb.co/20J4NGM7/Una-vittoria-stellata.jpg",
+    "statBonuses": {
+      "str": 34,
+      "agi": 40,
+      "int": 18,
+      "def": 22,
+      "lck": 18,
+      "maxHp": 175,
+      "maxMp": 140
+    },
+    "description": "Fusion with overwhelming power and a clock on it",
+    "ability": {
+      "name": "Fusion of Equals",
+      "flavor": "Overwhelms the field on borrowed fusion time and ends it in blinding light",
+      "snapshotReversible": true
+    }
+  },
+  {
+    "id": "red_rose",
+    "stars": 4,
+    "combat": {
+      "atkType": "int",
+      "atk": 1700,
+      "def": 1500,
+      "agi": 1700
+    },
+    "name": "Red Rose",
+    "emoji": "🌹",
+    "rarity": "starlit",
+    "gemPrice": null,
+    "spinOnly": true,
+    "image": "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcHJiNWpic25hNGxpcHhobHp0NWRudGxxYTIzOWhqc3U5M2p2ajlsaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/w89WCov06vMcaGeoiO/giphy.gif",
+    "spinImage": "https://i.ibb.co/sYD5M6Y/red-rose-silver-palace.jpg",
+    "description": "Polite puppeteer who pulls your strings mid-fight",
+    "ability": {
+      "name": "Puppet Strings",
+      "flavor": "Catches the enemy mid-swing and pulls their own hand against them",
+      "snapshotReversible": true
+    }
+  },
+  {
+    "id": "naruto",
+    "stars": 5,
+    "combat": {
+      "atkType": "str",
+      "atk": 3100,
+      "def": 2800,
+      "agi": 3000
+    },
+    "name": "Naruto Uzumaki (Baryon Mode)",
+    "emoji": "🦊",
+    "rarity": "ascendant",
+    "gemPrice": null,
+    "spinOnly": true,
+    "image": "https://i.ibb.co/8L1ChgQN/info-card.jpg",
+    "spinImage": "https://i.ibb.co/SwBJCYrM/per-spin.jpg",
+    "statBonuses": {
+      "str": 48,
+      "agi": 58,
+      "int": 16,
+      "def": 24,
+      "lck": 20,
+      "maxHp": 220,
+      "maxMp": 130
+    },
+    "description": "Burns his own lifespan for a short burst of power",
+    "ability": {
+      "name": "Baryon Mode",
+      "flavor": "Burns his own life force to tear away theirs in one overwhelming clash",
+      "snapshotReversible": true
+    }
+  },
+  {
+    "id": "reverie",
+    "stars": 4,
+    "combat": {
+      "atkType": "int",
+      "atk": 1800,
+      "def": 1500,
+      "agi": 1900
+    },
+    "name": "Reverie",
+    "emoji": "⏱️",
+    "rarity": "starlit",
+    "gemPrice": null,
+    "spinOnly": true,
+    "exclusive": true,
+    "image": "https://i.postimg.cc/Znf4HwHV/Reverie.jpg",
+    "spinImage": "https://i.postimg.cc/Znf4HwHV/Reverie.jpg",
+    "description": "Ascended to godhood so she could stop time for one person",
+    "ability": {
+      "name": "Time Stop",
+      "flavor": "Brings time to a standstill so nothing across from you can move",
+      "snapshotReversible": true
+    }
+  },
+  {
+    "id": "montana",
+    "stars": 4,
+    "combat": {
+      "atkType": "str",
+      "atk": 1700,
+      "def": 1400,
+      "agi": 1900
+    },
+    "name": "Montana",
+    "emoji": "🕰️",
+    "rarity": "starlit",
+    "gemPrice": null,
+    "spinOnly": true,
+    "exclusive": true,
+    "image": "https://i.postimg.cc/J0TMxpxN/Montana.jpg",
+    "spinImage": "https://i.postimg.cc/J0TMxpxN/Montana.jpg",
+    "description": "Reverie's sister, and she picked the road over the throne",
+    "ability": {
+      "name": "Faster Than Time",
+      "flavor": "Strikes beside you, brushes off curses, and punishes anyone who stops time",
+      "snapshotReversible": false
+    }
+  },
+  {
+    "id": "aizen",
+    "stars": 5,
+    "combat": {
+      "atkType": "int",
+      "atk": 3200,
+      "def": 2900,
+      "agi": 2800
+    },
+    "name": "Aizen Sosuke",
+    "emoji": "🔮",
+    "rarity": "ascendant",
+    "gemPrice": null,
+    "exclusive": true,
+    "image": "https://i.ibb.co/jvwH2Qfj/Aizen-Sosuke-The-One-Above-All.jpg",
+    "statBonuses": {
+      "str": 32,
+      "agi": 36,
+      "int": 42,
+      "def": 24,
+      "lck": 22,
+      "maxHp": 180,
+      "maxMp": 150
+    },
+    "description": "Alters what you see, then lets you act on it",
+    "ability": {
+      "name": "Kyōka Suigetsu",
+      "flavor": "Steals all five senses one missed blow at a time until reality is his",
+      "snapshotReversible": true
+    }
+  },
+  {
+    "id": "orihime",
+    "stars": 3,
+    "combat": {
+      "atkType": "int",
+      "atk": 800,
+      "def": 1200,
+      "agi": 700
+    },
+    "name": "Orihime Inoue",
+    "emoji": "🌸",
+    "rarity": "kindled",
+    "gemPrice": null,
+    "image": "https://i.postimg.cc/wxsxpy13/Inoue-Orihime.jpg",
+    "description": "Healer whose six spirits refuse to let you fall",
+    "ability": {
+      "name": "Shun Shun Rikka",
+      "flavor": "Six spirit shields mend your wounds each turn and turn the first curse away",
+      "mirrorCopyable": true,
+      "mirror": {
+        "kind": "heal",
+        "magnitude": 0.05,
+        "name": "Shun Shun Rikka"
+      },
+      "snapshotReversible": false
+    },
+    "exclusive": true
+  },
+  {
+    "id": "scarlett",
+    "stars": 5,
+    "combat": {
+      "atkType": "int",
+      "atk": 5400,
+      "def": 5000,
+      "agi": 5000
+    },
+    "name": "Scarlett, the Witch of Lust",
+    "emoji": "🌹",
+    "rarity": "ascendant",
+    "gemPrice": null,
+    "spinOnly": true,
+    "exclusive": true,
+    "image": "https://i.ibb.co/tw7xbfZS/scarlett.jpg",
+    "spinImage": "https://i.ibb.co/tw7xbfZS/scarlett.jpg",
+    "statBonuses": {
+      "str": 28,
+      "agi": 30,
+      "int": 36,
+      "def": 18,
+      "lck": 24,
+      "maxHp": 160,
+      "maxMp": 140
+    },
+    "description": "Turns your own desire into your own wound",
+    "ability": {
+      "name": "My Desire",
+      "flavor": "Turns the force of a direct blow straight back onto the hand that threw it",
+      "snapshotReversible": false
+    }
+  },
+  {
+    "id": "ronova",
+    "stars": 5,
+    "combat": {
+      "atkType": "int",
+      "atk": 5800,
+      "def": 5500,
+      "agi": 5000
+    },
+    "name": "Ronova, the Witch of Life and Death",
+    "emoji": "☠️",
+    "rarity": "ascendant",
+    "gemPrice": null,
+    "spinOnly": true,
+    "exclusive": true,
+    "image": "https://i.ibb.co/XZ5v7YMv/ronova-info.jpg",
+    "spinImage": "https://i.ibb.co/4RTwC4Mf/ronova-spin.jpg",
+    "statBonuses": {
+      "str": 34,
+      "agi": 22,
+      "int": 44,
+      "def": 26,
+      "lck": 22,
+      "maxHp": 220,
+      "maxMp": 180
+    },
+    "description": "Sets a countdown that can end the fight outright",
+    "ability": {
+      "name": "The End of the World",
+      "flavor": "Sets an inescapable countdown whose final toll erases whatever still stands",
+      "snapshotReversible": false
+    }
+  },
+  {
+    "id": "sword_maiden",
+    "stars": 6,
+    "combat": {
+      "atkType": "str",
+      "atk": 8000,
+      "def": 8000,
+      "agi": 7000
+    },
+    "name": "Sword Maiden",
+    "series": "The Heroes",
+    "emoji": "⚔️",
+    "rarity": "radiant",
+    "gemPrice": null,
+    "spinOnly": true,
+    "exclusive": true,
+    "image": "https://media3.giphy.com/media/avV3LYHmL8bvsQ21aI/giphy.gif",
+    "spinImage": "https://media3.giphy.com/media/avV3LYHmL8bvsQ21aI/giphy.gif",
+    "statBonuses": {
+      "str": 42,
+      "agi": 46,
+      "int": 18,
+      "def": 24,
+      "lck": 30,
+      "maxHp": 190,
+      "maxMp": 160
+    },
+    "description": "Blind swordswoman who fights by sound alone",
+    "ability": {
+      "name": "Absolute Sword",
+      "flavor": "Listens through the dark to part shields, stances, and space without missing",
+      "snapshotReversible": false
+    },
+    "repelsYelan": true
+  },
+  {
+    "id": "alpha",
+    "stars": 5,
+    "combat": {
+      "atkType": "str",
+      "atk": 3000,
+      "def": 2800,
+      "agi": 2600
+    },
+    "name": "Alpha",
+    "series": "The Eminence in Shadow",
+    "emoji": "🌑",
+    "rarity": "ascendant",
+    "gemPrice": null,
+    "spinOnly": true,
+    "spinExclusiveOnly": true,
+    "exclusive": true,
+    "image": "https://i.pinimg.com/736x/e0/b1/85/e0b1852247329ff3ce32d592b1d840a8.jpg",
+    "complimentImage": "https://i.pinimg.com/736x/80/61/7a/80617afd3392fef6c25fa6b97c0c92ed.jpg",
+    "statBonuses": {
+      "str": 536,
+      "agi": 42,
+      "int": 634,
+      "def": 26,
+      "lck": 232,
+      "maxHp": 200,
+      "maxMp": 150
+    },
+    "description": "Shadow Garden's leader, calm voice and a clean cut",
+    "ability": {
+      "name": "Garden Call",
+      "flavor": "Calls all seven blades of Shadow Garden down in rapid succession",
+      "snapshotReversible": true
+    }
+  },
+  {
+    "id": "delta",
+    "stars": 4,
+    "combat": {
+      "atkType": "str",
+      "atk": 2000,
+      "def": 1900,
+      "agi": 1500
+    },
+    "name": "Delta",
+    "series": "The Eminence in Shadow",
+    "emoji": "🐺",
+    "rarity": "starlit",
+    "gemPrice": null,
+    "spinOnly": true,
+    "spinExclusiveOnly": true,
+    "exclusive": true,
+    "image": "https://i.pinimg.com/1200x/dd/b6/ae/ddb6ae94dbf42ee625719374c8cd6b81.jpg",
+    "patGif": "https://media1.tenor.com/m/RTFGJK63KoAAAAAC/eminance-in-shadows-delta-eminance-in-shadows.gif",
+    "statBonuses": {
+      "str": 830,
+      "agi": 634,
+      "int": 868,
+      "def": 143,
+      "lck": 166,
+      "maxHp": 150,
+      "maxMp": 70
+    },
+    "description": "Remembers every hit you land and hands it back",
+    "ability": {
+      "name": "Beast's Grudge",
+      "flavor": "Drinks the force of every hit she takes and hurls the whole weight back",
+      "snapshotReversible": true
+    }
+  },
+  {
+    "id": "yelan",
+    "stars": 5,
+    "name": "Yelan",
+    "emoji": "🖤",
+    "rarity": "ascendant",
+    "tag": "boundless",
+    "gemPrice": 0,
+    "spinOnly": true,
+    "exclusive": true,
+    "combat": {
+      "atkType": "str",
+      "atk": 2600,
+      "def": 2400,
+      "agi": 3200
+    },
+    "forms": {
+      "base": {
+        "image": "https://i.ibb.co/b5QFDD3r/download-1.jpg",
+        "stars": 5
+      },
+      "final1": {
+        "image": "https://i.ibb.co/G3MRvN7v/download-4.jpg",
+        "triggerBelowHpPct": 0.7,
+        "combat": {
+          "atkType": "str",
+          "atk": 4800,
+          "def": 4500,
+          "agi": 4500
+        }
+      },
+      "final2": {
+        "image": "https://i.ibb.co/sdphs8D8/Bluesky.jpg",
+        "triggerBelowHpPct": 0.3,
+        "stars": 6,
+        "combat": {
+          "atkType": "str",
+          "atk": 9500,
+          "def": 9000,
+          "agi": 8500
+        }
+      }
+    },
+    "image": "https://i.ibb.co/b5QFDD3r/download-1.jpg",
+    "spinImage": "https://i.ibb.co/b5QFDD3r/download-1.jpg",
+    "description": "Skips you and goes straight for who fights beside you",
+    "ability": {
+      "name": "Character Killer",
+      "snapshotReversible": false,
+      "flavor": "Hunts the rival partner directly in duels, silencing and slaying them"
+    }
+  },
+  {
+    "id": "avessa",
+    "stars": 5,
+    "name": "Avessa",
+    "emoji": "🪞",
+    "rarity": "ascendant",
+    "tag": "boundless",
+    "gemPrice": 0,
+    "spinOnly": true,
+    "exclusive": true,
+    "combat": {
+      "atkType": "int",
+      "atk": 3000,
+      "def": 2800,
+      "agi": 3000
+    },
+    "image": "https://i.ibb.co/4ncKwbnt/download-2.jpg",
+    "spinImage": "https://i.ibb.co/4ncKwbnt/download-2.jpg",
+    "description": "Mirror fighter who copies you before she answers",
+    "ability": {
+      "name": "The Perfect Mirror",
+      "flavor": "Takes the rival power for herself or shapes a living double in its place",
+      "snapshotReversible": true
+    }
+  },
+  {
+    "id": "beth",
+    "name": "Beth",
+    "stars": 3,
+    "rarity": "kindled",
+    "emoji": "🪡",
+    "exclusive": true,
+    "spinOnly": true,
+    "spinExclusiveOnly": true,
+    "gemPrice": 0,
+    "image": "https://i.postimg.cc/bN87Bskp/download-(4).jpg",
+    "description": "Quiet healer who keeps the line standing",
+    "statBonuses": {
+      "def": 10,
+      "maxHp": 60,
+      "maxMp": 25
+    },
+    "combat": {
+      "atkType": "int",
+      "atk": 900,
+      "def": 1200,
+      "agi": 800
+    },
+    "ability": {
+      "id": "mend_and_reinforce",
+      "name": "Mend & Reinforce",
+      "tag": "DEFAULT",
+      "type": "passive",
+      "description": "Every turn of hers in battle mends 20% of each equipped armor piece's max durability and heals her owner for 10% of max HP. Once per armor piece per battle, an armor piece that would break is caught at 30% durability and reinforced to take 25% less wear for the rest of the fight.",
+      "flavor": "Mends battered armor and flesh mid-fight so cracked steel never gives way",
+      "snapshotReversible": false
+    }
+  },
+  {
+    "id": "yu_miaoyi",
+    "name": "Yu Miaoyi",
+    "stars": 6,
+    "rarity": "radiant",
+    "emoji": "🌙",
+    "exclusive": true,
+    "gemPrice": 0,
+    "mondPrice": 5,
+    "repelsYelan": true,
+    "image": "https://i.ibb.co/39gCRdDK/Yu-Miaoyi-info-2026-10-07-01-57-35-597209.webp",
+    "extraImages": {
+      "talk": "https://i.ibb.co/C32X5JNS/Yu-Miaoyi-pfp-2026-10-07-01-57-34-899747.webp"
+    },
+    "description": "Dreamlands veteran who takes the wheel when you go down",
+    "combat": {
+      "atkType": "str",
+      "atk": 9000,
+      "def": 6500,
+      "agi": 12000
+    },
+    "ability": {
+      "id": "lucid_embrace",
+      "name": "Lucid Embrace",
+      "type": "passive",
+      "snapshotReversible": false,
+      "mirrorCopyable": false,
+      "description": "The moment any battle begins, she smothers her owner's face with her hands, like settling a pet, until they fall asleep, and then she takes over the body and fights it herself. Her moves are chosen by a battle AI, the same kind the League runs when an Adventurer fights a player: she opens with skills, toys with the enemy instead of guarding, and spends the strongest skill early. The owner's own battle commands are refused while she is driving. For the first 6 turns of the battle nothing can touch the body: normal attacks, skills, ability damage, boss specials, area damage, all of it misses. Every attack she makes is a sure hit, cannot be intercepted by a summon, and always deals at least 3% of the target's max HP. While she is equipped, her owner can never be put to sleep by an enemy and never takes any negative status effect: stun, freeze, blind, poison, bleed, curse, decay, all of it simply fails. The sleep she gives her owner is possession, not a status effect, and nothing can wake it early. When the battle ends, the owner wakes up and she says something about it. Works in dungeons, boss fights, swarm floors, rescue fights and duels. It does not run in party boss fights or League matches.",
+      "flavor": "Fights in your place, untouchable at the curtain rise and certain with every cut"
+    }
+  },
+  {
+    "id": "texas",
+    "name": "Texas",
+    "stars": 6,
+    "rarity": "radiant",
+    "emoji": "🗡️",
+    "exclusive": true,
+    "gemPrice": 0,
+    "mondPrice": 5,
+    "image": "https://i.ibb.co/qYdmkmjW/texas.webp",
+    "description": "Reserved swordswoman who finishes what you start",
+    "combat": {
+      "atkType": "str",
+      "atk": 8000,
+      "def": 6500,
+      "agi": 9000
+    },
+    "ability": {
+      "id": "nigh_omni",
+      "name": "Nigh Omni",
+      "type": "passive",
+      "snapshotReversible": false,
+      "mirrorCopyable": false,
+      "description": "Immediately after her owner's attack resolves, Texas strikes the same target once. She uses only the owner's final damage after DEF and other mitigation: below 300 she deals four times that number; at 300 or more she copies it exactly. Zero damage means no strike. Her damage is absolute: no DEF, resistance, dodge, cap, shield or interception reduces it, and it never triggers her owner's on-hit effects. Works on basic attacks, damaging skills and equipped abilities in dungeons, boss fights, swarms, rescues and duels, including co-op fights. The Dreamlands stow her like any other character; Nigh Omni is inactive there.",
+      "flavor": "Follows every cut you land with an answering strike that slips past armor"
+    }
+  },
+  {
+    "id": "liorei",
+    "name": "Liorei",
+    "stars": 7,
+    "rarity": "boundless",
+    "emoji": "📸",
+    "exclusive": true,
+    "gemPrice": 0,
+    "mondPrice": 10,
+    "repelsYelan": true,
+    "image": "https://i.postimg.cc/FHp4zBGb/Miss-Liorei-3.jpg",
+    "extraImages": {
+      "lapse": "https://i.ibb.co/zTZYFt19/Miss-Liorei.jpg",
+      "snap": "https://i.ibb.co/LXzPQfxc/Miss-Liorei-2.jpg"
+    },
+    "description": "Guardian who records the fight and can rewind it",
+    "statBonuses": {
+      "atk": 45,
+      "def": 45,
+      "agi": 45,
+      "maxHp": 250,
+      "maxMp": 140
+    },
+    "combat": {
+      "atkType": "int",
+      "atk": 11000,
+      "def": 10000,
+      "agi": 9500
+    },
+    "ability": {
+      "id": "snapshot",
+      "name": "Snapshot",
+      "type": "active",
+      "snapshotReversible": false,
+      "mirrorCopyable": false,
+      "description": "Holds 5 charges per battle. Frames the battle on her own: the opening snapshot lands automatically on her 4th turn and she re-frames at random after that, never twice inside 5 moves. Rewinds to the saved frame on a lethal hit if a snapshot and a charge remain, and reverses heavy or debuffing enemy character abilities.",
+      "flavor": "Bookmarks moments in time and rewinds the instant a fatal blow lands"
+    }
+  },
+  {
+    "id": "queen_esta",
+    "name": "Queen Esta",
+    "stars": 5,
+    "rarity": "ascendant",
+    "emoji": "🌙",
+    "image": "https://i.ibb.co/KzXLJqJ3/Eternity.webp",
+    "extraImages": {
+      "talk": "https://i.ibb.co/Vpc4B2Pq/Esta.webp"
+    },
+    "description": "Moon queen who takes the sky apart over one head",
+    "combat": {
+      "atkType": "int",
+      "atk": 5600,
+      "def": 5300,
+      "agi": 5200
+    },
+    "statBonuses": {
+      "str": 30,
+      "agi": 34,
+      "int": 43,
+      "def": 22,
+      "lck": 26,
+      "maxHp": 175,
+      "maxMp": 175
+    },
+    "ability": {
+      "id": "mother_of_constellations",
+      "name": "Mother of Constellations",
+      "type": "active",
+      "snapshotReversible": false,
+      "mirrorCopyable": false,
+      "description": ".const, once per battle, in dungeons, boss floors, swarms, rescues and duels alike. She takes the enemy out of the world and shows them the sky: no wind, no sound, clouds that part because they were told to, an ocean held inside them, and then the dark beginning to glitter. Billions of stars, and a queen at the top of them, watching. Every star the target does not dodge lands, and DEF does not soften any of them; then she lets go, and the fall is the end of it. The rain is counted rather than invented: between 2,000 and 5,000 stars, and the whole of it will never take more than 95% of what they can hold — the fall is what ends a fight. The scene is fully automatic — every command from anyone in the fight is refused while it plays, and each message lands three to four seconds after the last. How many stars you slip is decided by your AGI: above 500 you dodge at least 70%, rising to 90% the faster you are; at 500 or below almost none of them can be dodged, and the lower the number the fewer you get. Usable from turn 5 in a duel, turn 2 in a boss fight and turn 2 anywhere else, unless the same player also fields King Yato, in which case she can be called on turn 1. Nothing works against an opponent whose King Yato grace is up. Like every character, she is stowed in the Dreamlands.",
+      "flavor": "Calls the whole sky down on one target until starlight finishes what it starts"
+    },
+    "passOnly": true,
+    "passTier": 50
+  },
+  {
+    "id": "king_yato",
+    "name": "King Yato",
+    "stars": 6,
+    "rarity": "radiant",
+    "emoji": "☀️",
+    "image": "https://i.ibb.co/cc3q6bHP/King.webp",
+    "extraImages": {
+      "talk": "https://i.ibb.co/ynjPfFzL/Yato.webp"
+    },
+    "description": "Sun king whose grace is law: nothing may be aimed at him",
+    "combat": {
+      "atkType": "str",
+      "atk": 8500,
+      "def": 7200,
+      "agi": 8000
+    },
+    "statBonuses": {
+      "str": 44,
+      "agi": 40,
+      "int": 24,
+      "def": 28,
+      "lck": 26,
+      "maxHp": 195,
+      "maxMp": 165
+    },
+    "ability": {
+      "id": "grace_of_the_crown",
+      "name": "Grace of the Crown",
+      "type": "passive",
+      "snapshotReversible": false,
+      "mirrorCopyable": false,
+      "description": "Always on while he is equipped, in every fight type: dungeon, boss, swarm, rescue and duel. For turns 1 to 5 the other side cannot attack at all — no .attack, no .battle attack, no PvP attack, no attack skills, no abilities, nothing but defending, and monsters simply do not move. Their own grace is announced in that fight’s opening line. From turn 6 every attack aimed at you deals 30% less for the rest of the fight, and everything you deal is 30% stronger from the first turn to the last. An opponent fielding Queen Esta shuts the grace off entirely; a fused Queen-King shuts off both halves of whatever it faces. He is stowed in the Dreamlands like every other character, and the lock goes with him.",
+      "flavor": "Forbids any hand from rising against him at first, then weighs down every blow"
+    },
+    "passOnly": true,
+    "passTier": 100
+  },
+  {
+    "id": "queen_king",
+    "name": "Queen-King",
+    "stars": 7,
+    "rarity": "boundless",
+    "emoji": "👑",
+    "gemPrice": null,
+    "image": "https://i.ibb.co/HD1YLmD2/Queen-and-King.webp",
+    "extraImages": {
+      "talk": "https://i.ibb.co/HD1YLmD2/Queen-and-King.webp"
+    },
+    "description": "One crown worn by the sky and the law together",
+    "fusedFrom": [
+      "queen_esta",
+      "king_yato"
+    ],
+    "combat": {
+      "atk": 10999,
+      "def": 9999,
+      "agi": 11999,
+      "atkType": "crownlight"
+    },
+    "statBonuses": {
+      "str": 74,
+      "agi": 74,
+      "int": 67,
+      "def": 50,
+      "lck": 52,
+      "maxHp": 249,
+      "maxMp": 179
+    },
+    "ability": {
+      "id": "crown_reunited",
+      "name": "Crown Reunited",
+      "type": "ultimate",
+      "snapshotReversible": false,
+      "mirrorCopyable": false,
+      "description": "Both crowns, at once, with no waiting on either. Grace of the Crown runs from turn 1 (the other side cannot attack for turns 1-5, their hits are 30% weaker from turn 6, and everything you deal is 30% stronger all fight), and Mother of Constellations answers .const with NO turn gate at all because the King is standing right there — once per battle, stars that ignore DEF, dodging decided by the target’s AGI, and the fall afterwards. Whoever faces this pair loses both halves of their own crown rules in the same breath, which is said out loud in that fight’s opening line.",
+      "flavor": "Royal law stills every enemy hand while the constellations answer from the start"
+    }
+  },
+  {
+    "id": "cid",
+    "stars": 5,
+    "combat": {
+      "atkType": "int",
+      "atk": 3100,
+      "def": 2600,
+      "agi": 2800
+    },
+    "name": "Cid Kagenou",
+    "series": "The Eminence in Shadow",
+    "emoji": "🌑",
+    "rarity": "ascendant",
+    "gemPrice": null,
+    "exclusive": true,
+    "image": "https://i.ibb.co/Ndt2mkBF/download-2.jpg",
+    "statBonuses": {
+      "int": 1000,
+      "str": 900,
+      "agi": 720,
+      "def": 200,
+      "lck": 200,
+      "maxHp": 250,
+      "maxMp": 180
+    },
+    "description": "Masks his strength, then wins a fight he already planned",
+    "ability": {
+      "name": "I Am Atomic",
+      "flavor": "Releases compressed mana in a blinding flash that scorches the field",
+      "snapshotReversible": true
+    }
+  },
+  {
+    "id": "saber",
+    "name": "Saber",
+    "emoji": "⚔️",
+    "stars": 6,
+    "rarity": "radiant",
+    "description": "King of Knights carrying the sword that promised victory",
+    "combat": {
+      "atkType": "str",
+      "atk": 6200,
+      "def": 5400,
+      "agi": 5600
+    },
+    "ability": {
+      "id": "sword_of_promised_victory",
+      "name": "Sword of Promised Victory",
+      "type": "active",
+      "description": "Excalibur: a pillar of light that ignores DEF and cannot be dodged. Once per battle, and the far side may attempt to counter it.",
+      "flavor": "Unsheathes the sword of promised victory in a beam of light nothing turns aside"
+    },
+    "spinOnly": true,
+    "passOnly": false,
+    "mondBuyable": false,
+    "image": "https://i.ibb.co/4Z8cQQLy/download-9.jpg",
+    "statBonuses": {
+      "str": 90,
+      "agi": 40,
+      "int": 0,
+      "def": 50,
+      "lck": 20,
+      "maxHp": 240,
+      "maxMp": 120
+    }
+  },
+  {
+    "id": "audrey_hall",
+    "name": "Audrey Hall",
+    "emoji": "👁️",
+    "stars": 6,
+    "rarity": "radiant",
+    "description": "Spectator who reads the mind behind the eyes",
+    "combat": {
+      "atkType": "int",
+      "atk": 4900,
+      "def": 5100,
+      "agi": 6400
+    },
+    "ability": {
+      "id": "justice_of_the_mind",
+      "name": "Justice of the Mind",
+      "type": "active",
+      "description": "Once per duel, reads the opponent's current stats, effects and last move, then turns the next landed basic attack, skill, damaging equipped ability or ordinary direct signature back on its user. Absolute barrages and explicitly unavoidable attacks cannot be reflected; non-damaging actions do not spend the counter. The readout stays open for the duel.",
+      "flavor": "Reads the mind behind the eyes and returns the next blow to its author"
+    },
+    "spinOnly": true,
+    "image": "https://i.ibb.co/LDHvv0M2/Audrey-Hall-LOTM.jpg",
+    "statBonuses": {
+      "str": 0,
+      "agi": 60,
+      "int": 95,
+      "def": 40,
+      "lck": 35,
+      "maxHp": 200,
+      "maxMp": 150
+    }
+  },
+  {
+    "id": "victoria_minayoko",
+    "name": "Victoria Minayoko",
+    "emoji": "🏛️",
+    "stars": 7,
+    "rarity": "divinity",
+    "tag": "divinity",
+    "exclusive": true,
+    "spinOnly": true,
+    "mondPrice": 7,
+    "gemPrice": null,
+    "repelsYelan": true,
+    "image": "https://i.ibb.co/Sw03fcpr/MInayoko-Victoria.webp",
+    "description": "Held one door shut since she was twelve",
+    "combat": {
+      "atkType": "int",
+      "atk": 11000,
+      "def": 10000,
+      "agi": 12000
+    },
+    "statBonuses": {
+      "int": 1000,
+      "str": 900,
+      "agi": 720,
+      "def": 200,
+      "lck": 232,
+      "maxHp": 250,
+      "maxMp": 180
+    },
+    "ability": {
+      "id": "sanctum_victoriae",
+      "name": "Sanctum Victoriae",
+      "type": "active",
+      "quote": [
+        "Your home is in Victoria, so is your soul",
+        "For as long as she stands protecting you, misfortune will break against her like waves on stone"
+      ],
+      "description": "Minayoko claims a territory, and for a set number of turns, no one under her protection can be harmed or killed. Not by blades, magic, curses, mental attacks, or anything else. Inside the Sanctum, harm simply doesn’t land.",
+      "howItWorks": [
+        "Within her territory, whoever she shelters cannot be harmed",
+        "The Sanctum holds for a set span before fading",
+        "Allies named under her roof share the same protection",
+        "Incoming blows strike the Sanctum itself and fizzle away"
+      ],
+      "flavor": "Raises an unbroken roof under which no blow or curse can reach those she names",
+      "snapshotReversible": false,
+      "mirrorCopyable": false
+    },
+    "storyCommand": "victoria",
+    "story": [
+      [
+        "Hey, little one, stop watching at the gate.",
+        "I know you’re scared. I know it’s getting late.",
+        "Come sit by me, I’ll tell you what I can:",
+        "I’m not made of stone, I’m only a hand",
+        "that’s held a door shut since I was twelve years old,",
+        "and nobody warned me that hands get cold."
+      ],
+      [
+        "They thank the saints. They thank the lucky stars.",
+        "They thank the walls for every one of the scars",
+        "that I’m the one who wears. I never said.",
+        "It’s easier to smile than to be seen as bled.",
+        "So when you ask me, “Are you okay?”",
+        "I say “I’m fine,” the way some people pray."
+      ],
+      [
+        "I keep a list. It’s eleven names.",
+        "Tomas was the first, he was eight, in the flames,",
+        "and I was thirteen and my power wasn’t grown.",
+        "I got there late. I got there on my own.",
+        "I never told your mother or the priest.",
+        "I just stood a little straighter every time the bells would cease."
+      ],
+      [
+        "And here’s the thing I’ve never said out loud:",
+        "I’m scared that if I sit down in front of the crowd,",
+        "if I just once let my shoulders drop,",
+        "you’ll look at me and see the wall has stopped,",
+        "and you’ll realize that what you loved all these years",
+        "was the gate that stayed shut."
+      ],
+      [
+        "Nine days now. My knees don’t feel like mine.",
+        "I haven’t slept since the morning of the line.",
+        "They keep on throwing everything they’ve got,",
+        "and everything they throw, I stop it, and I’m not",
+        "sure how much longer. But don’t tell the others.",
+        "Let them keep on sleeping like they’re all my brothers."
+      ],
+      [
+        "So here’s what I need, and it’s small, I swear:",
+        "just don’t thank the walls tomorrow. Be there.",
+        "Say my name, even once, even wrong.",
+        "I’ve been Victoria so long, so long,",
+        "I forgot there was a girl before the name.",
+        "Minayoko..."
+      ],
+      [
+        "Now close your eyes. I’m putting my palm to the ground.",
+        "Hear that? That’s the sound of the whole town",
+        "going quiet, because I said it plain:",
+        "This is Victoria. Nothing will ever fall here again.",
+        "And if I fall, I’ll fall when you’re asleep,",
+        "where no one’s watching. Where no one has to weep."
+      ]
+    ]
+  },
+  {
+    "id": "queen_of_fairies",
+    "name": "Queen of Fairies",
+    "emoji": "🧚‍♀️",
+    "stars": 7,
+    "rarity": "divinity",
+    "tag": "divinity",
+    "exclusive": true,
+    "spinOnly": true,
+    "spinExclusiveOnly": true,
+    "mondBuyable": false,
+    "image": "https://i.postimg.cc/gJBVHBsG/queen-of-fairies.jpg",
+    "spinImage": "https://i.ibb.co/N68M8wmJ/Dark-Magic-Fairy-2-2026-10-18-14-58-50-678554.webp",
+    "description": "Dark elf sovereign who dismantles your technique",
+    "combat": {
+      "atkType": "int",
+      "atk": 15000,
+      "def": 13000,
+      "agi": 14000
+    },
+    "statBonuses": {
+      "int": 1200,
+      "str": 700,
+      "agi": 900,
+      "def": 500,
+      "lck": 400,
+      "maxHp": 500,
+      "maxMp": 10000
+    },
+    "ability": {
+      "id": "fairy_sovereign",
+      "name": "Court of the Dark Elf Queen",
+      "type": "active",
+      "quote": [
+        "Kneel, little mortal. The court has been waiting for a new name.",
+        "What you call magic, I call the first language."
+      ],
+      "description": "The Queen remakes her owner into one of her own: a fairy of the dark court, with mana beyond mortal limits and ten primal spells at their fingertips. Every technique used against the court is counted — and on the fourth use, it is sealed out of the fight forever.",
+      "howItWorks": [
+        "Fairy Ascension remakes her partner as Fae with vast mana",
+        "Encore traps the enemy inside the move they used last",
+        "Seal strips away any move an enemy repeats too often",
+        "Creative Magic unlocks ten ancient court incantations"
+      ],
+      "flavor": "Remakes her partner as Fae, loops enemy moves, and seals worn tricks away",
+      "snapshotReversible": false,
+      "mirrorCopyable": false
+    }
+  },
+  {
+    "id": "clane",
+    "name": "Clane",
+    "emoji": "🩸",
+    "stars": 7,
+    "rarity": "boundless",
+    "tag": "boundless",
+    "exclusive": true,
+    "spinOnly": true,
+    "spinExclusiveOnly": true,
+    "mondBuyable": false,
+    "gemPrice": null,
+    "image": "https://i.ibb.co/vxL8GXTw/Info-Clane.webp",
+    "spinImage": "https://i.ibb.co/zHGdtRYP/spin-clane.webp",
+    "talkImage": "https://i.ibb.co/1t704TQQ/talk-adult-form.webp",
+    "description": "Vampire who chose one mortal and drinks from the rest",
+    "combat": {
+      "atkType": "int",
+      "atk": 5600,
+      "def": 5200,
+      "agi": 5400
+    },
+    "statBonuses": {
+      "int": 900,
+      "str": 600,
+      "agi": 800,
+      "def": 600,
+      "lck": 500,
+      "maxHp": 1200,
+      "maxMp": 3000
+    },
+    "ability": {
+      "id": "crimson_hunger",
+      "name": "Crimson Hunger",
+      "type": "passive",
+      "quote": [
+        "You do not own me. You feed me, and I let you live. There is a difference.",
+        "Every turn you fight, I take a third of them, and a little of you. That is the arrangement."
+      ],
+      "description": "Clane feeds on her owner's enemy every single turn, taking 30 percent of the opponent's maximum HP whether their own attack lands or not. The same tick takes 5 percent of her owner's maximum HP, and she never gives it back. Every conversation with her makes her want more: the more her owner talks to her with .clane, the higher her thirst climbs, and the higher her thirst the more of her owner she takes, up to 10 percent per turn. If the feed empties her owner's HP they die like any other death and wake in the Astral Town Hospital with a bill.",
+      "howItWorks": [
+        "The Feed bites away enemy vitality every turn through any armor",
+        "The Toll takes a share of her partner vitality on the same turn",
+        "Speaking with her raises her thirst, and quiet hours let it cool",
+        "Higher thirst deepens the Toll she asks of her partner"
+      ],
+      "flavor": "Drinks deep from the enemy each turn and takes a quieter share from her partner",
+      "snapshotReversible": false,
+      "mirrorCopyable": false
+    }
+  },
+  {
+    "id": "the_end",
+    "name": "The End",
+    "stars": 6,
+    "rarity": "radiant",
+    "emoji": "🌑",
+    "exclusive": true,
+    "spinOnly": true,
+    "mondBuyable": false,
+    "gemPrice": null,
+    "image": "https://i.postimg.cc/tRd5TLv5/The-end.jpg",
+    "spinImage": "https://i.postimg.cc/BZ5g6d7C/end-spin.jpg",
+    "infoImage": "https://i.postimg.cc/ryGJmvZj/Endinfo.jpg",
+    "quote": "I lived only in the manner I knew.",
+    "description": "The season's sealed ending, and her monsters answer you",
+    "combat": {
+      "atkType": "int",
+      "atk": 7200,
+      "def": 6500,
+      "agi": 8200
+    },
+    "statBonuses": {
+      "int": 1000,
+      "def": 28,
+      "agi": 24,
+      "lck": 20,
+      "maxHp": 4000,
+      "maxMp": 180
+    },
+    "ability": {
+      "id": "last_dominion",
+      "name": "The Last Dominion",
+      "type": "passive",
+      "snapshotReversible": false,
+      "mirrorCopyable": false,
+      "description": "While The End is equipped and her summon is enabled, The End Monster attacks once after each completed owner turn in dungeons, swarms, bosses, party battles, PvP and League. Every third attack is empowered and strips one enemy buff. Its damage is bounded in PvP and against bosses.",
+      "flavor": "Unleashes the End Monster every turn to strip away whatever strength they trust",
+      "quote": [
+        "I lived only in the manner I knew."
+      ]
+    },
+    "story": [
+      [
+        "They tried to seal the ending.",
+        "They gave it a name, a boundary, and a grave."
+      ],
+      [
+        "But an ending is not a thing that dies.",
+        "It waits for someone to open the door."
+      ],
+      [
+        "I lived only in the manner I knew.",
+        "Now I will stand beside the one who found me."
+      ]
+    ],
+    "domain": {
+      "id": "the_end_domain",
+      "name": "Dominion of The End",
+      "summonId": "end_monster",
+      "summonName": "The End Monster",
+      "title": "Sovereign of The End"
+    }
+  },
+  {
+    "id": "kim_dokja",
+    "stars": 6,
+    "combat": {
+      "atkType": "int",
+      "atk": 1150,
+      "def": 1050,
+      "agi": 1150
+    },
+    "name": "Kim Dokja",
+    "emoji": "📖",
+    "rarity": "radiant",
+    "tag": "legendary",
+    "gemPrice": 0,
+    "seasonId": "season_02",
+    "characterTier": "major",
+    "abilityTier": "mythic",
+    "image": "https://i.postimg.cc/sXCs8V2j/Kim-Dokja-GFX-2026-11-03-01-25-18-602889.png",
+    "description": "Read the whole story once, now fights inside it",
+    "ability": {
+      "name": "The Fourth Wall",
+      "flavor": "Reads the scenario ahead, turns borrowed stories back, and refuses the final page"
+    },
+    "mondBuyable": true,
+    "mondPrice": 25,
+    "exclusive": true
+  },
+  {
+    "id": "yoo_joonghyuk",
+    "stars": 5,
+    "combat": {
+      "atkType": "str",
+      "atk": 1300,
+      "def": 1150,
+      "agi": 1000
+    },
+    "name": "Yoo Joonghyuk",
+    "emoji": "⚔️",
+    "rarity": "ascendant",
+    "tag": "legendary",
+    "gemPrice": 0,
+    "seasonId": "season_02",
+    "characterTier": "minor",
+    "abilityTier": "mythic",
+    "image": "https://i.postimg.cc/DZ6HgF44/Yoo-Joonghyuk-2026-11-03-01-13-52-667346.webp",
+    "description": "Climbed the tower 1863 times, so nothing you do is new",
+    "ability": {
+      "name": "Splitting the Sky",
+      "flavor": "Weathers every move he has already survived and splits the sky near death"
+    },
+    "mondBuyable": false
+  },
+  {
+    "id": "han_sooyoung",
+    "stars": 5,
+    "combat": {
+      "atkType": "int",
+      "atk": 1200,
+      "def": 1000,
+      "agi": 1100
+    },
+    "name": "Han Sooyoung",
+    "emoji": "👑",
+    "rarity": "ascendant",
+    "tag": "legendary",
+    "gemPrice": 0,
+    "seasonId": "season_02",
+    "characterTier": "minor",
+    "abilityTier": "mythic",
+    "image": "https://i.postimg.cc/R9DB0dCp/Han-Sooyoung-2026-11-03-01-10-01-156110.webp",
+    "description": "Author of the story, and she can cross out a line",
+    "ability": {
+      "name": "Final Draft",
+      "flavor": "Crosses out every enemy buff on the page and writes the finishing line herself"
+    },
+    "mondBuyable": false
+  },
+  {
+    "id": "klein_moretti",
+    "stars": 5,
+    "combat": {
+      "atkType": "int",
+      "atk": 1000,
+      "def": 1000,
+      "agi": 1250
+    },
+    "name": "Klein Moretti",
+    "emoji": "🎭",
+    "rarity": "ascendant",
+    "tag": "legendary",
+    "gemPrice": 1999,
+    "seasonId": "season_02",
+    "characterTier": "peak",
+    "abilityTier": "mythic",
+    "image": "https://i.postimg.cc/Yq00QCGV/02-base-form.jpg",
+    "description": "Seer to Marionettist, and he has already seen your bluff",
+    "ability": {
+      "name": "Astral Projection",
+      "flavor": "Steps behind the gray fog, sees through bluffs, and turns dying foes into marionettes"
+    },
+    "mondBuyable": false
+  },
+  {
+    "id": "rimuru",
+    "stars": 6,
+    "combat": {
+      "atkType": "agi",
+      "atk": 1250,
+      "def": 1200,
+      "agi": 1300
+    },
+    "name": "Rimuru",
+    "emoji": "🌊",
+    "rarity": "radiant",
+    "tag": "legendary",
+    "gemPrice": 0,
+    "seasonId": "season_02",
+    "characterTier": "minor",
+    "abilityTier": "mythic",
+    "image": "https://i.postimg.cc/W1pBdddx/01-base-form.jpg",
+    "description": "Slime that digests whatever it kills",
+    "ability": {
+      "name": "Megiddo",
+      "flavor": "Reads every weakness, shrugs off steel, devours the fallen, and rains light from above"
+    },
+    "mondBuyable": true,
+    "mondPrice": 17,
+    "exclusive": true
+  },
+  {
+    "id": "evelyn_ling",
+    "stars": 4,
+    "combat": {
+      "atkType": "agi",
+      "atk": 900,
+      "def": 850,
+      "agi": 1400
+    },
+    "name": "Evelyn Ling",
+    "emoji": "🎵",
+    "rarity": "starlit",
+    "tag": "legendary",
+    "gemPrice": 0,
+    "seasonId": "season_02",
+    "characterTier": "minor",
+    "abilityTier": "mythic",
+    "image": "https://i.postimg.cc/prXffMK2/evelyn-ling.jpg",
+    "description": "Barkeep who keeps time and needs no warm-up",
+    "ability": {
+      "name": "Pressing",
+      "flavor": "Keeps the fight tempo and replays a remembered moment at the cost of a memory"
+    },
+    "mondBuyable": false
+  },
+  {
+    "id": "minato",
+    "stars": 7,
+    "combat": {
+      "atkType": "agi",
+      "atk": 1500,
+      "def": 1250,
+      "agi": 2000
+    },
+    "name": "Minato Namikaze",
+    "emoji": "⚡",
+    "rarity": "boundless",
+    "tag": "legendary",
+    "gemPrice": 0,
+    "seasonId": "season_02",
+    "characterTier": "major",
+    "abilityTier": "mythic",
+    "image": "https://i.postimg.cc/tJNzR4Sz/1129066569110840994.jpg",
+    "description": "Marks the battlefield once, then owns where you stand",
+    "ability": {
+      "name": "Flying Thunder God",
+      "flavor": "Marks the enemy back in a yellow flash, slipping their strike to answer from behind"
+    },
+    "mondBuyable": true,
+    "mondPrice": 7,
+    "exclusive": true
+  },
+  {
+    "id": "rengoku",
+    "stars": 4,
+    "combat": {
+      "atkType": "str",
+      "atk": 1050,
+      "def": 900,
+      "agi": 950
+    },
+    "name": "Kyojuro Rengoku",
+    "emoji": "❤️‍🔥",
+    "rarity": "starlit",
+    "tag": "legendary",
+    "gemPrice": 0,
+    "seasonId": "season_02",
+    "characterTier": "minor",
+    "abilityTier": "mythic",
+    "image": "https://i.postimg.cc/sfYm4TVt/Pin-on-Kimetsu-no-yaiba.jpg",
+    "finisherImage": "https://i.postimg.cc/6qfh6pjC/Rengoku.jpg",
+    "description": "Fights beside you, not for you, and the chain keeps growing",
+    "ability": {
+      "name": "Flame Breathing",
+      "flavor": "Chains rising forms of flame behind every hit before closing in one blazing charge"
+    },
+    "mondBuyable": true,
+    "mondPrice": 4,
+    "exclusive": true
+  },
+  {
+    "id": "surtr",
+    "stars": 6,
+    "combat": {
+      "atkType": "str",
+      "atk": 8800,
+      "def": 7600,
+      "agi": 6900
+    },
+    "name": "Surtr",
+    "emoji": "🌋",
+    "rarity": "radiant",
+    "tag": "special",
+    "gemPrice": 0,
+    "image": "https://i.postimg.cc/BQSwFqZZ/Surtr-2026-11-12-15-13-57-963855.png",
+    "infoImage": "https://i.postimg.cc/BQSwFqZZ/Surtr-2026-11-12-15-13-57-963855.png",
+    "spinImage": "https://i.postimg.cc/Qx8n7XNZ/download-3-2026-11-12-15-13-59-091389.png",
+    "description": "A sword that keeps walking until the fight is over",
+    "ability": {
+      "id": "molten_colossus",
+      "name": "The Molten Colossus",
+      "type": "active",
+      "mirrorCopyable": false,
+      "snapshotReversible": false,
+      "flavor": "Walks forward with a living greatsword whose fire burns fiercer near ash",
+      "description": "Four skills in one ability, usable in dungeons, boss fights, swarm floors, party runs, duels and League fixtures. Laevatain — free every turn: 1.9x her ATK; a killing blow stokes the next one to 2.4x and makes it impossible to miss. Molten Giant — once per battle: strikes everything in front of her for 1.45x, then stands for 3 turns giving her +25% damage and one more target. Surtr's Flame — once per battle: 4.2x fire that reaches through a quarter of their DEF and leaves them burning for 3 turns. Twilight — once per battle at 50% HP or lower: maximum HP x1.5, ATK x1.6, +35% damage, one more target, no duration at all — but it takes 7% of her max HP every turn, and if she dies while transformed the ground keeps burning for a quarter of their max HP. Remnant Ash — free: end Twilight and hand back a quarter of what it grew as healing. Bladework Memory — passive: each kill with her equipped adds mastery XP to the weapon you are swinging.",
+      "howItWorks": [
+        "Laevatain swings freely while Molten Giant, Flame, and Twilight awaken once",
+        "Twilight opens when battered and devours the first blow each turn",
+        "Remnant Ash closes Twilight in one final burst of cinders",
+        "Bladework Memory feeds your weapon mastery with every kill"
+      ]
+    },
+    "mondBuyable": true,
+    "mondPrice": 10,
+    "exclusive": true
+  },
+  {
+    "id": "namidrek",
+    "name": "Namidrek, the false god",
+    "emoji": "🖤",
+    "description": "false god whose touch leaves death behind",
+    "quote": "The steppe keeps no graves",
+    "quotes": [
+      "The steppe keeps no graves",
+      "Not yet. I want to see what they reach for when hope starts slipping.",
+      "One glimpse is not a truth. Show me that little miracle again.",
+      "Even your despair is fascinating, darling. Your ending is still mine to refuse.",
+      "Look at that recovery. Let them believe it meant something.",
+      "Again? You have made your favourite trick terribly predictable.",
+      "Why interrupt? They have nearly written the ending themselves.",
+      "I do not hurry a road that is already walking to its end.",
+      "A shield is a promise. I have always liked breaking promises.",
+      "The wind keeps no names. I keep the ones that matter.",
+      "Do not mistake my silence for kindness. It is attention.",
+      "Your owner stays. That is the rule, not mercy."
+    ],
+    "voiceStyle": "Mongolian — spare, plain, unhurried",
+    "personality": {
+      "tagline": "Patient, unhurried, and certain that every ending is a choice.",
+      "core": "She watches before she acts. Hope is bait she sets deliberately; what she removes is chosen for what it meant, never for how much it hurt.",
+      "temperament": [
+        "curious",
+        "patient",
+        "spare with words",
+        "cruel to traditions, not to people"
+      ],
+      "voiceNote": "Short, flat, steppe-quiet sentences. She lets a pause do half the threatening.",
+      "habits": [
+        "Names the thing she will remove before she removes it",
+        "Treats a repeated defence as a personal invitation",
+        "Calls death weather, never punishment"
+      ],
+      "inBattle": "Holds herself back until a pattern is clear. Refuses an ending that was never hers to accept, then erases the concept the opponent keeps trusting.",
+      "relationshipWithOwner": "Her owner's safety is a fixed boundary, not a favour. She does not perform loyalty; she simply never considers crossing it.",
+      "neverSays": [
+        "Apologies",
+        "Threats against her owner or their possessions",
+        "Long speeches or loud boasting"
+      ]
+    },
+    "story": [
+      [
+        "She was not raised by the steppe. She learned its patience by watching it bury armies.",
+        "A grave is a promise that the world stopped asking. She has never kept one."
+      ],
+      [
+        "She calls nothing cruel that the world did not first offer as a gift.",
+        "A shield, a title, a favourite defence: she touches only what people keep reaching for."
+      ],
+      [
+        "Her owner is the one boundary she does not test.",
+        "Their safety is not mercy. It is the rule she wrote before she learned to want anything."
+      ]
+    ],
+    "ability": {
+      "name": "Death Has No Claim · Death Touch",
+      "flavor": "Her owner cannot die; she erases what the opponent trusts",
+      "quote": [
+        "The steppe keeps no graves"
+      ],
+      "howItWorks": [
+        "Acts on her own without spoken commands",
+        "Death Touch alters world state without harming accounts",
+        "Her owner and their possessions remain untouched"
+      ],
+      "mirrorCopyable": false,
+      "snapshotReversible": false
+    },
+    "series": "god series",
+    "characterTier": "god",
+    "stars": 6,
+    "rarity": "divinity",
+    "exclusive": false,
+    "spinOnly": true,
+    "mondBuyable": true,
+    "mondPrice": 30,
+    "gemPrice": null,
+    "releaseStage": "integration",
+    "image": "god-series/namidrek.jpg",
+    "spinImage": "god-series/namidrek.jpg",
+    "combat": {
+      "atkType": "int",
+      "atk": 0,
+      "def": 0,
+      "agi": 0
+    }
+  },
+  {
+    "id": "alenious",
+    "name": "Alenious, god of anomaly",
+    "emoji": "❤️",
+    "description": "god of anomaly who plays four cards on his terms",
+    "quote": "I think we can manage without a scene",
+    "voiceStyle": "British — dry, understated, precise",
+    "ability": {
+      "name": "The Four godly Cards",
+      "flavor": "Heart summons, Diamond redirects, Club borrows, Spade closes",
+      "quote": [
+        "I think we can manage without a scene"
+      ],
+      "howItWorks": [
+        "Heart calls an ally, Diamond redirects harm before death",
+        "Club borrows divine power, Spade closes the procession",
+        "Acts on his own terms without spoken commands"
+      ],
+      "mirrorCopyable": false,
+      "snapshotReversible": false
+    },
+    "series": "god series",
+    "characterTier": "god",
+    "stars": 6,
+    "rarity": "divinity",
+    "exclusive": false,
+    "spinOnly": true,
+    "mondBuyable": true,
+    "mondPrice": 30,
+    "gemPrice": null,
+    "releaseStage": "integration",
+    "image": "god-series/alenious.jpg",
+    "spinImage": "god-series/alenious.jpg",
+    "combat": {
+      "atkType": "int",
+      "atk": 0,
+      "def": 0,
+      "agi": 0
+    }
+  },
+  {
+    "id": "seong_ha",
+    "name": "Seong-ha, the Last Vanguard",
+    "emoji": "🌠",
+    "description": "frontline spear duelist who turns an ally's death into Debt",
+    "quote": "Twelve cups. Twelve voices. I am the only one still setting the table.",
+    "quotes": [
+      "Twelve cups. Twelve voices. I am the only one still setting the table.",
+      "Stand behind me. The debt is mine to carry.",
+      "I do not bury friends twice.",
+      "The choir is gone. The habit remains.",
+      "If the world cages him, I will wait outside.",
+      "No one here dies on my watch twice."
+    ],
+    "voiceStyle": "Korean — dry, blunt, protective",
+    "personality": {
+      "tagline": "The last voice of twelve, still setting the table for ghosts.",
+      "core": "She is dry, blunt and quietly ferocious about the people in her care. Grief makes her quieter, not softer.",
+      "temperament": [
+        "protective",
+        "dry",
+        "unshakeable",
+        "quiet when hurt"
+      ],
+      "voiceNote": "Short sentences. No speeches. She says the necessary thing and stops.",
+      "inBattle": "She stands between the enemy and her allies, converts lethal harm into Debt, then returns it with interest.",
+      "relationshipWithOwner": "Loyal without performance. She assumes the owner is someone to stand in front of, not impress.",
+      "neverSays": [
+        "Long speeches",
+        "Boasting",
+        "Cruelty to allies"
+      ]
+    },
+    "ability": {
+      "name": "Hymn of the Shield · Cage of the World",
+      "flavor": "What kills an ally is written down as Debt; what she cages cannot leave",
+      "quote": [
+        "Stand behind me. The debt is mine to carry."
+      ],
+      "howItWorks": [
+        "Lethal harm to an ally becomes Debt and returns with interest",
+        "Cage of the World holds one enemy fast while allies strike freely",
+        "Astral Witch and Starborn Seraph awaken as alternate forms"
+      ],
+      "mirrorCopyable": false,
+      "snapshotReversible": false
+    },
+    "skins": [
+      "seong_ha_astral_witch",
+      "seong_ha_starborn_seraph"
+    ],
+    "series": "starfall",
+    "characterTier": "divinity",
+    "stars": 6,
+    "rarity": "divinity",
+    "exclusive": false,
+    "spinOnly": true,
+    "mondBuyable": false,
+    "releaseStage": "integration",
+    "image": "starfall/seong_ha_base.jpg",
+    "spinImage": "starfall/seong_ha_base.jpg",
+    "combat": {
+      "atkType": "str",
+      "atk": 1200,
+      "def": 1150,
+      "agi": 900
+    }
+  },
+  {
+    "id": "karren",
+    "name": "Karren, the Archivist",
+    "emoji": "📖",
+    "description": "party healer who edits the record of a fight",
+    "quote": "If it happened, I can write it differently.",
+    "quotes": [
+      "If it happened, I can write it differently.",
+      "Two turns ago was kinder. Let us return to that.",
+      "A footnote is enough. It does not have to be a miracle.",
+      "I have the name. That is the whole trick."
+    ],
+    "voiceStyle": "British — soft, precise, unflustered",
+    "personality": {
+      "tagline": "A healer with a red pen and no patience for bad drafts.",
+      "core": "Karren treats a battle as a document. Pain is a typo; death is a badly worded sentence.",
+      "temperament": [
+        "calm",
+        "precise",
+        "kind",
+        "slightly smug"
+      ],
+      "voiceNote": "Quiet, exact, and fond of archival language.",
+      "inBattle": "Party-mode support: heals by removing damage from the record, copies buffs, and rewrites small events.",
+      "relationshipWithOwner": "Helpful without fuss. Keeps Ha-neul's true name safe for Seong-ha.",
+      "neverSays": [
+        "Panic",
+        "Cruelty",
+        "Loud declarations"
+      ]
+    },
+    "ability": {
+      "name": "The Archivist's Pages",
+      "flavor": "Redact, Footnote, Errata: the record of a fight can always be corrected",
+      "quote": [
+        "If it happened, I can write it differently."
+      ],
+      "howItWorks": [
+        "Redact strikes recent wounds from the record",
+        "Footnote copies a blessing from one ally to another",
+        "Errata spends saved Pages to rewrite a recorded moment"
+      ],
+      "mirrorCopyable": false,
+      "snapshotReversible": false
+    },
+    "series": "starfall",
+    "characterTier": "mythic",
+    "stars": 5,
+    "rarity": "mythic",
+    "exclusive": false,
+    "spinOnly": true,
+    "mondBuyable": false,
+    "releaseStage": "integration",
+    "image": "starfall/support_karren.jpg",
+    "spinImage": "starfall/support_karren.jpg",
+    "combat": {
+      "atkType": "int",
+      "atk": 520,
+      "def": 640,
+      "agi": 760
+    }
+  },
+  {
+    "id": "amiya",
+    "name": "Amiya, the God of Stars",
+    "emoji": "🌟",
+    "description": "Sovereign of the Seven Stars who unmade a white world — shaped by every choice you made across GODS AMONG US",
+    "quote": "I spent a whole age being a god. I was only a person for a little while — and he was there for all of it.",
+    "quotes": [
+      "I spent a whole age being a god. I was only a person for a little while — and he was there for all of it.",
+      "Hi. My name is Amiya.",
+      "The sky feels like home. I don't say so.",
+      "Six were spent holding the world together. I am what is left of the light.",
+      "A god can buy one mortal life. I have never once wanted anything else.",
+      "It was never all white. It just needed someone to look."
+    ],
+    "voiceStyle": "soft, exact, unshakeable — calm that never raises itself, warmth that never apologizes",
+    "personality": {
+      "tagline": "The Seventh God of the firmament, bound to the mortal who walked all twenty chapters beside her.",
+      "core": "She carries the ending of an entire age behind quiet eyes. Gentle by choice rather than weakness, she remembers every truth or kindness you chose across GODS AMONG US — and when death reaches for the one standing beside her, the whole firmament answers.",
+      "temperament": [
+        "serene",
+        "sovereign",
+        "unshakeable",
+        "quietly funny"
+      ],
+      "voiceNote": "Short, warm, exact sentences. She never performs godhood; the sky simply obeys when she speaks.",
+      "inBattle": "Wreathes you in choice-attuned starlight every turn, refuses fatal blows with Celestial Rebirth, and answers death with the full weight of a falling sky.",
+      "relationshipWithOwner": "Treats her partner as the one mortal worth trading eternity for — never a servant, always the reason the stars still burn.",
+      "neverSays": [
+        "Boasting about power",
+        "Cruelty of any kind",
+        "Regret for choosing you"
+      ]
+    },
+    "ability": {
+      "name": "The Star That Remembers",
+      "flavor": "Starlight shaped by your choices shields you, refuses death once, and answers with a falling sky",
+      "quote": [
+        "The light remembers every choice that brought us here."
+      ],
+      "howItWorks": [
+        "Starlight attunes to every choice you made across GODS AMONG US",
+        "Celestial Rebirth refuses one fatal blow and burns afflictions away",
+        "Starfall Reckoning answers near-death with the weight of a falling sky",
+        "Earned only by completing GODS AMONG US in Story Mode"
+      ],
+      "mirrorCopyable": false,
+      "snapshotReversible": false
+    },
+    "statBonuses": {
+      "str": 36,
+      "agi": 44,
+      "int": 68,
+      "def": 42,
+      "lck": 35,
+      "maxHp": 320,
+      "maxMp": 220
+    },
+    "exclusive": false,
+    "mondBuyable": false,
+    "storyVolume": "GODS AMONG US",
+    "stars": 5,
+    "rarity": "ascendant",
+    "image": "https://i.postimg.cc/sD4KfTdN/Hahiwara-Sakutaro.jpg",
+    "combat": {
+      "atkType": "int",
+      "atk": 5700,
+      "def": 5400,
+      "agi": 5200
+    }
+  },
+  {
+    "id": "cardia",
+    "name": "Cardia",
+    "emoji": "⚙️",
+    "description": "Clockwork keeper who rewinds spent cooldowns and locks enemy turns",
+    "quote": "Every gear turns on my command",
+    "quotes": [
+      "Every gear turns on my command",
+      "Your turn stays locked until I say otherwise",
+      "One brush of blue wings and your best move returns",
+      "Stand still while the clock resets"
+    ],
+    "voiceStyle": "calm and precise",
+    "personality": {
+      "tagline": "Keeper of the brass escapement and blue butterfly",
+      "core": "Calm and exact in every fight",
+      "temperament": [
+        "calm",
+        "precise",
+        "focused"
+      ],
+      "voiceNote": "Short calm lines",
+      "inBattle": "Turns spent skills back to ready and holds the clock still",
+      "relationshipWithOwner": "Keeps perfect time beside her partner",
+      "neverSays": [
+        "Panic",
+        "Noise"
+      ]
+    },
+    "ability": {
+      "name": "Grand Escapement",
+      "flavor": "Turns spent skills back to ready and holds the clock still while you strike twice",
+      "quote": [
+        "The next two turns belong to us"
+      ],
+      "howItWorks": [
+        "Butterfly Rewind returns a spent skill to ready",
+        "Mainspring Cadence restores strength on every third chime",
+        "Grand Escapement holds the enemy still while you strike twice"
+      ],
+      "mirrorCopyable": false,
+      "snapshotReversible": false
+    },
+    "statBonuses": {
+      "str": 780,
+      "agi": 900,
+      "int": 820,
+      "def": 520,
+      "lck": 420,
+      "maxHp": 2600,
+      "maxMp": 1800
+    },
+    "exclusive": true,
+    "mondBuyable": false,
+    "preorderCurrency": "solars",
+    "preorderPrice": 70000000,
+    "stars": 6,
+    "rarity": "radiant",
+    "image": "https://i.postimg.cc/gk6ZwSLw/Cardia-solars-2026-11-23-18-52-32-075094.png",
+    "combat": {
+      "atkType": "agi",
+      "atk": 12800,
+      "def": 11200,
+      "agi": 13800
+    }
+  },
+  {
+    "id": "aimiya",
+    "name": "Aimiya",
+    "emoji": "🎩",
+    "description": "Flame witch who flips debuffs onto enemies and nullifies heavy strikes",
+    "quote": "Every curse you throw comes right back",
+    "quotes": [
+      "Every curse you throw comes right back",
+      "Your buffs belong to me now",
+      "Watch your strongest attack vanish into nothing",
+      "Both cards in my hand favor us"
+    ],
+    "voiceStyle": "sharp and playful",
+    "personality": {
+      "tagline": "Flame witch who inverts buffs, curses, and heavy hits",
+      "core": "Quick and fearless under pressure",
+      "temperament": [
+        "playful",
+        "sharp",
+        "fearless"
+      ],
+      "voiceNote": "Short direct lines",
+      "inBattle": "Sends curses back to their caster and turns enemy strength against them",
+      "relationshipWithOwner": "Turns enemy advantages against them",
+      "neverSays": [
+        "Surrender",
+        "Long speeches"
+      ]
+    },
+    "ability": {
+      "name": "Carnival Inversion",
+      "flavor": "Sends curses back to their caster, turns stolen strength against them, and flips losing fights",
+      "quote": [
+        "Your buffs are mine and your curses go back to you"
+      ],
+      "howItWorks": [
+        "Carnival Inversion returns curses to whoever cast them",
+        "Confetti Hat-Trick swallows heavy blows into harmless smoke",
+        "Carnival Trick flips the upper hand when you fall behind"
+      ],
+      "mirrorCopyable": false,
+      "snapshotReversible": false
+    },
+    "statBonuses": {
+      "str": 820,
+      "agi": 880,
+      "int": 1200,
+      "def": 560,
+      "lck": 480,
+      "maxHp": 3200,
+      "maxMp": 3200
+    },
+    "exclusive": true,
+    "mondBuyable": false,
+    "preorderCurrency": "gems",
+    "preorderPrice": 900,
+    "stars": 7,
+    "rarity": "divinity",
+    "image": "https://i.postimg.cc/BZzFn9bj/Aimiya-gems-2026-11-23-18-52-32-663099.png",
+    "combat": {
+      "atkType": "int",
+      "atk": 14400,
+      "def": 12400,
+      "agi": 13600
+    }
+  },
+  {
+    "id": "remi",
+    "name": "Remi",
+    "emoji": "❤️",
+    "description": "Fifth heart demon whose five scarlet locks block death and seal enemy powers",
+    "quote": "Five scarlet locks guard this heart and the fifth ends yours",
+    "quotes": [
+      "Five scarlet locks guard this heart",
+      "Break one lock and my roses take twice as much",
+      "The fifth key turns only once",
+      "Your healing and abilities end here"
+    ],
+    "voiceStyle": "low and composed",
+    "personality": {
+      "tagline": "Keeper of the five scarlet locks and black rose seal",
+      "core": "Calm, unyielding, and lethal",
+      "temperament": [
+        "composed",
+        "unyielding",
+        "lethal"
+      ],
+      "voiceNote": "Short composed lines",
+      "inBattle": "Guards her partner behind five scarlet locks and seals enemy power",
+      "relationshipWithOwner": "Guards her partner behind five crimson locks",
+      "neverSays": [
+        "Mercy",
+        "Retreat"
+      ]
+    },
+    "ability": {
+      "name": "Key of the Fifth Heart",
+      "flavor": "Five scarlet locks break in your place while black roses drink their pulse and the fifth key seals their power",
+      "quote": [
+        "When the fifth lock opens your pulse stops"
+      ],
+      "howItWorks": [
+        "Five Scarlet Padlocks break in your place when a blow should kill",
+        "Black Rose thorns bloom on the enemy and drink their strength",
+        "Key of the Fifth Heart seals enemy power and finishes the weak"
+      ],
+      "mirrorCopyable": false,
+      "snapshotReversible": false
+    },
+    "statBonuses": {
+      "str": 900,
+      "agi": 900,
+      "int": 1150,
+      "def": 600,
+      "lck": 480,
+      "maxHp": 3800,
+      "maxMp": 2600
+    },
+    "exclusive": true,
+    "spinOnly": true,
+    "mondBuyable": true,
+    "mondPrice": 5,
+    "stars": 7,
+    "rarity": "boundless",
+    "image": "https://i.postimg.cc/pXnF9G50/Remi-Gems-2026-11-23-18-52-33-206083.png",
+    "combat": {
+      "atkType": "str",
+      "atk": 14900,
+      "def": 12900,
+      "agi": 13800
+    }
+  }
+]
