@@ -1,7 +1,24 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#10252b"><meta name="description" content="Astral Fantasy — a celestial browser RPG. Begin your story among the stars."><link rel="icon" type="image/svg+xml" href="/assets/logo.svg"><title>Astral Fantasy · Celestial Departure</title><style>
-html,body{margin:0;background:#10252b}#boot-splash{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;color:#eee5cb;background:radial-gradient(ellipse at center,#28574d88,#081a24ef),url('/assets/observatory.svg') center/cover;font-family:Georgia,serif}#boot-splash svg{width:112px;height:112px;filter:drop-shadow(0 0 18px #8abbac88)}#boot-splash strong{font-size:28px;font-weight:400;letter-spacing:4px}#boot-splash small{font:11px Arial,sans-serif;letter-spacing:2px;color:#b9cbbf}#boot-splash .native-ring{transform-origin:center;animation:native-orbit 8s linear infinite}@keyframes native-orbit{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){#boot-splash .native-ring{animation:none}}
-</style></head>
-<body><main id="app"><div id="world-root"></div><div id="overlay-root"></div><div id="boot-splash" role="status" aria-label="Loading Astral Fantasy"><svg viewBox="0 0 160 160" aria-hidden="true"><defs><linearGradient id="native-gold"><stop stop-color="#f1e7bd"/><stop offset=".5" stop-color="#bc9960"/><stop offset="1" stop-color="#d5e8ce"/></linearGradient></defs><g class="native-ring" fill="none" stroke="url(#native-gold)"><circle cx="80" cy="80" r="67" stroke-dasharray="4 7"/><ellipse cx="80" cy="80" rx="68" ry="35" transform="rotate(-25 80 80)"/><ellipse cx="80" cy="80" rx="68" ry="35" transform="rotate(25 80 80)"/><path d="M80 9v12m71 59h-12M80 151v-12M9 80h12" stroke-width="2"/></g><path d="M80 31Q87 69 129 80Q87 90 80 129Q71 90 31 80Q72 70 80 31Z" fill="url(#native-gold)"/><circle cx="80" cy="80" r="10" fill="#173a40" stroke="#f0e0ae"/></svg><strong>ASTRAL FANTASY</strong><small>OPENING THE STAR ATLAS</small></div></main><script type="module" src="/src/main.ts"></script></body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#10252b" />
+  <title>Astral Fantasy</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #10252b; color: #eee5cb; font-family: Georgia, serif; }
+    #app { display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center; }
+    strong { font-size: 28px; font-weight: 400; letter-spacing: 4px; }
+    p.note { color: #b9cbbf; font: 13px Arial, sans-serif; max-width: 34ch; }
+  </style>
+</head>
+<body>
+  <main id="app">
+    <div>
+      <strong>ASTRAL FANTASY</strong>
+      <p class="note">Rebuilding as the game version of the Astral bot.</p>
+    </div>
+  </main>
+  <script type="module" src="/src/main.ts"></script>
+</body>
 </html>
