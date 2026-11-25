@@ -1,7 +1,0 @@
-export class Soundscape {
-  private context?:AudioContext; private timer?:number; private enabled=false;private step=0;
-  async setEnabled(enabled:boolean):Promise<void>{this.enabled=enabled;if(!enabled){if(this.timer)window.clearInterval(this.timer);this.timer=undefined;await this.context?.suspend();return;}this.context??=new AudioContext();await this.context.resume();if(!this.timer){this.chord();this.timer=window.setInterval(()=>this.chord(),5200);}}
-  private chord():void{if(!this.enabled||!this.context||document.hidden)return;const notes=[[220,277.18,329.63],[196,246.94,293.66],[174.61,220,261.63],[196,261.63,329.63]][this.step++%4];notes.forEach((frequency,i)=>this.tone(frequency,4.7,.016,i*.22));}
-  private tone(frequency:number,duration:number,volume:number,delay=0):void{if(!this.context)return;const ctx=this.context;const oscillator=ctx.createOscillator(),gain=ctx.createGain();oscillator.type='sine';oscillator.frequency.value=frequency;gain.gain.setValueAtTime(0,ctx.currentTime+delay);gain.gain.linearRampToValueAtTime(volume,ctx.currentTime+delay+.4);gain.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+delay+duration);oscillator.connect(gain).connect(ctx.destination);oscillator.start(ctx.currentTime+delay);oscillator.stop(ctx.currentTime+delay+duration);}
-  cue():void{if(this.enabled&&this.context?.state==='running'){this.tone(659.25,.5,.035);this.tone(987.77,.6,.018,.06);}}
-}
