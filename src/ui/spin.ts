@@ -2,6 +2,7 @@
 // runSpinBatch owns dead-zone/plateau/pity and wallet debit (Slice 1 parity).
 
 import { SPIN_BANNERS, runSpinBatch, bannerCharacter, spinsUsed, type SpinBanner } from '../engine/gacha'
+import { iconOr } from './icon'
 import type { UiContext } from './app'
 
 export function renderSpin(root: HTMLElement, ctx: UiContext): void {
@@ -12,7 +13,7 @@ export function renderSpin(root: HTMLElement, ctx: UiContext): void {
     const p = ctx.store.requireState()
     root.innerHTML = `
       <h1>RECRUITMENT</h1>
-      <p class="subtitle">☀️ ${Math.floor(p.wallet.solars)} · 💎 ${p.wallet.gems}</p>
+      <p class="subtitle">${iconOr('icons/coin_crown', '☀️')} ${Math.floor(p.wallet.solars)} · ${iconOr('icons/gem_blue', '💎')} ${p.wallet.gems}</p>
 
       <div class="tabs">
         <button class="tab" data-nav="hub" type="button">← Hub</button>

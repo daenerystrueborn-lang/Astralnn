@@ -6,6 +6,7 @@ import { getRankForLevel } from '../engine/progression'
 import { startBattle } from '../engine/battle'
 import { claimableCount, ensureQuestState } from '../engine/quests'
 import { getCurrentStep, rewardLabel, skipTutorial, tutorialProgress } from '../engine/tutorial'
+import { iconOr } from './icon'
 import type { UiContext } from './app'
 
 function xpIntoLevel(level: number, xp: number, xpFor: (l: number) => number): { into: number; need: number } {
@@ -56,8 +57,8 @@ export function renderHub(root: HTMLElement, ctx: UiContext): void {
     <div class="hud">
       <span class="name">${player.name}</span>
       <span class="meta">${player.classId.charAt(0).toUpperCase() + player.classId.slice(1)} · ${race?.name ?? player.raceId} · Lv ${player.level}</span>
-      <span class="wallet">☀️ <b>${player.wallet.solars ?? 0}</b></span>
-      <span class="wallet">💎 <b>${player.wallet.gems ?? 0}</b></span>
+      <span class="wallet">${iconOr('icons/coin_crown', '☀️')} <b>${player.wallet.solars ?? 0}</b></span>
+      <span class="wallet">${iconOr('icons/gem_blue', '💎')} <b>${player.wallet.gems ?? 0}</b></span>
       <span class="meta">⚡ ${player.stamina?.current ?? 0}/${player.stamina?.max ?? 30}</span>
       <span class="meta">🏆 ${player.stats.wins ?? 0}W / ${player.stats.losses ?? 0}L</span>
     </div>
