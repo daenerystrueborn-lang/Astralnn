@@ -198,7 +198,7 @@ Region maps top → bottom. Art hooks: manifest ids from `ART_DIRECTION`
 │  NAME  [____________] 2–20 ch    │
 ├──────────────────────────────────┤
 │  CLASS                           │
-│  ┌────┐┌────┐┌────┐ … ×9 cards  │  emoji + name + primary stat
+│  ┌────┐┌────┐┌────┐ … ×9 cards  │  class battler sprite + name + stat
 │  └────┘└────┘└────┘              │
 ├──────────────────────────────────┤
 │  RACE  (human elf dwarf orc …)   │  chips ×6 (fairy hidden)
