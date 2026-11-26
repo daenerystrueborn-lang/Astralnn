@@ -84,10 +84,14 @@ describe('asset helpers (src/ui/icon)', () => {
     expect(hasAsset('monsters/elem_flame')).toBe(true)
     expect(monsterOr('ent_grim_gargoyle', '🐀', 'fire')).toContain('elem_flame') // alias
     expect(monsterOr('some_pool_monster', '👾', 'void')).toContain('elem_void')
-    // 3. emoji when neither exists (blood/water art still pending)
-    expect(monsterOr('nh_hollow_gatekeeper', '🗝️')).toContain('nh_hollow_gatekeeper')
-    expect(monsterOr('x_unknown', '👾', 'blood')).toBe('👾')
+    // 3. every data element has a fallback portrait now…
+    expect(monsterOr('x_unknown', '👾', 'blood')).toContain('elem_blood')
+    expect(monsterOr('x_unknown', '👾', 'water')).toContain('elem_water')
+    // …but unknown/absent elements still degrade to emoji
+    expect(monsterOr('x_unknown', '👾', 'banana')).toBe('👾')
     expect(monsterOr('x_unknown', '👾')).toBe('👾')
+    // specific art still wins over element
+    expect(monsterOr('nh_hollow_gatekeeper', '🗝️', 'void')).toContain('nh_hollow_gatekeeper')
   })
 
   it('every class maps to an owned battler sheet with an idle animation', async () => {

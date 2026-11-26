@@ -1248,6 +1248,76 @@
       "license": "project-owned",
       "source": "generated",
       "replaces": "monster emoji"
+    },
+    "monsters/elem_blood": {
+      "path": "assets/monsters/elem_blood.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/elem_water": {
+      "path": "assets/monsters/elem_water.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/qm_lamp_moth": {
+      "path": "assets/monsters/qm_lamp_moth.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/qm_mile_creeper": {
+      "path": "assets/monsters/qm_mile_creeper.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/qm_quiet_hound": {
+      "path": "assets/monsters/qm_quiet_hound.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/qm_shutter_wisp": {
+      "path": "assets/monsters/qm_shutter_wisp.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/qm_the_lamplighter": {
+      "path": "assets/monsters/qm_the_lamplighter.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
     }
   }
 }

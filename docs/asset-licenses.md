@@ -31,3 +31,6 @@ Status values: `verified` · `unverified` (blocks release) · `reference`
   flame, void, storm, ice, arcane, earth, holy, astral) covering the
   big 161/190-monster pools via element lookup; blood + water still
   pending. 106 manifest entries, `public/assets` = 4.1 MB.
+- 2026-11-26 — +elem_blood, elem_water (all 14 data elements covered)
+  and +5 portraits for The Quiet Mile → 113 manifest entries,
+  `public/assets` = 4.3 MB.
