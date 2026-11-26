@@ -90,8 +90,10 @@ describe('asset helpers (src/ui/icon)', () => {
     // …but unknown/absent elements still degrade to emoji
     expect(monsterOr('x_unknown', '👾', 'banana')).toBe('👾')
     expect(monsterOr('x_unknown', '👾')).toBe('👾')
-    // specific art still wins over element
+    // specific art still wins over element (incl. Season 01 Ruins + Stormpeak bosses)
     expect(monsterOr('nh_hollow_gatekeeper', '🗝️', 'void')).toContain('nh_hollow_gatekeeper')
+    expect(monsterOr('the_last_prayer', '🕯️', 'flame')).toContain('the_last_prayer')
+    expect(monsterOr('boss_storm_100', '⚡', 'storm')).toContain('boss_storm_100')
   })
 
   it('every class maps to an owned battler sheet with an idle animation', async () => {

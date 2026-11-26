@@ -149,6 +149,45 @@ export interface MonsterDef {
   abilities?: string[]
 }
 
+export interface BossSignature {
+  id: string
+  name: string
+  element?: string
+  multiplier?: number
+  cooldown?: number
+  telegraphText?: string
+  castText?: string
+}
+
+export interface BossEnrage {
+  threshold?: number
+  atkBoost?: number
+  shieldPct?: number
+  text?: string
+}
+
+export interface BossDef {
+  id: string
+  name: string
+  emoji?: string
+  locationId: string
+  tier: 'boss'
+  floor: number
+  stats: { hp: number; def: number; atk: number }
+  rewards?: { xp: number; solars: number }
+  drops?: { itemId: string; chance: number }[]
+  conquestTitle?: string
+  description?: string
+  sprite?: string
+  element?: string
+  type?: string
+  weakTo?: string[]
+  resistTo?: string[]
+  evasion?: number
+  signature?: BossSignature
+  enrage?: BossEnrage
+}
+
 export interface LocationDef {
   id: string
   name: string

@@ -92,7 +92,10 @@ export interface Player {
   dungeonFloor: number
   dungeonCheckpoint: number
   battleState: BattleState | null
-  dungeonProgress: Record<string, { highestFloor: number }>
+  dungeonProgress: Record<string, { highestFloor: number; conquered?: boolean }>
+  /** Active conquest title earned from clearing a dungeon's final boss. */
+  title?: string
+  titles?: string[]
 
   stamina: StaminaState
   quests: QuestState

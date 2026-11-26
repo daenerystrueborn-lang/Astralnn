@@ -1318,6 +1318,106 @@
       "license": "project-owned",
       "source": "generated",
       "replaces": "monster emoji"
+    },
+    "monsters/ashborn_revenant": {
+      "path": "assets/monsters/ashborn_revenant.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/boss_storm_100": {
+      "path": "assets/monsters/boss_storm_100.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/hollow_choir": {
+      "path": "assets/monsters/hollow_choir.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/stm_cliff_stalker": {
+      "path": "assets/monsters/stm_cliff_stalker.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/stm_gale_harpy": {
+      "path": "assets/monsters/stm_gale_harpy.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/stm_peak_warden": {
+      "path": "assets/monsters/stm_peak_warden.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/stm_thunder_ram": {
+      "path": "assets/monsters/stm_thunder_ram.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/the_last_prayer": {
+      "path": "assets/monsters/the_last_prayer.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/veil_sentinel": {
+      "path": "assets/monsters/veil_sentinel.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/wraith_of_the_veil": {
+      "path": "assets/monsters/wraith_of_the_veil.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
     }
   }
 }

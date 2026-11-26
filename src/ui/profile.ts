@@ -52,6 +52,7 @@ export function renderProfile(root: HTMLElement, ctx: UiContext): void {
 
       <div class="panel center">
         <h3>${rank.emoji} ${rank.title}</h3>
+        ${p.title ? `<p style="color:var(--gold-bright);font-family:'Cinzel',serif;font-size:13px;margin:2px 0">👑 "${p.title}"</p>` : ''}
         <p class="muted">${rank.epithet} · Lv ${p.level} · 🏆 ${p.stats.wins}W / ${p.stats.losses}L</p>
         <div class="bar xp"><i style="width:${xpPct(p)}%"></i><span>XP ${p.xp} → Lv ${p.level + 1}</span></div>
         <div class="mt">${classBattler(p.classId, { scale: 0.75 })}</div>

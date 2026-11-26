@@ -34,3 +34,7 @@ Status values: `verified` · `unverified` (blocks release) · `reference`
 - 2026-11-26 — +elem_blood, elem_water (all 14 data elements covered)
   and +5 portraits for The Quiet Mile → 113 manifest entries,
   `public/assets` = 4.3 MB.
+- 2026-11-26 — +5 portraits for Season 01 Ruins (4 regulars +
+  `the_last_prayer` boss) and +5 portraits for Stormpeak (4 regulars +
+  `boss_storm_100` Skyrend boss) → 123 manifest entries,
+  `public/assets` = 4.7 MB.

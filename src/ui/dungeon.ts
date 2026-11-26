@@ -3,8 +3,9 @@
 // returning players; the trigger gives immediate feedback).
 
 import { locations } from '../data/index'
-import { startBattle } from '../engine/battle'
+import { bossForFloor, nextBossFloor, startBattle } from '../engine/battle'
 import { recordTutorialEvent } from '../engine/tutorial'
+import { monsterOr } from './icon'
 import type { UiContext } from './app'
 
 export function renderDungeon(root: HTMLElement, ctx: UiContext): void {
@@ -31,18 +32,21 @@ export function renderDungeon(root: HTMLElement, ctx: UiContext): void {
             const next = Math.min(highest + 1, total)
             const locked = loc.levelRange && player.level < loc.levelRange[0]
             const checkpoint = loc.checkpointInterval ? Math.floor(highest / loc.checkpointInterval) * loc.checkpointInterval : 0
+            const upcomingBoss = nextBossFloor(loc.id, next)
+            const bossAtNext = bossForFloor(loc.id, next)
             return `
             <div class="loc ${locked ? 'locked' : ''}" data-id="${loc.id}" ${locked ? '' : 'data-open="1"'}>
               <div>
-                <div class="loc-name">${loc.name}</div>
+                <div class="loc-name">${loc.name}${prog?.conquered ? ' <span class="conquered-pill">🏆 Conquered</span>' : ''}</div>
                 <div class="loc-sub">
                   Floor ${next}/${total} · cleared ${highest}
                   ${checkpoint ? ` · checkpoint ${checkpoint}` : ''}
+                  ${upcomingBoss ? ` · 👑 Boss F${upcomingBoss}` : ''}
                   ${loc.levelRange ? ` · Lv ${loc.levelRange[0]}–${loc.levelRange[1]}` : ''}
                   ${locked ? ' · locked' : ''}
                 </div>
               </div>
-              <div>${locked ? '🔒' : '⬇️'}</div>
+              <div>${locked ? '🔒' : bossAtNext ? '👑' : '⬇️'}</div>
             </div>`
           })
           .join('')}
@@ -72,6 +76,7 @@ export function renderDungeon(root: HTMLElement, ctx: UiContext): void {
     function renderPanel(loc: (typeof locations)[number], highest: number): void {
       const total = loc.floors ?? 1
       const maxEnter = Math.min(highest + 1, total)
+      const boss = bossForFloor(loc.id, floor)
       panel.hidden = false
       panel.innerHTML = `
         <div class="panel center">
@@ -81,8 +86,20 @@ export function renderDungeon(root: HTMLElement, ctx: UiContext): void {
             <div class="floor-no">F${floor}</div>
             <button class="btn btn-sm" id="f-plus" type="button">+</button>
           </div>
+          ${
+            boss
+              ? `<div class="boss-preview">
+                  <span class="boss-preview-art">${monsterOr(boss.id, boss.emoji ?? '👑', boss.element)}</span>
+                  <div>
+                    <div class="boss-preview-tag">👑 BOSS FLOOR</div>
+                    <div class="boss-preview-name">${boss.name}</div>
+                    ${boss.conquestTitle ? `<div class="muted">Title: "${boss.conquestTitle}"</div>` : ''}
+                  </div>
+                </div>`
+              : ''
+          }
           <p class="muted">cleared ${highest} · next unclaimed ${maxEnter}</p>
-          <button class="btn btn-primary" id="f-enter" type="button">ENTER FLOOR ${floor}</button>
+          <button class="btn btn-primary" id="f-enter" type="button">${boss ? `👑 CHALLENGE BOSS · FLOOR ${floor}` : `ENTER FLOOR ${floor}`}</button>
           <button class="btn btn-ghost btn-sm mt" id="f-cancel" type="button">cancel</button>
         </div>
       `

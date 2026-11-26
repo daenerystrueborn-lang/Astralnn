@@ -13,11 +13,11 @@ import {
 } from './combat'
 import { skillMatchup } from './matchup'
 import { applyLevelUps, getRankForLevel, type ProgressPlayer } from './progression'
-import { expectedLevelAtFloor, regulateMonsterXp, survivalKillXp } from './xp'
+import { expectedLevelAtFloor, regulateBossXp, regulateMonsterXp, survivalKillXp } from './xp'
 import { recordQuestEvent, type QuestStateShape } from './quests'
 import { recordTutorialEvent, type TutorialStateShape } from './tutorial'
-import { monsters, locations, skillMap, gearMap } from '../data'
-import type { MonsterDef } from '../data/types'
+import { bossByLocFloor, monsters, locations, skillMap, gearMap } from '../data'
+import type { BossDef, BossEnrage, BossSignature, MonsterDef } from '../data/types'
 import { defaultRng, type Rng } from './rng'
 
 // ── Enemy / session shapes ─────────────────────────────────────────────────
@@ -30,14 +30,23 @@ export interface Enemy {
   maxHp: number
   atk: number
   def: number
-  tier: 'regular' | 'elite'
+  tier: 'regular' | 'elite' | 'boss'
   type?: string
   /** monsters.json element — drives the elemental portrait fallback. */
   element?: string
   weakTo?: string[]
   resistTo?: string[]
   isBoss: boolean
-  /** From regulateMonsterXp — NOT monsters.json's own rewards (bot rule). */
+  conquestTitle?: string
+  description?: string
+  /** Temporary barrier HP granted by boss Phase-2 Overdrive. */
+  shield?: number
+  enrage?: BossEnrage
+  enraged?: boolean
+  signature?: BossSignature
+  signatureArmed?: boolean
+  signatureReadyTurn?: number
+  /** From regulateMonsterXp / regulateBossXp — NOT monsters.json's own rewards (bot rule). */
   xp: number
   solars: number
   drops: { itemId: string; chance: number }[]
@@ -62,6 +71,7 @@ export type BattleAction =
 
 export type EventKind =
   | 'info' | 'hit' | 'crit' | 'miss' | 'hurt' | 'matchup'
+  | 'overdrive' | 'telegraph'
   | 'reward' | 'levelup' | 'rank' | 'drop' | 'win' | 'lose' | 'error'
 
 export interface BattleEvent {
@@ -75,6 +85,8 @@ export interface KillRewards {
   drops: string[]
   levelMsgs: string[]
   rankChange: { from: string; to: string } | null
+  conquestTitle?: string | null
+  dungeonConquered?: boolean
 }
 
 export interface TurnResult {
@@ -164,13 +176,67 @@ export function pickMonsterForFloor(
   }
 }
 
-/** Start a fight on a floor. Throws when the floor has no monster pool. */
+/** Boss definition assigned to `(locationId, floor)` if this is a boss floor. */
+export function bossForFloor(locationId: string, floor: number): BossDef | null {
+  return bossByLocFloor[locationId]?.[floor] ?? null
+}
+
+/** Next boss floor at or after `fromFloor` in a location, or null. */
+export function nextBossFloor(locationId: string, fromFloor: number): number | null {
+  const map = bossByLocFloor[locationId]
+  if (!map) return null
+  const floors = Object.keys(map)
+    .map(Number)
+    .filter((f) => f >= fromFloor)
+    .sort((a, b) => a - b)
+  return floors[0] ?? null
+}
+
+/**
+ * spawnBossForFloor — spawns the dungeon boss from `monsters.bosses` when
+ * `(locationId, floor)` is a boss floor (port of plugins/dungeon.js spawnBoss +
+ * bossByLocFloor fallback, rewards regulated via regulateBossXp).
+ */
+export function spawnBossForFloor(locationId: string, floor: number): Enemy | null {
+  const boss = bossForFloor(locationId, floor)
+  if (!boss) return null
+  const { xp, solars } = regulateBossXp(locationId, floor)
+  return {
+    id: boss.id,
+    name: boss.name,
+    emoji: boss.emoji ?? '👑',
+    hp: boss.stats.hp,
+    maxHp: boss.stats.hp,
+    atk: boss.stats.atk,
+    def: boss.stats.def,
+    tier: 'boss',
+    type: boss.type,
+    element: boss.element,
+    weakTo: boss.weakTo,
+    resistTo: boss.resistTo,
+    isBoss: true,
+    conquestTitle: boss.conquestTitle,
+    description: boss.description,
+    enrage: boss.enrage ? { ...boss.enrage } : undefined,
+    enraged: false,
+    signature: boss.signature ? { ...boss.signature } : undefined,
+    signatureArmed: false,
+    signatureReadyTurn: 0,
+    xp,
+    solars,
+    drops: boss.drops ?? [],
+    locationId,
+    floor,
+  }
+}
+
+/** Start a fight on a floor (boss floors spawn their boss; others roll regulars/elites). */
 export function startBattle(
   locationId: string,
   floor: number,
   rng: Rng = defaultRng,
 ): BattleSession {
-  const enemy = pickMonsterForFloor(locationId, floor, rng)
+  const enemy = spawnBossForFloor(locationId, floor) ?? pickMonsterForFloor(locationId, floor, rng)
   if (!enemy) throw new Error(`No monsters at ${locationId} floor ${floor}`)
   return {
     locationId,
@@ -254,6 +320,13 @@ function requireActive(session: BattleSession): boolean {
   return session.status === 'active'
 }
 
+function cleanBotText(raw: string): string {
+  return raw
+    .replace(/\.defend\b/gi, 'Defend')
+    .replace(/[*_]/g, '')
+    .trim()
+}
+
 /**
  * playerAction — one full round: the player acts, the enemy counters unless
  * it died first, then the turn advances. Mutates player + session; returns
@@ -268,7 +341,9 @@ export function playerAction(
     location?: string
     inDungeon?: boolean
     battleState?: unknown
-    dungeonProgress: Record<string, { highestFloor: number }>
+    dungeonProgress: Record<string, { highestFloor: number; conquered?: boolean }>
+    title?: string
+    titles?: string[]
     quests: QuestStateShape
     tutorial: TutorialStateShape
   },
@@ -325,13 +400,26 @@ export function playerAction(
           events.push({ kind: 'matchup', text: `${matchup.text} (${matchup.element}, ×${matchup.mult})` })
         }
       }
-      session.enemy.hp = Math.max(0, session.enemy.hp - dmg)
+      let shieldBroken = false
+      if ((session.enemy.shield ?? 0) > 0) {
+        const absorbed = Math.min(session.enemy.shield!, dmg)
+        session.enemy.shield! -= absorbed
+        const hpDmg = dmg - absorbed
+        session.enemy.hp = Math.max(0, session.enemy.hp - hpDmg)
+        if (absorbed > 0 && session.enemy.shield === 0) shieldBroken = true
+      } else {
+        session.enemy.hp = Math.max(0, session.enemy.hp - dmg)
+      }
       events.push({
         kind: isCrit ? 'crit' : 'hit',
         text: isCrit
           ? `💥 CRIT! ${dmg} damage to ${session.enemy.name}!`
           : `🎯 ${dmg} damage to ${session.enemy.name}.`,
       })
+      if (shieldBroken) {
+        recordQuestEvent(player, 'shield_break', 1)
+        events.push({ kind: 'info', text: `🛡️ ${session.enemy.name}'s barrier shatters!` })
+      }
     }
   }
 
@@ -345,15 +433,29 @@ export function playerAction(
     player.battleState = null
     let floorsCleared = false
     if (player.inDungeon) {
-      const prog = player.dungeonProgress[session.locationId]
-      if (prog && session.floor > prog.highestFloor) {
+      const prog = player.dungeonProgress[session.locationId] ??
+        (player.dungeonProgress[session.locationId] = { highestFloor: 0 })
+      if (session.floor > prog.highestFloor) {
         prog.highestFloor = session.floor
         floorsCleared = true
       }
+      if (session.enemy.isBoss && session.floor >= locationFloors(session.locationId) && !prog.conquered) {
+        prog.conquered = true
+        rewards.dungeonConquered = true
+        if (session.enemy.conquestTitle) {
+          rewards.conquestTitle = session.enemy.conquestTitle
+          if (!player.titles) player.titles = []
+          if (!player.titles.includes(session.enemy.conquestTitle)) {
+            player.titles.push(session.enemy.conquestTitle)
+          }
+          if (!player.title) player.title = session.enemy.conquestTitle
+        }
+      }
     }
     // combat-handlers creditKill hooks: kill always, level per level-up,
-    // floor only for dungeon battles.
+    // floor only for dungeon battles, boss_clear on boss victories.
     recordQuestEvent(player, 'kill', 1)
+    if (session.enemy.isBoss) recordQuestEvent(player, 'boss_clear', 1)
     if (rewards.levelMsgs.length) recordQuestEvent(player, 'level', rewards.levelMsgs.length)
     if (floorsCleared) recordQuestEvent(player, 'floor', 1)
     recordTutorialEvent(player, 'monster_killed')
@@ -361,6 +463,15 @@ export function playerAction(
       kind: 'win',
       text: `🏆 ${session.enemy.name} is defeated! +${rewards.xp} XP, +${rewards.solars} ☀️`,
     })
+    if (rewards.dungeonConquered) {
+      const locName = locations.find((l) => l.id === session.locationId)?.name ?? session.locationId
+      events.push({
+        kind: 'rank',
+        text: rewards.conquestTitle
+          ? `👑 ${locName} Conquered! Title unlocked: "${rewards.conquestTitle}"`
+          : `👑 ${locName} Conquered!`,
+      })
+    }
     for (const d of rewards.drops) {
       const name = gearMap[d]?.name ?? d
       events.push({ kind: 'drop', text: `🎁 Drop: ${name}` })
@@ -375,19 +486,73 @@ export function playerAction(
     return { events, status: session.status, rewards }
   }
 
-  // ── Enemy's counter ──────────────────────────────────────────────────────
-  const enemyHit = calcMonsterHitChance(session.enemy, player)
+  // ── Enemy's counter + Boss Overdrive / Signature (monster-abilities.js) ──
+  const enemy = session.enemy
+  if (
+    enemy.enrage &&
+    !enemy.enraged &&
+    enemy.hp <= enemy.maxHp * (enemy.enrage.threshold ?? 0.55)
+  ) {
+    enemy.enraged = true
+    const atkGain = Math.max(1, Math.round(enemy.atk * Math.max(0.28, enemy.enrage.atkBoost ?? 0.28)))
+    enemy.atk += atkGain
+    const shieldAmt = Math.max(1, Math.round(enemy.maxHp * Math.max(0.12, enemy.enrage.shieldPct ?? 0.12)))
+    enemy.shield = (enemy.shield ?? 0) + shieldAmt
+    const msg = cleanBotText(
+      enemy.enrage.text || `🔥 OVERDRIVE! ${enemy.name} powers up!`,
+    )
+    events.push({ kind: 'overdrive', text: `${msg} (+${atkGain} ATK, 🛡️ +${shieldAmt})` })
+  }
+
+  let landedDmg = 0
+  const enemyHit = calcMonsterHitChance(enemy, player)
   if (rng() >= enemyHit) {
-    events.push({ kind: 'miss', text: `💨 ${session.enemy.name} misses!` })
+    events.push({ kind: 'miss', text: `💨 ${enemy.name} misses!` })
   } else {
     // Defending doubles effective DEF for the incoming strike (defend.js).
-    const dmg = calcMonsterDamage(session.enemy.atk, player.stats.def, session.defending, rng)
-    player.hp = Math.max(0, player.hp - dmg)
+    landedDmg = calcMonsterDamage(enemy.atk, player.stats.def, session.defending, rng)
+    player.hp = Math.max(0, player.hp - landedDmg)
     events.push({
       kind: 'hurt',
-      text: `${session.enemy.name} hits for ${dmg} damage. ❤️ ${player.hp}/${player.maxHp}`,
+      text: `${enemy.name} hits for ${landedDmg} damage. ❤️ ${player.hp}/${player.maxHp}`,
     })
   }
+
+  if (enemy.signature && player.hp > 0) {
+    const sig = enemy.signature
+    if (enemy.signatureArmed) {
+      enemy.signatureArmed = false
+      enemy.signatureReadyTurn = session.turn + (sig.cooldown ?? 4)
+      const refDmg =
+        landedDmg > 0
+          ? landedDmg
+          : calcMonsterDamage(enemy.atk, player.stats.def, session.defending, rng)
+      const defFactor = session.defending ? 0.42 : 1
+      const bonusDmg = Math.max(
+        1,
+        Math.round(refDmg * (Math.max(1.75, sig.multiplier ?? 1.75) - 1) * defFactor),
+      )
+      player.hp = Math.max(0, player.hp - bonusDmg)
+      const castLine = cleanBotText(
+        sig.castText || `${enemy.name} unleashes ${sig.name}!`,
+      )
+      events.push({
+        kind: 'hurt',
+        text: `☄️ ${castLine} Hits for ${bonusDmg} damage${session.defending ? ' (guarded!)' : '!'} ❤️ ${player.hp}/${player.maxHp}`,
+      })
+    } else if (
+      session.turn >= 2 &&
+      session.turn >= (enemy.signatureReadyTurn ?? 0) &&
+      rng() < 0.48
+    ) {
+      enemy.signatureArmed = true
+      const warn = cleanBotText(
+        sig.telegraphText || `${enemy.name} charges ${sig.name}! (Use Defend next turn!)`,
+      )
+      events.push({ kind: 'telegraph', text: `⚠️ ${warn}` })
+    }
+  }
+
   session.defending = false // consumed by this round's counter
 
   // ── Player fell? ─────────────────────────────────────────────────────────

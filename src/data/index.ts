@@ -10,6 +10,7 @@ import type {
   SkillDef,
   CharacterDef,
   MonsterDef,
+  BossDef,
   LocationDef,
   QuestCatalog,
   EffectivenessData,
@@ -45,9 +46,20 @@ export const items = itemsRaw as unknown as GearDef[]
 
 interface MonsterFile {
   regular: MonsterDef[]
-  bosses: MonsterDef[]
+  bosses: BossDef[]
 }
 export const monsters = monstersRaw as unknown as MonsterFile
+
+export const bossMap: Record<string, BossDef> = Object.fromEntries(
+  monsters.bosses.map((b) => [b.id, b]),
+)
+/** Location → floor → boss definition (exact mirror of lib/game-data.js). */
+export const bossByLocFloor: Record<string, Record<number, BossDef>> =
+  monsters.bosses.reduce<Record<string, Record<number, BossDef>>>((acc, b) => {
+    if (!acc[b.locationId]) acc[b.locationId] = {}
+    acc[b.locationId]![b.floor] = b
+    return acc
+  }, {})
 
 export const skillMap: Record<string, SkillDef> = Object.fromEntries(
   skills.map((s) => [s.id, s]),

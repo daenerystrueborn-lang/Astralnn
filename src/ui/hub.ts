@@ -3,10 +3,10 @@
 import { classes, locations, races } from '../data/index'
 import { getTotalStats } from '../engine/stats'
 import { getRankForLevel } from '../engine/progression'
-import { startBattle } from '../engine/battle'
+import { bossForFloor, nextBossFloor, startBattle } from '../engine/battle'
 import { claimableCount, ensureQuestState } from '../engine/quests'
 import { getCurrentStep, rewardLabel, skipTutorial, tutorialProgress } from '../engine/tutorial'
-import { iconOr } from './icon'
+import { iconOr, monsterOr } from './icon'
 import type { UiContext } from './app'
 
 function xpIntoLevel(level: number, xp: number, xpFor: (l: number) => number): { into: number; need: number } {
@@ -107,17 +107,20 @@ export function renderHub(root: HTMLElement, ctx: UiContext): void {
           const totalFloors = loc.floors ?? 1
           const nextFloor = Math.min(highest + 1, totalFloors)
           const levelLocked = loc.levelRange && player.level < loc.levelRange[0]
+          const upcomingBoss = nextBossFloor(loc.id, nextFloor)
+          const bossAtNext = bossForFloor(loc.id, nextFloor)
           return `
           <div class="loc ${levelLocked ? 'locked' : ''}" data-id="${loc.id}" ${levelLocked ? '' : 'data-open="1"'}>
             <div>
-              <div class="loc-name">${loc.name}</div>
+              <div class="loc-name">${loc.name}${prog?.conquered ? ' <span class="conquered-pill">🏆 Conquered</span>' : ''}</div>
               <div class="loc-sub">
                 ${loc.levelRange ? `Lv ${loc.levelRange[0]}–${loc.levelRange[1]} · ` : ''}
                 ${highest > 0 ? `Highest floor ${highest}/${totalFloors}` : `Floor ${nextFloor}/${totalFloors}`}
+                ${upcomingBoss ? ` · 👑 Boss F${upcomingBoss}` : ''}
                 ${levelLocked ? ' · locked' : ''}
               </div>
             </div>
-            <div>${levelLocked ? '🔒' : '⚔️'}</div>
+            <div>${levelLocked ? '🔒' : bossAtNext ? '👑' : '⚔️'}</div>
           </div>`
         })
         .join('')}
@@ -154,6 +157,7 @@ export function renderHub(root: HTMLElement, ctx: UiContext): void {
   function renderFloorPanel(locationId: string, totalFloors: number): void {
     const highest = ctx.store.requireState().dungeonProgress[locationId]?.highestFloor ?? 0
     const maxEnter = Math.min(highest + 1, totalFloors)
+    const boss = bossForFloor(locationId, pickedFloor)
     floorPanel.hidden = false
     floorPanel.innerHTML = `
       <div class="panel center">
@@ -163,8 +167,20 @@ export function renderHub(root: HTMLElement, ctx: UiContext): void {
           <div class="floor-no">F${pickedFloor}</div>
           <button class="btn btn-sm" id="f-plus" type="button">+</button>
         </div>
+        ${
+          boss
+            ? `<div class="boss-preview">
+                <span class="boss-preview-art">${monsterOr(boss.id, boss.emoji ?? '👑', boss.element)}</span>
+                <div>
+                  <div class="boss-preview-tag">👑 BOSS FLOOR</div>
+                  <div class="boss-preview-name">${boss.name}</div>
+                  ${boss.conquestTitle ? `<div class="muted">Title: "${boss.conquestTitle}"</div>` : ''}
+                </div>
+              </div>`
+            : ''
+        }
         <p class="muted">Next unclaimed floor: ${maxEnter} · cleared: ${highest}</p>
-        <button class="btn btn-primary" id="f-enter" type="button">ENTER FLOOR ${pickedFloor}</button>
+        <button class="btn btn-primary" id="f-enter" type="button">${boss ? `👑 CHALLENGE BOSS · FLOOR ${pickedFloor}` : `ENTER FLOOR ${pickedFloor}`}</button>
         <button class="btn btn-ghost btn-sm mt" id="f-cancel" type="button">cancel</button>
       </div>
     `

@@ -1,7 +1,7 @@
 // Battle screen — enemy/player panels, HP/MP bars, actions, combat log.
 // One round per click: playerAction() runs the bot's full turn math.
 
-import { skillMap } from '../data/index'
+import { locationMap, skillMap } from '../data/index'
 import { playerAction, type BattleSession, type BattleAction } from '../engine/battle'
 import { classBattler, monsterOr } from './icon'
 import type { Floater, UiContext } from './app'
@@ -15,7 +15,10 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
   }
 
   const enemy = session.enemy
-  const tierClass = enemy.tier === 'elite' ? 'elite' : ''
+  const tierClass = enemy.isBoss ? 'boss' : enemy.tier === 'elite' ? 'elite' : ''
+  const locTitle = locationMap[session.locationId]?.name ?? session.locationId
+  const shieldVal = enemy.shield ?? 0
+  const sigArmed = Boolean(enemy.signatureArmed && enemy.signature)
   const equipped = player.equippedSkills
     .map((id) => skillMap[id])
     .filter((s): s is NonNullable<typeof s> => Boolean(s))
@@ -41,21 +44,25 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
   const stageImpact = hitSide ? ' impact' : ''
 
   root.innerHTML = `
-    <h1>BATTLE</h1>
-    <p class="subtitle">${session.locationId} · Floor ${session.floor} · Turn ${session.turn}</p>
+    <h1>${enemy.isBoss ? '👑 BOSS BATTLE' : 'BATTLE'}</h1>
+    <p class="subtitle">${escapeHtml(locTitle)} · Floor ${session.floor} · Turn ${session.turn}</p>
 
-    <div class="battlefield">
-      <div class="combatant${hitSide === 'foe' ? ' hit' : ''}">
+    <div class="battlefield${enemy.isBoss ? ' boss-arena' : ''}">
+      <div class="combatant${enemy.isBoss ? ' boss' : ''}${hitSide === 'foe' ? ' hit' : ''}">
         <div class="cname">
           <span class="cname-name">${enemy.emoji} ${escapeHtml(enemy.name)}</span>
-          <span class="tier-tag ${tierClass}">${enemy.tier}</span>
+          <span>
+            ${enemy.enraged ? `<span class="tier-tag overdrive">🔥 overdrive</span> ` : ''}
+            ${shieldVal > 0 ? `<span class="shield-pill">🛡️ ${shieldVal}</span> ` : ''}
+            <span class="tier-tag ${tierClass}">${enemy.tier}</span>
+          </span>
         </div>
         <div class="bar hp"><i style="width:${pct(enemy.hp, enemy.maxHp)}%"></i><span>${enemy.hp}/${enemy.maxHp}</span></div>
         ${floatHtml('foe')}
       </div>
 
       <div class="stage${stageImpact}" aria-hidden="true">
-        <span class="stage-foe">${monsterOr(enemy.id, enemy.emoji, enemy.element)}</span>
+        <span class="stage-foe${enemy.isBoss ? ' boss' : ''}">${monsterOr(enemy.id, enemy.emoji, enemy.element)}</span>
         <span class="stage-vs">⚔️</span>
         <span class="stage-hero">${playerSprite || '🛡️'}</span>
       </div>
@@ -70,9 +77,15 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
         ${floatHtml('hero')}
       </div>
 
+      ${
+        sigArmed
+          ? `<div class="telegraph-banner" role="status">⚠️ <b>${escapeHtml(enemy.signature!.name)}</b> incoming next strike — hit <b>🛡️ Defend</b> to guard!</div>`
+          : ''
+      }
+
       <div class="actions">
         <button class="btn" data-act="attack" type="button">⚔️ Attack</button>
-        <button class="btn" data-act="defend" type="button">🛡️ Defend</button>
+        <button class="btn${sigArmed ? ' btn-telegraph' : ''}" data-act="defend" type="button">🛡️ Defend</button>
         ${equipped
           .map((s) => {
             const unaffordable = s.mpCost > player.mp
