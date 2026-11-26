@@ -27,3 +27,7 @@ Status values: `verified` · `unverified` (blocks release) · `reference`
   ship — emoji/portrait fallback only.
 - 2026-11-26 — +6 portraits for Gloomhollow Caverns (same pipeline,
   212 KB). 96 manifest entries, `public/assets` = 3.8 MB.
+- 2026-11-26 — +10 elemental fallback portraits (physical, poison,
+  flame, void, storm, ice, arcane, earth, holy, astral) covering the
+  big 161/190-monster pools via element lookup; blood + water still
+  pending. 106 manifest entries, `public/assets` = 4.1 MB.

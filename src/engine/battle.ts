@@ -32,6 +32,8 @@ export interface Enemy {
   def: number
   tier: 'regular' | 'elite'
   type?: string
+  /** monsters.json element — drives the elemental portrait fallback. */
+  element?: string
   weakTo?: string[]
   resistTo?: string[]
   isBoss: boolean
@@ -150,6 +152,7 @@ export function pickMonsterForFloor(
     def: stats.def,
     tier: isElite ? 'elite' : 'regular',
     type: chosen.type,
+    element: chosen.element,
     weakTo: chosen.weakTo,
     resistTo: chosen.resistTo,
     isBoss: false,

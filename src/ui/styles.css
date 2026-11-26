@@ -417,6 +417,13 @@ button { font-family: inherit; }
   opacity: 0.7;
   letter-spacing: 0.2em;
 }
+.stage.impact { animation: stage-hit 0.28s ease-out; }
+@keyframes stage-hit {
+  25% { transform: translateX(-5px) scale(0.985); }
+  60% { transform: translateX(4px); }
+  100% { transform: none; }
+}
+.monster-portrait.elem { opacity: 0.96; }
 .combatant .cname {
   display: flex;
   justify-content: space-between;
@@ -462,9 +469,28 @@ button { font-family: inherit; }
 .log .ev-error { color: var(--danger); }
 
 /* ── Results ────────────────────────────────────────────────── */
-.result-title { text-align: center; font-size: 26px; margin: 18px 0 4px; }
+.result-title {
+  text-align: center;
+  font-size: 26px;
+  margin: 18px 0 4px;
+  animation: title-slam 0.5s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
 .result-title.win { color: var(--xp); }
 .result-title.lose { color: var(--danger); }
+@keyframes title-slam {
+  from { opacity: 0; transform: scale(1.7); }
+  to { opacity: 1; transform: none; }
+}
+.panel > .reward-line { animation: fade-up 0.4s ease both; }
+.panel > .reward-line:nth-child(2) { animation-delay: 0.05s; }
+.panel > .reward-line:nth-child(3) { animation-delay: 0.1s; }
+.panel > .reward-line:nth-child(4) { animation-delay: 0.15s; }
+.panel > .reward-line:nth-child(5) { animation-delay: 0.2s; }
+.panel > .reward-line:nth-child(6) { animation-delay: 0.25s; }
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
 .reward-line {
   display: flex;
   justify-content: space-between;
@@ -516,4 +542,5 @@ button { font-family: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .battler > img { animation: none; }
   .reveal-card { animation: none; }
+  .stage.impact, .result-title, .panel > .reward-line { animation: none; }
 }

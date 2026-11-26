@@ -40,15 +40,31 @@ export function iconOr(id: string, fallbackEmoji: string, alt = ''): string {
   return `<img class="i" src="${src}" alt="${alt || id}" draggable="false" />`
 }
 
+/** Element aliases → the portrait we actually generate (fire=flame etc.). */
+const ELEMENT_PORTRAIT: Record<string, string> = {
+  fire: 'flame',
+  shadow: 'void',
+  lightning: 'storm',
+}
+
 /**
- * Monster portrait for a battle enemy: generated art when the manifest
- * registers `monsters/<id>` (see docs/asset-licenses.md intake log),
- * emoji fallback otherwise (all zones beyond Newcomer's Hollow today).
+ * Monster portrait for a battle enemy, resolution order:
+ *   1. specific art — `monsters/<id>` (zone sets: Newcomer's Hollow, …)
+ *   2. elemental fallback — `monsters/elem_<element>` (covers the big
+ *      161/190-monster pools we will never hand-port)
+ *   3. the data emoji
  */
-export function monsterOr(monsterId: string, fallbackEmoji: string): string {
-  const src = assetSrc(`monsters/${monsterId}`)
-  if (!src) return fallbackEmoji
-  return `<img class="monster-portrait" src="${src}" alt="" draggable="false" />`
+export function monsterOr(monsterId: string, fallbackEmoji: string, element?: string): string {
+  const specific = assetSrc(`monsters/${monsterId}`)
+  if (specific) return `<img class="monster-portrait" src="${specific}" alt="" draggable="false" />`
+  if (element) {
+    const key = ELEMENT_PORTRAIT[element] ?? element
+    const elemental = assetSrc(`monsters/elem_${key}`)
+    if (elemental) {
+      return `<img class="monster-portrait elem" src="${elemental}" alt="" draggable="false" />`
+    }
+  }
+  return fallbackEmoji
 }
 
 /** Character rarity ladder → ART_DIRECTION token colors (9 tiers). */

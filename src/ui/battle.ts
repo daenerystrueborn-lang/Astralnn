@@ -38,6 +38,7 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
       .map((f) => `<span class="floater f-${f.kind}">${f.text}</span>`)
       .join('')
   const hitSide = floats.find((f) => f.kind !== 'miss')?.side ?? null
+  const stageImpact = hitSide ? ' impact' : ''
 
   root.innerHTML = `
     <h1>BATTLE</h1>
@@ -53,8 +54,8 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
         ${floatHtml('foe')}
       </div>
 
-      <div class="stage" aria-hidden="true">
-        <span class="stage-foe">${monsterOr(enemy.id, enemy.emoji)}</span>
+      <div class="stage${stageImpact}" aria-hidden="true">
+        <span class="stage-foe">${monsterOr(enemy.id, enemy.emoji, enemy.element)}</span>
         <span class="stage-vs">⚔️</span>
         <span class="stage-hero">${playerSprite || '🛡️'}</span>
       </div>
