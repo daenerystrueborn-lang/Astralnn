@@ -51,6 +51,19 @@ export function monsterOr(monsterId: string, fallbackEmoji: string): string {
   return `<img class="monster-portrait" src="${src}" alt="" draggable="false" />`
 }
 
+/** Character rarity ladder → ART_DIRECTION token colors (9 tiers). */
+export const RARITY_COLORS: Record<string, string> = {
+  wisp: '#9aa7ad',
+  spark: '#5fbf7a',
+  kindled: '#5b9bd5',
+  starlit: '#b072d6',
+  ascendant: '#e8b339',
+  radiant: '#ff9f43',
+  boundless: '#4fc3f7',
+  divinity: '#c77dff',
+  mythic: '#e05656',
+}
+
 // ── Battlers ───────────────────────────────────────────────────────────────
 
 /** Class → owned battler sheet (V0 stand-in mapping; see ART_DIRECTION §7). */

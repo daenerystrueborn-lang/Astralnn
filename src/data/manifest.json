@@ -1088,6 +1088,66 @@
       "license": "project-owned",
       "source": "generated",
       "replaces": "monster emoji"
+    },
+    "monsters/glo_cave_howler": {
+      "path": "assets/monsters/glo_cave_howler.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/glo_dark_elf_matron": {
+      "path": "assets/monsters/glo_dark_elf_matron.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/glo_dark_elf_reaver": {
+      "path": "assets/monsters/glo_dark_elf_reaver.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/glo_deep_lurker": {
+      "path": "assets/monsters/glo_deep_lurker.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/glo_matriarchs_chosen": {
+      "path": "assets/monsters/glo_matriarchs_chosen.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/glo_stone_bat_swarm": {
+      "path": "assets/monsters/glo_stone_bat_swarm.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
     }
   }
 }

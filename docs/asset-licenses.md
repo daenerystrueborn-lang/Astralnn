@@ -25,3 +25,5 @@ Status values: `verified` · `unverified` (blocks release) · `reference`
   (4.3 MB → 1.6 MB). 90 manifest entries, `public/assets` = 3.6 MB.
   Note: monsters.json `sprite` fields reference FFBE rips we do not
   ship — emoji/portrait fallback only.
+- 2026-11-26 — +6 portraits for Gloomhollow Caverns (same pipeline,
+  212 KB). 96 manifest entries, `public/assets` = 3.8 MB.

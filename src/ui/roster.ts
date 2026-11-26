@@ -1,23 +1,10 @@
 // Roster — owned characters, equip/unequip, link to recruitment (spin).
 
 import { characterMap } from '../data/index'
-import { assetSrc } from './icon'
+import { assetSrc, RARITY_COLORS } from './icon'
 import type { UiContext } from './app'
 
 const PORTRAIT_FRAME = assetSrc('icons/portrait_frame_small') ?? ''
-
-/** Character rarity ladder → ART_DIRECTION token colors (9 tiers). */
-const RARITY_COLORS: Record<string, string> = {
-  wisp: '#9aa7ad',
-  spark: '#5fbf7a',
-  kindled: '#5b9bd5',
-  starlit: '#b072d6',
-  ascendant: '#e8b339',
-  radiant: '#ff9f43',
-  boundless: '#4fc3f7',
-  divinity: '#c77dff',
-  mythic: '#e05656',
-}
 
 export function renderRoster(root: HTMLElement, ctx: UiContext): void {
   const player = ctx.store.requireState()
