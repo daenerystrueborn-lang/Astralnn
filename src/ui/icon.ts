@@ -40,6 +40,17 @@ export function iconOr(id: string, fallbackEmoji: string, alt = ''): string {
   return `<img class="i" src="${src}" alt="${alt || id}" draggable="false" />`
 }
 
+/**
+ * Monster portrait for a battle enemy: generated art when the manifest
+ * registers `monsters/<id>` (see docs/asset-licenses.md intake log),
+ * emoji fallback otherwise (all zones beyond Newcomer's Hollow today).
+ */
+export function monsterOr(monsterId: string, fallbackEmoji: string): string {
+  const src = assetSrc(`monsters/${monsterId}`)
+  if (!src) return fallbackEmoji
+  return `<img class="monster-portrait" src="${src}" alt="" draggable="false" />`
+}
+
 // ── Battlers ───────────────────────────────────────────────────────────────
 
 /** Class → owned battler sheet (V0 stand-in mapping; see ART_DIRECTION §7). */

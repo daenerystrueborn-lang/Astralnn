@@ -12,9 +12,16 @@ Status values: `verified` · `unverified` (blocks release) · `reference`
 | UI icon pack (59 icons: currency, bars, frames, panels, gear) | `public/assets/icons/` | `astral-fantasy` repo `More icon assets/` | unrecorded | unverified | Excludes sprite-sheet reference files (not copied) |
 | UI atlases & concept boards | `astral-fantasy` repo | unrecorded | unverified | reference | Boards only — never shipped as game files |
 | App logo / home / loading / leaderboard mockups | `astral-fantasy` repo | prior work | unverified | reference | Mockups only |
+| Monster portraits ×10 (Newcomer's Hollow mobs + Gatekeeper) | `public/assets/monsters/` | this project (AI-generated) | project-owned | — | Generated 2026-11-26; pixel-art style matched to battlers; emoji fallback for unregistered zones |
 | Generated art (future) | `public/assets/**` | this project | project-owned | — | Register with `source: generated` + date |
 
 **Intake log**
 - 2026-11-25 — plan step 3 first intake: 6 character sheet folders (all
   animations), 59 UI icons, 10 potion icons → 80 manifest entries,
   `public/assets` = 5.48 MB (budget 6 MB).
+- 2026-11-26 — generated monster portraits (project-owned): 10 PNGs for
+  Newcomer's Hollow (9 mobs + boss), point-resized 256² + palette
+  quantized (17 MB → 304 KB); icons/items also palette-recompressed
+  (4.3 MB → 1.6 MB). 90 manifest entries, `public/assets` = 3.6 MB.
+  Note: monsters.json `sprite` fields reference FFBE rips we do not
+  ship — emoji/portrait fallback only.

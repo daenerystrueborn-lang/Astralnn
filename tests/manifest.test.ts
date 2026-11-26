@@ -75,6 +75,14 @@ describe('asset helpers (src/ui/icon)', () => {
     expect(iconOr('icons/not_a_real_icon', '☀️')).toBe('☀️')
   })
 
+  it('monsterOr serves generated portraits and falls back to emoji', async () => {
+    const { monsterOr, hasAsset } = await import('../src/ui/icon')
+    expect(hasAsset('monsters/nh_dust_rat')).toBe(true)
+    expect(hasAsset('monsters/nh_hollow_gatekeeper')).toBe(true)
+    expect(monsterOr('nh_dust_rat', '🐀')).toContain('<img class="monster-portrait"')
+    expect(monsterOr('ent_grim_gargoyle', '🐀')).toBe('🐀') // unregistered zone → emoji
+  })
+
   it('every class maps to an owned battler sheet with an idle animation', async () => {
     const { CLASS_BATTLER, classBattler } = await import('../src/ui/icon')
     const { classes } = await import('../src/data/index')

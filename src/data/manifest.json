@@ -988,6 +988,106 @@
       ],
       "license": "craftpix-file-license",
       "source": "craftpix-potions-pack"
+    },
+    "monsters/nh_ash_crawler": {
+      "path": "assets/monsters/nh_ash_crawler.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/nh_bone_lantern": {
+      "path": "assets/monsters/nh_bone_lantern.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/nh_dust_rat": {
+      "path": "assets/monsters/nh_dust_rat.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/nh_faded_stalker": {
+      "path": "assets/monsters/nh_faded_stalker.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/nh_grave_pup": {
+      "path": "assets/monsters/nh_grave_pup.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/nh_hollow_gatekeeper": {
+      "path": "assets/monsters/nh_hollow_gatekeeper.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/nh_hollow_sentinel": {
+      "path": "assets/monsters/nh_hollow_sentinel.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/nh_hollow_slime": {
+      "path": "assets/monsters/nh_hollow_slime.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/nh_lantern_moth": {
+      "path": "assets/monsters/nh_lantern_moth.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/nh_pebble_warden": {
+      "path": "assets/monsters/nh_pebble_warden.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
     }
   }
 }

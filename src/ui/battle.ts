@@ -3,7 +3,7 @@
 
 import { skillMap } from '../data/index'
 import { playerAction, type BattleSession, type BattleAction } from '../engine/battle'
-import { classBattler } from './icon'
+import { classBattler, monsterOr } from './icon'
 import type { Floater, UiContext } from './app'
 
 export function renderBattle(root: HTMLElement, ctx: UiContext): void {
@@ -54,7 +54,7 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
       </div>
 
       <div class="stage" aria-hidden="true">
-        <span class="stage-foe">${enemy.emoji}</span>
+        <span class="stage-foe">${monsterOr(enemy.id, enemy.emoji)}</span>
         <span class="stage-vs">⚔️</span>
         <span class="stage-hero">${playerSprite || '🛡️'}</span>
       </div>
