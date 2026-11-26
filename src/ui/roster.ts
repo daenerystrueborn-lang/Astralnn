@@ -1,7 +1,10 @@
 // Roster — owned characters, equip/unequip, link to recruitment (spin).
 
 import { characterMap } from '../data/index'
+import { assetSrc, RARITY_COLORS } from './icon'
 import type { UiContext } from './app'
+
+const PORTRAIT_FRAME = assetSrc('icons/portrait_frame_small') ?? ''
 
 export function renderRoster(root: HTMLElement, ctx: UiContext): void {
   const player = ctx.store.requireState()
@@ -26,16 +29,21 @@ export function renderRoster(root: HTMLElement, ctx: UiContext): void {
         : owned
             .map((c) => {
               const equipped = player.equippedCharacter === c.id
+              const rarityColor = RARITY_COLORS[c.rarity] ?? 'var(--gold)'
               return `
-              <div class="panel">
+              <div class="panel char-card" style="border-color:${rarityColor}55">
                 <div class="row">
-                  <div>
-                    <h3>${c.emoji} ${c.name} ${equipped ? '· <span style="color:var(--gold)">ACTIVE</span>' : ''}</h3>
-                    <p class="muted">${'⭐'.repeat(Math.min(5, c.stars))} · ${c.rarity}${c.tag ? ` · ${c.tag}` : ''}</p>
+                  <div class="char-portrait">
+                    <span class="char-emoji">${c.emoji}</span>
+                    <img class="char-frame" src="${PORTRAIT_FRAME}" alt="" draggable="false" />
                   </div>
-                  <button class="btn btn-sm ${equipped ? 'btn-ghost' : 'btn-primary'}" data-equip="${c.id}" type="button">
-                    ${equipped ? 'Unequip' : 'Equip'}
-                  </button>
+                  <div class="char-info">
+                    <h3>${c.name} ${equipped ? '· <span style="color:var(--gold)">ACTIVE</span>' : ''}</h3>
+                    <p class="muted">${'⭐'.repeat(Math.min(5, c.stars))} · <span style="color:${rarityColor}">${c.rarity}</span>${c.tag ? ` · ${c.tag}` : ''}</p>
+                    <button class="btn btn-sm ${equipped ? 'btn-ghost' : 'btn-primary'}" data-equip="${c.id}" type="button">
+                      ${equipped ? 'Unequip' : 'Equip'}
+                    </button>
+                  </div>
                 </div>
                 ${c.description ? `<p class="muted">${c.description}</p>` : ''}
               </div>`

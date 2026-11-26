@@ -40,6 +40,46 @@ export function iconOr(id: string, fallbackEmoji: string, alt = ''): string {
   return `<img class="i" src="${src}" alt="${alt || id}" draggable="false" />`
 }
 
+/** Element aliases → the portrait we actually generate (fire=flame etc.). */
+const ELEMENT_PORTRAIT: Record<string, string> = {
+  fire: 'flame',
+  shadow: 'void',
+  lightning: 'storm',
+}
+
+/**
+ * Monster portrait for a battle enemy, resolution order:
+ *   1. specific art — `monsters/<id>` (zone sets: Newcomer's Hollow, …)
+ *   2. elemental fallback — `monsters/elem_<element>` (covers the big
+ *      161/190-monster pools we will never hand-port)
+ *   3. the data emoji
+ */
+export function monsterOr(monsterId: string, fallbackEmoji: string, element?: string): string {
+  const specific = assetSrc(`monsters/${monsterId}`)
+  if (specific) return `<img class="monster-portrait" src="${specific}" alt="" draggable="false" />`
+  if (element) {
+    const key = ELEMENT_PORTRAIT[element] ?? element
+    const elemental = assetSrc(`monsters/elem_${key}`)
+    if (elemental) {
+      return `<img class="monster-portrait elem" src="${elemental}" alt="" draggable="false" />`
+    }
+  }
+  return fallbackEmoji
+}
+
+/** Character rarity ladder → ART_DIRECTION token colors (9 tiers). */
+export const RARITY_COLORS: Record<string, string> = {
+  wisp: '#9aa7ad',
+  spark: '#5fbf7a',
+  kindled: '#5b9bd5',
+  starlit: '#b072d6',
+  ascendant: '#e8b339',
+  radiant: '#ff9f43',
+  boundless: '#4fc3f7',
+  divinity: '#c77dff',
+  mythic: '#e05656',
+}
+
 // ── Battlers ───────────────────────────────────────────────────────────────
 
 /** Class → owned battler sheet (V0 stand-in mapping; see ART_DIRECTION §7). */

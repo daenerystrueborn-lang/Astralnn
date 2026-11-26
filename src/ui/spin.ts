@@ -2,8 +2,10 @@
 // runSpinBatch owns dead-zone/plateau/pity and wallet debit (Slice 1 parity).
 
 import { SPIN_BANNERS, runSpinBatch, bannerCharacter, spinsUsed, type SpinBanner } from '../engine/gacha'
-import { iconOr } from './icon'
+import { assetSrc, iconOr, RARITY_COLORS } from './icon'
 import type { UiContext } from './app'
+
+const REVEAL_FRAME = assetSrc('icons/portrait_frame_ornate') ?? ''
 
 export function renderSpin(root: HTMLElement, ctx: UiContext): void {
   const player = ctx.store.requireState()
@@ -121,14 +123,36 @@ export function renderSpin(root: HTMLElement, ctx: UiContext): void {
       box.innerHTML = `<p class="muted">Lifetime spins exhausted for this banner.</p>`
       return
     }
-    const rows = (outcome.results ?? [])
-      .map((r) => `<div class="reward-line"><span>Spin #${r.spin}</span><b>${r.won ? '✨ WON!' : 'miss'}</b></div>`)
-      .join('')
     const won = outcome.reason === 'won'
+    const char = bannerCharacter(selected?.id ?? '')
+    const color = RARITY_COLORS[char?.rarity ?? ''] ?? 'var(--gold)'
+    const cards = (outcome.results ?? [])
+      .map((r, i) =>
+        r.won
+          ? `<div class="reveal-card" style="--rc:${color};--i:${i}">
+               <div class="reveal-art">
+                 <span class="char-emoji">${char?.emoji ?? '✨'}</span>
+                 <img class="char-frame" src="${REVEAL_FRAME}" alt="" draggable="false" />
+               </div>
+               <b>${char?.name ?? ''}</b><br/>
+               <span class="reveal-rarity" style="color:${color}">${char?.rarity ?? ''}</span>
+               <span class="reveal-stars">${'⭐'.repeat(Math.min(5, char?.stars ?? 1))}</span>
+             </div>`
+          : `<div class="reveal-card miss" style="--i:${i}">
+               <div class="reveal-art miss-art">💤</div>
+               <b>spin #${r.spin}</b><br/>
+               <span class="reveal-rarity">miss</span>
+             </div>`,
+      )
+      .join('')
     box.innerHTML = `
-      <div class="${won ? 'levelup-box' : 'panel'}">
-        ${won ? `🎉 ${bannerCharacter(selected?.id ?? '')?.name ?? ''} joins your roster!` : 'Better luck next spin…'}
-        ${rows}
+      <div class="reveal">
+        <div class="reveal-row">${cards}</div>
+        ${
+          won
+            ? `<p class="center mt"><b style="color:${color}">🎉 ${char?.name ?? ''} joins your roster!</b></p>`
+            : `<p class="muted center mt">Better luck next spin…</p>`
+        }
       </div>`
   }
 

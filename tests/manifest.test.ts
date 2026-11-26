@@ -75,6 +75,25 @@ describe('asset helpers (src/ui/icon)', () => {
     expect(iconOr('icons/not_a_real_icon', '☀️')).toBe('☀️')
   })
 
+  it('monsterOr serves specific art, then elemental fallback, then emoji', async () => {
+    const { monsterOr, hasAsset } = await import('../src/ui/icon')
+    // 1. specific zone art
+    expect(hasAsset('monsters/nh_dust_rat')).toBe(true)
+    expect(monsterOr('nh_dust_rat', '🐀')).toContain('<img class="monster-portrait"')
+    // 2. elemental fallback for unregistered big-pool monsters
+    expect(hasAsset('monsters/elem_flame')).toBe(true)
+    expect(monsterOr('ent_grim_gargoyle', '🐀', 'fire')).toContain('elem_flame') // alias
+    expect(monsterOr('some_pool_monster', '👾', 'void')).toContain('elem_void')
+    // 3. every data element has a fallback portrait now…
+    expect(monsterOr('x_unknown', '👾', 'blood')).toContain('elem_blood')
+    expect(monsterOr('x_unknown', '👾', 'water')).toContain('elem_water')
+    // …but unknown/absent elements still degrade to emoji
+    expect(monsterOr('x_unknown', '👾', 'banana')).toBe('👾')
+    expect(monsterOr('x_unknown', '👾')).toBe('👾')
+    // specific art still wins over element
+    expect(monsterOr('nh_hollow_gatekeeper', '🗝️', 'void')).toContain('nh_hollow_gatekeeper')
+  })
+
   it('every class maps to an owned battler sheet with an idle animation', async () => {
     const { CLASS_BATTLER, classBattler } = await import('../src/ui/icon')
     const { classes } = await import('../src/data/index')

@@ -21,6 +21,15 @@ export type ScreenId =
   | 'profile'
   | 'settings'
 
+export type FloaterKind = 'hit' | 'crit' | 'hurt' | 'miss'
+
+/** One-shot damage feedback shown over a combatant after an action. */
+export interface Floater {
+  side: 'foe' | 'hero'
+  kind: FloaterKind
+  text: string
+}
+
 export interface UiContext {
   store: GameStore
   navigate(screen: ScreenId): void
@@ -31,6 +40,8 @@ export interface UiContext {
   battleLog: { kind: string; text: string }[]
   pushLog(events: { kind: string; text: string }[]): void
   clearLog(): void
+  /** Damage floaters for the NEXT battle render (consumed on render). */
+  floaters: Floater[]
 }
 
 export function createContext(): { ctx: UiContext; start(): void } {
@@ -40,6 +51,7 @@ export function createContext(): { ctx: UiContext; start(): void } {
   let root: HTMLElement | null = null
   let lastResult: TurnResult | null = null
   let battleLog: { kind: string; text: string }[] = []
+  let floaters: Floater[] = []
 
   const ctx: UiContext = {
     store,
@@ -62,6 +74,12 @@ export function createContext(): { ctx: UiContext; start(): void } {
     },
     clearLog() {
       battleLog = []
+    },
+    get floaters() {
+      return floaters
+    },
+    set floaters(v: Floater[]) {
+      floaters = v
     },
   }
 

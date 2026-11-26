@@ -5,6 +5,7 @@ import { classes, races } from '../data/index'
 import { getTotalStats } from '../engine/stats'
 import { syncTutorialProgress } from '../engine/tutorial'
 import { createNewPlayer, validateRegistration } from '../state/player'
+import { classBattler } from './icon'
 import type { UiContext } from './app'
 
 export function renderRegister(root: HTMLElement, ctx: UiContext): void {
@@ -31,8 +32,9 @@ export function renderRegister(root: HTMLElement, ctx: UiContext): void {
           .map(
             ([id, c]) => `
           <button class="pick" data-id="${id}" type="button">
-            <b>${id}</b>
-            <span class="stat">${c.primaryStat}</span>
+            <span class="pick-art">${classBattler(id, { scale: 0.45 })}</span>
+            <b>${c.name}</b>
+            <span class="stat">${c.primaryStat.toUpperCase()}</span>
           </button>`,
           )
           .join('')}

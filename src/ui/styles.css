@@ -129,6 +129,83 @@ button { font-family: inherit; }
   color: var(--ink-dim);
 }
 .pick b { display: block; color: var(--ink); font-size: 13px; margin-bottom: 2px; }
+.pick-art {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 62px;
+  margin-bottom: 4px;
+}
+.pick-art .battler { filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5)); }
+
+.char-card { overflow: hidden; }
+.char-portrait {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  flex: 0 0 auto;
+}
+.char-emoji {
+  position: absolute;
+  inset: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  line-height: 1;
+  background: radial-gradient(circle at 50% 35%, #1c2333, #0d1117);
+  border-radius: 8px;
+}
+.char-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+.char-info { flex: 1; min-width: 0; }
+.char-info h3 { margin: 0 0 2px; }
+
+/* Gacha reveal cards (spin screen) */
+.reveal-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+.reveal-card {
+  width: 128px;
+  padding: 12px 8px 10px;
+  background: radial-gradient(circle at 50% 15%, #1c2333, #0d1117);
+  border: 2px solid var(--rc, var(--line));
+  border-radius: 12px;
+  text-align: center;
+  font-size: 13px;
+  box-shadow: 0 0 16px var(--rc, transparent);
+  animation: reveal-pop 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+  animation-delay: calc(var(--i, 0) * 0.12s);
+}
+.reveal-card.miss {
+  border-color: var(--line);
+  box-shadow: none;
+  opacity: 0.75;
+}
+.reveal-art {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 6px;
+}
+.reveal-art .char-emoji { inset: 8px; font-size: 40px; }
+.miss-art { display: flex; align-items: center; justify-content: center; font-size: 34px; opacity: 0.6; }
+.reveal-rarity { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+.reveal-stars { display: block; font-size: 11px; margin-top: 2px; }
+@keyframes reveal-pop {
+  from { opacity: 0; transform: scale(0.6) rotate(-6deg); }
+  to { opacity: 1; transform: none; }
+}
 .pick.selected {
   border-color: var(--gold);
   background: #24424a;
@@ -269,7 +346,48 @@ button { font-family: inherit; }
   margin: 8px 0;
 }
 
-.combatant { margin: 6px 0 10px; }
+.combatant { margin: 6px 0 10px; position: relative; }
+
+/* Damage floaters (consumed one-shot feedback — see app.ts floaters) */
+.floater {
+  position: absolute;
+  top: 2px;
+  right: 10px;
+  font-weight: 900;
+  font-size: 22px;
+  color: var(--gold);
+  text-shadow: 0 2px 0 #000, 0 0 8px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  animation: floater-up 0.9s ease-out forwards;
+}
+.floater.f-crit {
+  font-size: 30px;
+  color: #ffd75e;
+}
+.floater.f-hurt {
+  right: auto;
+  left: 10px;
+  color: var(--danger);
+}
+.floater.f-miss {
+  font-size: 14px;
+  color: var(--ink-dim);
+  top: auto;
+  bottom: 2px;
+}
+@keyframes floater-up {
+  0% { opacity: 0; transform: translateY(8px) scale(0.7); }
+  15% { opacity: 1; transform: translateY(0) scale(1.15); }
+  30% { transform: translateY(-4px) scale(1); }
+  100% { opacity: 0; transform: translateY(-30px) scale(1); }
+}
+.combatant.hit { animation: hit-flash 0.3s ease-out; }
+@keyframes hit-flash {
+  0% { filter: brightness(2); transform: translateX(-4px); }
+  40% { transform: translateX(3px); }
+  70% { transform: translateX(-2px); }
+  100% { filter: none; transform: none; }
+}
 
 .stage {
   display: flex;
@@ -284,12 +402,28 @@ button { font-family: inherit; }
   line-height: 1;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
 }
+.monster-portrait {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  image-rendering: pixelated;
+  border: 2px solid var(--gold-dim, #8a6d2f);
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55);
+}
 .stage-hero { line-height: 0; }
 .stage-vs {
   font-size: 20px;
   opacity: 0.7;
   letter-spacing: 0.2em;
 }
+.stage.impact { animation: stage-hit 0.28s ease-out; }
+@keyframes stage-hit {
+  25% { transform: translateX(-5px) scale(0.985); }
+  60% { transform: translateX(4px); }
+  100% { transform: none; }
+}
+.monster-portrait.elem { opacity: 0.96; }
 .combatant .cname {
   display: flex;
   justify-content: space-between;
@@ -335,9 +469,28 @@ button { font-family: inherit; }
 .log .ev-error { color: var(--danger); }
 
 /* ── Results ────────────────────────────────────────────────── */
-.result-title { text-align: center; font-size: 26px; margin: 18px 0 4px; }
+.result-title {
+  text-align: center;
+  font-size: 26px;
+  margin: 18px 0 4px;
+  animation: title-slam 0.5s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
 .result-title.win { color: var(--xp); }
 .result-title.lose { color: var(--danger); }
+@keyframes title-slam {
+  from { opacity: 0; transform: scale(1.7); }
+  to { opacity: 1; transform: none; }
+}
+.panel > .reward-line { animation: fade-up 0.4s ease both; }
+.panel > .reward-line:nth-child(2) { animation-delay: 0.05s; }
+.panel > .reward-line:nth-child(3) { animation-delay: 0.1s; }
+.panel > .reward-line:nth-child(4) { animation-delay: 0.15s; }
+.panel > .reward-line:nth-child(5) { animation-delay: 0.2s; }
+.panel > .reward-line:nth-child(6) { animation-delay: 0.25s; }
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
 .reward-line {
   display: flex;
   justify-content: space-between;
@@ -388,4 +541,6 @@ button { font-family: inherit; }
 }
 @media (prefers-reduced-motion: reduce) {
   .battler > img { animation: none; }
+  .reveal-card { animation: none; }
+  .stage.impact, .result-title, .panel > .reward-line { animation: none; }
 }

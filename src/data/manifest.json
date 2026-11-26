@@ -988,6 +988,336 @@
       ],
       "license": "craftpix-file-license",
       "source": "craftpix-potions-pack"
+    },
+    "monsters/nh_ash_crawler": {
+      "path": "assets/monsters/nh_ash_crawler.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/nh_bone_lantern": {
+      "path": "assets/monsters/nh_bone_lantern.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/nh_dust_rat": {
+      "path": "assets/monsters/nh_dust_rat.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/nh_faded_stalker": {
+      "path": "assets/monsters/nh_faded_stalker.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/nh_grave_pup": {
+      "path": "assets/monsters/nh_grave_pup.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/nh_hollow_gatekeeper": {
+      "path": "assets/monsters/nh_hollow_gatekeeper.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/nh_hollow_sentinel": {
+      "path": "assets/monsters/nh_hollow_sentinel.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/nh_hollow_slime": {
+      "path": "assets/monsters/nh_hollow_slime.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/nh_lantern_moth": {
+      "path": "assets/monsters/nh_lantern_moth.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/nh_pebble_warden": {
+      "path": "assets/monsters/nh_pebble_warden.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/glo_cave_howler": {
+      "path": "assets/monsters/glo_cave_howler.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/glo_dark_elf_matron": {
+      "path": "assets/monsters/glo_dark_elf_matron.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/glo_dark_elf_reaver": {
+      "path": "assets/monsters/glo_dark_elf_reaver.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/glo_deep_lurker": {
+      "path": "assets/monsters/glo_deep_lurker.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/glo_matriarchs_chosen": {
+      "path": "assets/monsters/glo_matriarchs_chosen.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/glo_stone_bat_swarm": {
+      "path": "assets/monsters/glo_stone_bat_swarm.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/elem_arcane": {
+      "path": "assets/monsters/elem_arcane.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/elem_astral": {
+      "path": "assets/monsters/elem_astral.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/elem_earth": {
+      "path": "assets/monsters/elem_earth.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/elem_flame": {
+      "path": "assets/monsters/elem_flame.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/elem_holy": {
+      "path": "assets/monsters/elem_holy.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/elem_ice": {
+      "path": "assets/monsters/elem_ice.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/elem_physical": {
+      "path": "assets/monsters/elem_physical.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/elem_poison": {
+      "path": "assets/monsters/elem_poison.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/elem_storm": {
+      "path": "assets/monsters/elem_storm.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/elem_void": {
+      "path": "assets/monsters/elem_void.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/elem_blood": {
+      "path": "assets/monsters/elem_blood.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/elem_water": {
+      "path": "assets/monsters/elem_water.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/qm_lamp_moth": {
+      "path": "assets/monsters/qm_lamp_moth.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/qm_mile_creeper": {
+      "path": "assets/monsters/qm_mile_creeper.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/qm_quiet_hound": {
+      "path": "assets/monsters/qm_quiet_hound.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/qm_shutter_wisp": {
+      "path": "assets/monsters/qm_shutter_wisp.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/qm_the_lamplighter": {
+      "path": "assets/monsters/qm_the_lamplighter.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
     }
   }
 }
