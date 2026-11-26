@@ -2,6 +2,7 @@
 // Rewards were already settled inside playerAction → creditKillV0/handleDeathV0.
 
 import { gearMap } from '../data/index'
+import { iconOr } from './icon'
 import type { UiContext } from './app'
 
 export function renderResults(root: HTMLElement, ctx: UiContext): void {
@@ -14,8 +15,8 @@ export function renderResults(root: HTMLElement, ctx: UiContext): void {
     <p class="subtitle">${player.name} stands triumphant</p>
 
     <div class="panel">
-      ${line('XP gained', `+${rewards?.xp ?? 0}`)}
-      ${line('Solars', `+${rewards?.solars ?? 0} ☀️`)}
+      ${line('XP gained', `+${rewards?.xp ?? 0} ${iconOr('icons/icon_xp_star', '⭐')}`)}
+      ${line('Solars', `+${rewards?.solars ?? 0} ${iconOr('icons/coin_crown', '☀️')}`)}
       ${line('Wins', `${player.stats.wins}`)}
       ${
         rewards?.drops?.length

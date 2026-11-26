@@ -269,7 +269,48 @@ button { font-family: inherit; }
   margin: 8px 0;
 }
 
-.combatant { margin: 6px 0 10px; }
+.combatant { margin: 6px 0 10px; position: relative; }
+
+/* Damage floaters (consumed one-shot feedback — see app.ts floaters) */
+.floater {
+  position: absolute;
+  top: 2px;
+  right: 10px;
+  font-weight: 900;
+  font-size: 22px;
+  color: var(--gold);
+  text-shadow: 0 2px 0 #000, 0 0 8px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  animation: floater-up 0.9s ease-out forwards;
+}
+.floater.f-crit {
+  font-size: 30px;
+  color: #ffd75e;
+}
+.floater.f-hurt {
+  right: auto;
+  left: 10px;
+  color: var(--danger);
+}
+.floater.f-miss {
+  font-size: 14px;
+  color: var(--ink-dim);
+  top: auto;
+  bottom: 2px;
+}
+@keyframes floater-up {
+  0% { opacity: 0; transform: translateY(8px) scale(0.7); }
+  15% { opacity: 1; transform: translateY(0) scale(1.15); }
+  30% { transform: translateY(-4px) scale(1); }
+  100% { opacity: 0; transform: translateY(-30px) scale(1); }
+}
+.combatant.hit { animation: hit-flash 0.3s ease-out; }
+@keyframes hit-flash {
+  0% { filter: brightness(2); transform: translateX(-4px); }
+  40% { transform: translateX(3px); }
+  70% { transform: translateX(-2px); }
+  100% { filter: none; transform: none; }
+}
 
 .stage {
   display: flex;
