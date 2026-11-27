@@ -40,7 +40,9 @@ export function renderRoster(root: HTMLElement, ctx: UiContext): void {
               const rarityColor = RARITY_COLORS[c.rarity] ?? 'var(--gold)'
               const bonusLine = describeCharacterBonuses(c)
               const abilityName = typeof c.ability?.name === 'string' ? c.ability.name : ''
-              const abilityDesc = typeof c.ability?.description === 'string' ? c.ability.description : ''
+              const abilityDesc =
+                typeof c.ability?.description === 'string' ? cleanBrowserCopy(c.ability.description) : ''
+              const loreDesc = c.description ? cleanBrowserCopy(c.description) : ''
               return `
               <div class="panel char-card" style="border-color:${rarityColor}55">
                 <div class="row">
@@ -58,7 +60,7 @@ export function renderRoster(root: HTMLElement, ctx: UiContext): void {
                   </div>
                 </div>
                 ${abilityName ? `<p class="muted" style="margin-top:6px"><b style="color:var(--ink)">✦ ${abilityName}</b>${abilityDesc ? ` — ${abilityDesc}` : ''}</p>` : ''}
-                ${c.description ? `<p class="muted">${c.description}</p>` : ''}
+                ${loreDesc ? `<p class="muted">${loreDesc}</p>` : ''}
               </div>`
             })
             .join('')
@@ -77,4 +79,12 @@ export function renderRoster(root: HTMLElement, ctx: UiContext): void {
       ctx.navigate('roster')
     })
   })
+}
+
+function cleanBrowserCopy(raw: string): string {
+  return raw
+    .replace(/no \.attack,\s*no \.battle attack,/gi, 'no basic attacks,')
+    .replace(/answers \.const\b/gi, 'unleashes Constellation Strike')
+    .replace(/talks to her with \.clane\b/gi, 'bonds with her')
+    .replace(/(?<=\s)\.[a-z]{3,14}\b/gi, (m) => m.slice(1))
 }
