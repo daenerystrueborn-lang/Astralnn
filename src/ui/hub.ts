@@ -1,8 +1,20 @@
 // Home / hub — HUD, stats, nav, location list + floor picker → start a battle.
 
 import { characterMap, classes, locations, races, skills } from '../data/index'
+import { claimableAchievementCount, refreshAchievements } from '../engine/achievements'
 import { syncEquippedCharacterBonus } from '../engine/equipment'
 import { innRestQuote, restAtInn, type InnRestMode } from '../engine/inn'
+import {
+  JOBS,
+  JOB_LIST,
+  JOB_SHIFTS_PER_LEVEL,
+  MAX_JOB_LEVEL,
+  applyForJob,
+  jobPayAtLevel,
+  resignJob,
+  workCooldownRemainingMs,
+  workShift,
+} from '../engine/jobs'
 import { getTotalStats } from '../engine/stats'
 import { getRankForLevel } from '../engine/progression'
 import { unlockEligibleSkills } from '../engine/skills'
@@ -21,6 +33,7 @@ export function renderHub(root: HTMLElement, ctx: UiContext): void {
   ctx.store.update((p) => {
     syncEquippedCharacterBonus(p)
     unlockEligibleSkills(p, skills)
+    refreshAchievements(p)
   })
   const player = ctx.store.requireState()
   const cls = classes[player.classId]
@@ -28,10 +41,13 @@ export function renderHub(root: HTMLElement, ctx: UiContext): void {
   const total = getTotalStats(player.classId, player.raceId, player.level)
   const activeCompanion = player.equippedCharacter ? characterMap[player.equippedCharacter] : null
   const inn = innRestQuote(player)
+  const activeJob = player.job ? JOBS[player.job] : null
+  const workCoolMs = workCooldownRemainingMs(player)
+  const workCoolMins = workCoolMs > 0 ? Math.max(1, Math.ceil(workCoolMs / 60_000)) : 0
 
-  // Tutorial card + quest badge (cheap reads; mutation happens elsewhere).
+  // Tutorial card + quest/achievement badge.
   ensureQuestState(player)
-  const questBadge = claimableCount(player)
+  const questBadge = claimableCount(player) + claimableAchievementCount(player)
   const tutStep = getCurrentStep(player)
   const tut = tutorialProgress(player)
 
@@ -136,6 +152,43 @@ export function renderHub(root: HTMLElement, ctx: UiContext): void {
       </p>
     </div>
 
+    <div class="panel">
+      ${
+        activeJob
+          ? (() => {
+              const jLv = Math.max(1, player.jobLevel || 1)
+              const pay = jobPayAtLevel(activeJob, jLv)
+              const shifts = player.jobShifts ?? 0
+              return `
+                <div class="row">
+                  <div>
+                    <h3>💼 ${activeJob.emoji} ${activeJob.name} · Lv ${jLv}/${MAX_JOB_LEVEL}</h3>
+                    <p class="muted">☀️ ${pay.lo}–${pay.hi}/shift · ${shifts}/${JOB_SHIFTS_PER_LEVEL} shifts · +${activeJob.statBonus === 'all' ? 'ALL' : activeJob.statBonus.toUpperCase()} perk</p>
+                  </div>
+                  <div class="item-actions">
+                    <button class="btn btn-sm ${workCoolMins ? 'btn-ghost' : 'btn-primary'}" id="job-work" ${workCoolMins ? 'disabled' : ''} type="button">
+                      ${workCoolMins ? `⏳ ${workCoolMins}m` : '⚒️ Work Shift'}
+                    </button>
+                    <button class="btn btn-sm btn-ghost" id="job-resign" type="button">Change</button>
+                  </div>
+                </div>
+                <div id="job-notice"></div>`
+            })()
+          : `
+            <h3>💼 Town Careers · Earn Solars & Forging Materials</h3>
+            <div class="potion-belt-list" style="margin-top:6px">
+              ${JOB_LIST.map((j) => {
+                const locked = player.level < j.levelReq
+                const pay = jobPayAtLevel(j, 1)
+                return `<button class="btn btn-sm ${locked ? 'btn-ghost' : ''}" data-job-apply="${j.id}" ${locked ? 'disabled' : ''}
+                  title="${j.desc} (☀️ ${pay.lo}–${pay.hi}/shift)" type="button">
+                  ${j.emoji} ${j.name}${locked ? ` · 🔒 Lv${j.levelReq}` : ` · ☀️${pay.lo}–${pay.hi}`}
+                </button>`
+              }).join('')}
+            </div>`
+      }
+    </div>
+
     <h2>Choose your battle</h2>
     <div id="loc-list">
       ${dungeonLocs
@@ -184,6 +237,53 @@ export function renderHub(root: HTMLElement, ctx: UiContext): void {
       if (err) alert(err)
       ctx.navigate('hub')
     })
+  })
+  root.querySelectorAll<HTMLButtonElement>('[data-job-apply]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      let err: string | undefined
+      ctx.store.update((p) => {
+        const res = applyForJob(p, btn.dataset.jobApply!)
+        if (!res.ok) err = res.error
+      })
+      if (err) alert(err)
+      ctx.navigate('hub')
+    })
+  })
+  root.querySelector('#job-resign')?.addEventListener('click', () => {
+    ctx.store.update((p) => {
+      resignJob(p)
+    })
+    ctx.navigate('hub')
+  })
+  root.querySelector('#job-work')?.addEventListener('click', () => {
+    let summary = ''
+    let err: string | undefined
+    ctx.store.update((p) => {
+      const res = workShift(p)
+      if (!res.ok) {
+        err = res.error
+        return
+      }
+      const extras = [
+        res.eventLine,
+        res.bonusGranted ? `📦 +${res.bonusGranted}` : null,
+        res.statPerk ? `📊 ${res.statPerk}` : null,
+        res.levelledUpJob ? `🎊 ${res.job?.name} Lv ${res.newJobLevel}!` : null,
+      ]
+        .filter(Boolean)
+        .join(' · ')
+      summary = `${res.narrative} (+☀️ ${res.solarsEarned})${extras ? ` — ${extras}` : ''}`
+      refreshAchievements(p)
+    })
+    if (err) {
+      alert(err)
+      return
+    }
+    ctx.navigate('hub')
+    const box = root.querySelector('#job-notice')
+    if (box && summary) {
+      box.innerHTML = `<div class="shop-notice" style="margin-top:8px">${summary}</div>`
+    }
   })
   root.querySelector('#tut-skip-hub')?.addEventListener('click', () => {
     if (!confirm('Skip the tutorial? You will forfeit the graduation gift.')) return

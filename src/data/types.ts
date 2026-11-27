@@ -264,7 +264,7 @@ export interface GearDef {
   slot: string | null
   rarity: string
   levelReq: number
-  statBonuses: StatBlock & { maxHp: number; maxMp: number }
+  statBonuses: StatBlock & { maxHp: number; maxMp: number; atk?: number }
   sellPrice: number
   buyPrice?: number | null
   gemPrice?: number | null
@@ -272,8 +272,41 @@ export interface GearDef {
   guildBound?: boolean
   exclusive?: boolean
   starterPackExclusive?: boolean
+  bossId?: string
+  passiveId?: string
+  named?: boolean
   effect?: ItemEffectDef | ItemEffectDef[] | null
   description: string
   maxDurability?: number
   image?: string
+}
+
+export interface RecipeMaterialReq {
+  itemId: string
+  qty: number
+}
+
+export interface RecipeDef {
+  id: string
+  output: string
+  materials: RecipeMaterialReq[]
+  solarsCost: number
+  category: 'armor' | 'weapon' | 'potion' | 'named' | string
+}
+
+export interface AchievementDef {
+  id: string
+  name: string
+  desc: string
+  tier: 'bronze' | 'silver' | 'gold' | 'diamond' | string
+  track: string
+  check: { metric?: string; stat?: string; goal: number }
+  reward: QuestReward
+  emblem?: string
+}
+
+export interface AchievementCatalog {
+  tiers: Record<string, { label: string; emoji: string; points: number }>
+  tracks: Record<string, string>
+  achievements: AchievementDef[]
 }

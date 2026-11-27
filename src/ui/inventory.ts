@@ -4,6 +4,7 @@
 
 import { gearMap, skillMap, skills } from '../data/index'
 import type { GearDef, SkillDef } from '../data/types'
+import { craftRecipe, craftableCount, getCraftBoard } from '../engine/craft'
 import { PHYSICAL_EQUIPMENT_SLOTS, equipItem, unequipSlot, equippedItemId } from '../engine/equipment'
 import {
   MAX_SKILL_SLOTS,
@@ -28,7 +29,7 @@ import { recordTutorialEvent } from '../engine/tutorial'
 import { gearIconOr, iconOr } from './icon'
 import type { UiContext } from './app'
 
-type ViewTab = 'bag' | 'skills' | 'potions' | 'weapons' | 'armor'
+type ViewTab = 'bag' | 'skills' | 'forge' | 'potions' | 'weapons' | 'armor'
 
 export function renderInventory(root: HTMLElement, ctx: UiContext): void {
   // Tutorial hook: viewing the inventory is the step (event-driven only).
@@ -38,6 +39,7 @@ export function renderInventory(root: HTMLElement, ctx: UiContext): void {
   })
 
   let view: ViewTab = 'bag'
+  let forgeCategory = 'all'
   let bannerMsg = ''
   draw()
 
@@ -68,7 +70,9 @@ export function renderInventory(root: HTMLElement, ctx: UiContext): void {
       .map(([id, qty]) => {
         const item = gearMap[id]
         if (!item) return ''
-        const equippable = Boolean(item.slot && item.type !== 'consumable' && item.type !== 'material')
+        const equippable = Boolean(
+        item.slot && item.type !== 'consumable' && item.type !== 'material' && item.type !== 'trophy',
+      )
         const usable = isUsableConsumable(item, false)
         const sellable = Number(item.sellPrice) > 0 && !item.exclusive && item.id !== 'ghostblade'
         return `
@@ -142,6 +146,7 @@ export function renderInventory(root: HTMLElement, ctx: UiContext): void {
       <div class="tabs">
         <button class="tab ${view === 'bag' ? 'active' : ''}" data-view="bag" type="button">🎒 Bag & Gear</button>
         <button class="tab ${view === 'skills' ? 'active' : ''}" data-view="skills" type="button">⚡ Skills (${getEquippedSkills(player).length}/${MAX_SKILL_SLOTS})</button>
+        <button class="tab ${view === 'forge' ? 'active' : ''}" data-view="forge" type="button">🔨 Forge${craftableCount(player) ? ` · ${craftableCount(player)}` : ''}</button>
         <button class="tab ${view === 'potions' ? 'active' : ''}" data-view="potions" type="button">🧪 Potions</button>
         <button class="tab ${view === 'weapons' ? 'active' : ''}" data-view="weapons" type="button">⚔️ Weapons</button>
         <button class="tab ${view === 'armor' ? 'active' : ''}" data-view="armor" type="button">🛡️ Armor</button>
@@ -162,11 +167,13 @@ export function renderInventory(root: HTMLElement, ctx: UiContext): void {
             </div>`
           : view === 'skills'
             ? renderSkillLoadout(player)
-            : view === 'potions'
-              ? `<div class="panel"><h3>🧪 Apothecary · Potions & Tonics</h3>${renderShelf(shopPotions, true)}</div>`
-              : view === 'weapons'
-                ? `<div class="panel"><h3>⚔️ Blacksmith · Weapons</h3>${renderShelf(shopWeapons, false)}</div>`
-                : `<div class="panel"><h3>🛡️ Armorer · Armor & Relics</h3>${renderShelf(shopArmor, false)}</div>`
+            : view === 'forge'
+              ? renderForgePanel(player, forgeCategory)
+              : view === 'potions'
+                ? `<div class="panel"><h3>🧪 Apothecary · Potions & Tonics</h3>${renderShelf(shopPotions, true)}</div>`
+                : view === 'weapons'
+                  ? `<div class="panel"><h3>⚔️ Blacksmith · Weapons</h3>${renderShelf(shopWeapons, false)}</div>`
+                  : `<div class="panel"><h3>🛡️ Armorer · Armor & Relics</h3>${renderShelf(shopArmor, false)}</div>`
       }
     `
 
@@ -264,6 +271,23 @@ export function renderInventory(root: HTMLElement, ctx: UiContext): void {
       bannerMsg = '⚡ Equipped your 4 highest-level active skills.'
       draw()
     })
+    root.querySelectorAll<HTMLButtonElement>('[data-forge-cat]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        forgeCategory = btn.dataset.forgeCat!
+        draw()
+      })
+    })
+    root.querySelectorAll<HTMLButtonElement>('[data-forge]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        let res: ReturnType<typeof craftRecipe> | null = null
+        ctx.store.update((p) => {
+          res = craftRecipe(p, btn.dataset.forge!)
+        })
+        if (!res!.ok) alert(res!.error)
+        else bannerMsg = `🔨 Forged ${res!.item?.name} (−☀️ ${res!.solarsSpent})!`
+        draw()
+      })
+    })
   }
 }
 
@@ -334,9 +358,71 @@ function renderSkillLoadout(player: {
     </div>`
 }
 
+function renderForgePanel(
+  player: {
+    level: number
+    inventory: string[]
+    wallet: { solars: number; [k: string]: number }
+    inDungeon?: boolean
+    battleState?: unknown
+  },
+  category: string,
+): string {
+  const cats: [string, string][] = [
+    ['all', 'All'],
+    ['weapon', '⚔️ Weapons'],
+    ['armor', '🛡️ Armor'],
+    ['potion', '🧪 Potions'],
+    ['named', '👑 Boss Gear'],
+  ]
+  const rows = getCraftBoard(player, category)
+  const listHtml = rows
+    .map((v) => {
+      const matSummary = v.materials
+        .map(
+          (m) =>
+            `<span style="color:${m.met ? 'var(--xp)' : 'var(--ink-dim)'}">${escapeHtml(m.name)} ${m.have}/${m.qty}</span>`,
+        )
+        .join(' · ')
+      const isConsumable = v.output.type === 'consumable'
+      return `
+        <div class="loc ${v.levelMet ? '' : 'locked'}" style="cursor:default">
+          <div class="item-row">
+            <span class="item-icon">${gearIconOr(v.output)}</span>
+            <div>
+              <div class="loc-name">${escapeHtml(v.output.name)}${!v.levelMet ? ` <span class="muted">· 🔒 Lv${v.levelReq}</span>` : ''}</div>
+              <div class="loc-sub">${isConsumable ? describeConsumable(v.output) : describeGear(v.output)} · ☀️ ${v.recipe.solarsCost}</div>
+              <div class="loc-sub">${matSummary}</div>
+            </div>
+          </div>
+          <button class="btn btn-sm ${v.canCraft ? 'btn-primary' : 'btn-ghost'}"
+            data-forge="${v.recipe.id}" ${v.canCraft ? '' : 'disabled'} type="button">
+            Forge
+          </button>
+        </div>`
+    })
+    .join('')
+
+  return `
+    <div class="panel">
+      <h3>🔨 Blacksmith Forge · Astral Town</h3>
+      <p class="muted">Turn monster drops, quarry ore, and boss trophies into forged equipment.</p>
+      <div class="tabs" style="justify-content:flex-start;margin-top:8px">
+        ${cats
+          .map(
+            ([id, label]) =>
+              `<button class="tab ${category === id ? 'active' : ''}" data-forge-cat="${id}" type="button">${label}</button>`,
+          )
+          .join('')}
+      </div>
+      ${listHtml || '<p class="muted">No recipes in this category.</p>'}
+    </div>`
+}
+
 function describeGear(item: GearDef): string {
-  const b = item.statBonuses
+  const b = item.statBonuses ?? {}
   const parts: string[] = []
+  if (b.atk) parts.push(`ATK+${b.atk}`)
   if (b.str) parts.push(`STR+${b.str}`)
   if (b.agi) parts.push(`AGI+${b.agi}`)
   if (b.int) parts.push(`INT+${b.int}`)
@@ -344,8 +430,12 @@ function describeGear(item: GearDef): string {
   if (b.lck) parts.push(`LCK+${b.lck}`)
   if (b.maxHp) parts.push(`HP+${b.maxHp}`)
   if (b.maxMp) parts.push(`MP+${b.maxMp}`)
-  const gate = item.levelReq > 1 ? ` · Lv${item.levelReq}` : ''
-  return `${item.rarity} · ${parts.join(' ') || item.slot || item.type}${gate}`
+  const req = item.levelReq ?? 1
+  const gate = req > 1 ? ` · Lv${req}` : ''
+  const detail =
+    parts.join(' ') ||
+    (item.type === 'material' || item.type === 'trophy' ? 'Crafting material' : item.slot || item.type)
+  return `${item.rarity} · ${detail}${gate}`
 }
 
 function escapeHtml(s: string): string {

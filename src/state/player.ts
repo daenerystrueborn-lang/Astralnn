@@ -101,7 +101,18 @@ export interface Player {
 
   stamina: StaminaState
   quests: QuestState
+  achievements?: { unlocked: string[]; claimed: string[] }
   tutorial: TutorialState
+
+  job?: string | null
+  jobLevel?: number
+  jobShifts?: number
+  lastWorkAt?: number | null
+  survivalProgress?: {
+    workShifts?: number
+    soloFloors?: Record<string, boolean>
+    personalFloorsVersion?: number
+  }
 
   dailyStreak: number
   lastDailyClaim: number | null

@@ -256,18 +256,19 @@ export function equipItem(player: EquipmentPlayerFull, query: string): EquipOutc
   if (item.type === 'consumable') {
     return { ok: false, error: `❌ ${item.name} is a consumable — it can't be equipped.` }
   }
-  if (item.type === 'material') {
-    return { ok: false, error: `❌ ${item.name} is a crafting material — it can't be equipped.` }
+  if (item.type === 'material' || item.type === 'trophy') {
+    return { ok: false, error: `❌ ${item.name} is a crafting material — forge it at the Blacksmith instead.` }
   }
 
   const slot = item.slot === 'relic' ? 'offhand' : item.slot
   if (!slot) {
     return { ok: false, error: `❌ Don't know how to equip item type "${item.type}".` }
   }
-  if (player.level < item.levelReq) {
+  const reqLv = item.levelReq ?? 1
+  if (player.level < reqLv) {
     return {
       ok: false,
-      error: `❌ You need to be level ${item.levelReq} to equip ${item.name}. You are level ${player.level}.`,
+      error: `❌ You need to be level ${reqLv} to equip ${item.name}. You are level ${player.level}.`,
     }
   }
   const refusal = gearRefusal(player, item)
