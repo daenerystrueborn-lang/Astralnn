@@ -67,6 +67,7 @@ export function renderHub(root: HTMLElement, ctx: UiContext): void {
     <div class="tabs">
       <button class="tab active" data-nav="hub" type="button">Battle</button>
       <button class="tab" data-nav="dungeon" type="button">Dungeon</button>
+      <button class="tab" data-nav="inventory" type="button">Bag & Shop</button>
       <button class="tab" data-nav="roster" type="button">Roster</button>
       <button class="tab" data-nav="quests" type="button">Quests${questBadge ? ` · ${questBadge}` : ''}</button>
       <button class="tab" data-nav="profile" type="button">Profile</button>

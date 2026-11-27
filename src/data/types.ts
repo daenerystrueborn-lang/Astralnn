@@ -232,17 +232,37 @@ export interface EffectivenessData {
   season01Enemies?: Record<string, { type: string; weakTo?: string[]; resistTo?: string[] }>
 }
 
+export interface ItemEffectDef {
+  type: string
+  stat?: string
+  amount?: number | string
+  value?: number
+  percent?: number
+  duration?: number
+  hits?: number
+  targets?: string[] | string
+  target?: string
+  slots?: number
+  fights?: number
+  finalFormThreshold?: number
+}
+
 export interface GearDef {
   id: string
   name: string
   type: string
-  slot: string
+  slot: string | null
   rarity: string
   levelReq: number
   statBonuses: StatBlock & { maxHp: number; maxMp: number }
   sellPrice: number
-  buyPrice?: number
-  effect?: Record<string, unknown> | null
+  buyPrice?: number | null
+  gemPrice?: number | null
+  seasonId?: string
+  guildBound?: boolean
+  exclusive?: boolean
+  starterPackExclusive?: boolean
+  effect?: ItemEffectDef | ItemEffectDef[] | null
   description: string
   maxDurability?: number
   image?: string

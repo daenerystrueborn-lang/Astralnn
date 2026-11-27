@@ -182,6 +182,7 @@ Every user-triggered navigation in `src/ui/**` appears here exactly as
 | 27 | `settings` | `hub` | ← Hub |
 | 28 | `settings` | `profile` | Tab "Profile" |
 | 29 | `settings` | `register` | Reset save (confirm) |
+| 30 | `hub` | `inventory` | Tab "Bag & Shop" |
 
 ## 5. Screen wireframes
 

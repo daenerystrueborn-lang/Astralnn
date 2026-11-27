@@ -62,6 +62,14 @@ export interface BattleSession {
   /** Set by Defend; consumed by the incoming enemy strike (double DEF). */
   defending: boolean
   status: 'active' | 'won' | 'lost'
+  /** Boss-fight potion slots spent (max BOSS_POTION_LIMIT = 7). */
+  bossPotionUses?: number
+  usedConsumable?: boolean
+  playerShield?: number
+  warcry?: { percent: number; hits: number } | null
+  ironskin?: { percent: number; hits: number } | null
+  statBuffs?: Record<string, { value: number; remaining: number }>
+  regen?: { stat: 'hp' | 'mp'; amount: number; remaining: number } | null
 }
 
 export type BattleAction =
@@ -320,6 +328,36 @@ function requireActive(session: BattleSession): boolean {
   return session.status === 'active'
 }
 
+function effectivePlayerForRound<T extends { stats: Record<string, number> }>(
+  player: T,
+  session: BattleSession,
+): T {
+  const buffs = session.statBuffs
+  if (!buffs || Object.keys(buffs).length === 0) return player
+  const boosted: Record<string, number> = { ...player.stats }
+  for (const [stat, entry] of Object.entries(buffs)) {
+    if (entry && entry.remaining > 0) {
+      boosted[stat] = (boosted[stat] ?? 0) + entry.value
+    }
+  }
+  return { ...player, stats: boosted }
+}
+
+function mitigateIncomingPlayerHit(rawDmg: number, session: BattleSession): number {
+  let dmg = rawDmg
+  if (session.ironskin && session.ironskin.hits > 0) {
+    dmg = Math.max(1, Math.floor(dmg * (1 - session.ironskin.percent / 100)))
+    session.ironskin.hits -= 1
+    if (session.ironskin.hits <= 0) session.ironskin = null
+  }
+  if ((session.playerShield ?? 0) > 0) {
+    const absorbed = Math.min(session.playerShield!, dmg)
+    session.playerShield! -= absorbed
+    dmg -= absorbed
+  }
+  return dmg
+}
+
 function cleanBotText(raw: string): string {
   return raw
     .replace(/\.defend\b/gi, 'Defend')
@@ -387,11 +425,18 @@ export function playerAction(
     }
 
     // Accuracy roll first — a miss spends the action and the enemy still hits.
-    const hitChance = calcPlayerHitChance(player, session.enemy)
+    const effPlayer = effectivePlayerForRound(player, session)
+    const hitChance = calcPlayerHitChance(effPlayer, session.enemy)
     if (rng() >= hitChance) {
       events.push({ kind: 'miss', text: `💨 ${player.name}'s strike misses! (${(hitChance * 100).toFixed(1)}%)` })
     } else {
-      const { rawDmg, isCrit } = calcPlayerDamage(player, skill, 1, 0, rng)
+      let warcryMult = 1
+      if (session.warcry && session.warcry.hits > 0) {
+        warcryMult = 1 + session.warcry.percent / 100
+        session.warcry.hits -= 1
+        if (session.warcry.hits <= 0) session.warcry = null
+      }
+      const { rawDmg, isCrit } = calcPlayerDamage(effPlayer, skill, warcryMult, 0, rng)
       let dmg = applyDefense(rawDmg, session.enemy.def)
       const matchup = skillMatchup(skill, session.enemy)
       if (matchup.mult !== 1) {
@@ -455,7 +500,10 @@ export function playerAction(
     // combat-handlers creditKill hooks: kill always, level per level-up,
     // floor only for dungeon battles, boss_clear on boss victories.
     recordQuestEvent(player, 'kill', 1)
-    if (session.enemy.isBoss) recordQuestEvent(player, 'boss_clear', 1)
+    if (session.enemy.isBoss) {
+      recordQuestEvent(player, 'boss_clear', 1)
+      if (!session.usedConsumable) recordQuestEvent(player, 'no_item_clear', 1)
+    }
     if (rewards.levelMsgs.length) recordQuestEvent(player, 'level', rewards.levelMsgs.length)
     if (floorsCleared) recordQuestEvent(player, 'floor', 1)
     recordTutorialEvent(player, 'monster_killed')
@@ -504,17 +552,19 @@ export function playerAction(
     events.push({ kind: 'overdrive', text: `${msg} (+${atkGain} ATK, 🛡️ +${shieldAmt})` })
   }
 
+  const roundDef = effectivePlayerForRound(player, session).stats.def
   let landedDmg = 0
-  const enemyHit = calcMonsterHitChance(enemy, player)
+  const enemyHit = calcMonsterHitChance(enemy, effectivePlayerForRound(player, session))
   if (rng() >= enemyHit) {
     events.push({ kind: 'miss', text: `💨 ${enemy.name} misses!` })
   } else {
     // Defending doubles effective DEF for the incoming strike (defend.js).
-    landedDmg = calcMonsterDamage(enemy.atk, player.stats.def, session.defending, rng)
-    player.hp = Math.max(0, player.hp - landedDmg)
+    landedDmg = calcMonsterDamage(enemy.atk, roundDef, session.defending, rng)
+    const hpLost = mitigateIncomingPlayerHit(landedDmg, session)
+    player.hp = Math.max(0, player.hp - hpLost)
     events.push({
       kind: 'hurt',
-      text: `${enemy.name} hits for ${landedDmg} damage. ❤️ ${player.hp}/${player.maxHp}`,
+      text: `${enemy.name} hits for ${hpLost} damage. ❤️ ${player.hp}/${player.maxHp}`,
     })
   }
 
@@ -526,12 +576,13 @@ export function playerAction(
       const refDmg =
         landedDmg > 0
           ? landedDmg
-          : calcMonsterDamage(enemy.atk, player.stats.def, session.defending, rng)
+          : calcMonsterDamage(enemy.atk, roundDef, session.defending, rng)
       const defFactor = session.defending ? 0.42 : 1
-      const bonusDmg = Math.max(
+      const rawBonus = Math.max(
         1,
         Math.round(refDmg * (Math.max(1.75, sig.multiplier ?? 1.75) - 1) * defFactor),
       )
+      const bonusDmg = mitigateIncomingPlayerHit(rawBonus, session)
       player.hp = Math.max(0, player.hp - bonusDmg)
       const castLine = cleanBotText(
         sig.castText || `${enemy.name} unleashes ${sig.name}!`,
@@ -564,6 +615,26 @@ export function playerAction(
       text: `💀 ${player.name} was slain by ${session.enemy.name}… you wake at Astral Town (HP ${player.hp}/${player.maxHp}).`,
     })
     return { events, status: session.status }
+  }
+
+  // Tick end-of-round potion regen & temporary stat draughts
+  if (session.regen && session.regen.remaining > 0) {
+    const stat = session.regen.stat
+    const max = stat === 'mp' ? player.maxMp : player.maxHp
+    const before = player[stat]
+    player[stat] = Math.min(max, before + session.regen.amount)
+    const gained = player[stat] - before
+    session.regen.remaining -= 1
+    if (gained > 0) {
+      events.push({ kind: 'info', text: `💚 Regen restores +${gained} ${stat.toUpperCase()}.` })
+    }
+    if (session.regen.remaining <= 0) session.regen = null
+  }
+  if (session.statBuffs) {
+    for (const [k, v] of Object.entries(session.statBuffs)) {
+      v.remaining -= 1
+      if (v.remaining <= 0) delete session.statBuffs[k]
+    }
   }
 
   session.turn += 1

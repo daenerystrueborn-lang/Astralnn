@@ -1418,6 +1418,106 @@
       "license": "project-owned",
       "source": "generated",
       "replaces": "monster emoji"
+    },
+    "monsters/boss_centurion_1000": {
+      "path": "assets/monsters/boss_centurion_1000.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/boss_crystal_50": {
+      "path": "assets/monsters/boss_crystal_50.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/boss_entry_100": {
+      "path": "assets/monsters/boss_entry_100.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/boss_gambit_1000": {
+      "path": "assets/monsters/boss_gambit_1000.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/boss_gloom_50": {
+      "path": "assets/monsters/boss_gloom_50.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/boss_quiet_15": {
+      "path": "assets/monsters/boss_quiet_15.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/cry_crystal_crawler": {
+      "path": "assets/monsters/cry_crystal_crawler.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/cry_geode_shambler": {
+      "path": "assets/monsters/cry_geode_shambler.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/cry_prism_wraith": {
+      "path": "assets/monsters/cry_prism_wraith.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
+    },
+    "monsters/cry_shard_golem": {
+      "path": "assets/monsters/cry_shard_golem.png",
+      "size": [
+        256,
+        256
+      ],
+      "license": "project-owned",
+      "source": "generated",
+      "replaces": "monster emoji"
     }
   }
 }

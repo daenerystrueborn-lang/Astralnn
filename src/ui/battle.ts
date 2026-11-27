@@ -1,9 +1,17 @@
 // Battle screen — enemy/player panels, HP/MP bars, actions, combat log.
 // One round per click: playerAction() runs the bot's full turn math.
 
-import { locationMap, skillMap } from '../data/index'
+import { gearMap, locationMap, skillMap } from '../data/index'
 import { playerAction, type BattleSession, type BattleAction } from '../engine/battle'
-import { classBattler, monsterOr } from './icon'
+import {
+  BOSS_POTION_LIMIT,
+  bossPotionsRemaining,
+  describeConsumable,
+  isBossPotion,
+  isUsableConsumable,
+  useConsumable,
+} from '../engine/shop'
+import { classBattler, gearIconOr, monsterOr } from './icon'
 import type { Floater, UiContext } from './app'
 
 export function renderBattle(root: HTMLElement, ctx: UiContext): void {
@@ -22,6 +30,27 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
   const equipped = player.equippedSkills
     .map((id) => skillMap[id])
     .filter((s): s is NonNullable<typeof s> => Boolean(s))
+
+  const potionCounts = new Map<string, number>()
+  for (const id of player.inventory) {
+    const it = gearMap[id]
+    if (!isUsableConsumable(it, true)) continue
+    if (enemy.isBoss && !isBossPotion(it)) continue
+    potionCounts.set(id, (potionCounts.get(id) ?? 0) + 1)
+  }
+  const bossPotsLeft = enemy.isBoss ? bossPotionsRemaining(session) : null
+  const heroShield = session.playerShield ?? 0
+  const heroBuffTags: string[] = []
+  if (heroShield > 0) heroBuffTags.push(`<span class="shield-pill">🛡️ ${heroShield}</span>`)
+  if (session.warcry && session.warcry.hits > 0) {
+    heroBuffTags.push(`<span class="tier-tag overdrive">🔥 +${session.warcry.percent}%×${session.warcry.hits}</span>`)
+  }
+  if (session.ironskin && session.ironskin.hits > 0) {
+    heroBuffTags.push(`<span class="shield-pill">🪨 -${session.ironskin.percent}%×${session.ironskin.hits}</span>`)
+  }
+  if (session.regen && session.regen.remaining > 0) {
+    heroBuffTags.push(`<span class="tier-tag">💚 +${session.regen.amount}×${session.regen.remaining}t</span>`)
+  }
 
   const logHtml =
     ctx.battleLog.length === 0
@@ -70,7 +99,7 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
       <div class="combatant${hitSide === 'hero' ? ' hit' : ''}">
         <div class="cname">
           <span class="cname-name">🛡️ ${escapeHtml(player.name)}</span>
-          <span class="muted">Lv ${player.level}</span>
+          <span>${heroBuffTags.join(' ')} <span class="muted">Lv ${player.level}</span></span>
         </div>
         <div class="bar hp"><i style="width:${pct(player.hp, player.maxHp)}%"></i><span>HP ${player.hp}/${player.maxHp}</span></div>
         <div class="bar mp" style="margin-top:4px"><i style="width:${pct(player.mp, player.maxMp)}%"></i><span>MP ${player.mp}/${player.maxMp}</span></div>
@@ -94,6 +123,29 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
           })
           .join('')}
       </div>
+
+      ${
+        potionCounts.size > 0
+          ? `<div class="potion-belt">
+              <div class="potion-belt-head">
+                <span>🧪 Quick Potions</span>
+                ${bossPotsLeft !== null ? `<span class="muted">Boss limit: ${bossPotsLeft}/${BOSS_POTION_LIMIT} left</span>` : '<span class="muted">Free action</span>'}
+              </div>
+              <div class="potion-belt-list">
+                ${[...potionCounts.entries()]
+                  .map(([id, qty]) => {
+                    const it = gearMap[id]!
+                    const capReached = bossPotsLeft !== null && bossPotsLeft <= 0
+                    return `<button class="btn btn-sm btn-ghost potion-chip" data-potion="${id}" ${capReached ? 'disabled' : ''}
+                      title="${escapeHtml(describeConsumable(it))}" type="button">
+                      ${gearIconOr(it)} ${escapeHtml(it.name)} <span class="muted">×${qty}</span>
+                    </button>`
+                  })
+                  .join('')}
+              </div>
+            </div>`
+          : ''
+      }
 
       <div class="log" id="battle-log">${logHtml}</div>
     </div>
@@ -129,6 +181,34 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
   root.querySelector('[data-act="defend"]')!.addEventListener('click', () => act({ kind: 'defend' }))
   root.querySelectorAll<HTMLButtonElement>('[data-skill]').forEach((btn) => {
     btn.addEventListener('click', () => act({ kind: 'skill', skillId: btn.dataset.skill! }))
+  })
+  root.querySelectorAll<HTMLButtonElement>('[data-potion]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      let err: string | undefined
+      const lines: { kind: string; text: string }[] = []
+      ctx.store.update((p) => {
+        const s = p.battleState as unknown as BattleSession
+        const out = useConsumable(p, btn.dataset.potion!, s)
+        if (!out.ok) {
+          err = out.error
+          return
+        }
+        const suffix =
+          out.bossPotionsLeft !== null && out.bossPotionsLeft !== undefined
+            ? ` (${out.bossPotionsLeft}/${BOSS_POTION_LIMIT} boss potions left)`
+            : ''
+        lines.push({
+          kind: 'info',
+          text: `🧪 Used ${out.item?.name}: ${(out.lines ?? []).join(' ')}${suffix}`,
+        })
+      })
+      if (err) {
+        ctx.pushLog([{ kind: 'error', text: err }])
+      } else {
+        ctx.pushLog(lines)
+      }
+      ctx.navigate('battle')
+    })
   })
 }
 

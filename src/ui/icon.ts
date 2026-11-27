@@ -40,6 +40,56 @@ export function iconOr(id: string, fallbackEmoji: string, alt = ''): string {
   return `<img class="i" src="${src}" alt="${alt || id}" draggable="false" />`
 }
 
+/**
+ * Gear / consumable icon from registered manifest packs (Fantasy Potions
+ * Pack 1 + UI gear icons). Falls back to a clean emoji when untyped.
+ */
+export function gearIconOr(item?: {
+  id?: string
+  name?: string
+  type?: string
+  slot?: string | null
+  rarity?: string
+  effect?: { type?: string; stat?: string } | { type?: string; stat?: string }[] | null
+} | null): string {
+  if (!item) return '📦'
+  if (item.type === 'consumable') {
+    const list = Array.isArray(item.effect) ? item.effect : item.effect ? [item.effect] : []
+    const first = list[0]
+    const hasHp = list.some((e) => e?.type === 'heal' && e?.stat === 'hp')
+    const hasMp = list.some((e) => e?.type === 'heal' && e?.stat === 'mp')
+    if (hasHp && hasMp) return iconOr('items/potion_02', '🧪')
+    if (hasHp) return iconOr('icons/health_potion', '🧪')
+    if (hasMp) return iconOr('items/potion_01', '🔮')
+    if (first?.type === 'cure' || first?.type === 'decay_cure') return iconOr('items/potion_03', '🩹')
+    if (first?.type === 'regen') return iconOr('items/potion_04', '🌿')
+    if (first?.type === 'shield') return iconOr('items/potion_05', '🛡️')
+    if (first?.type === 'warcry') return iconOr('items/potion_06', '🔥')
+    if (first?.type === 'ironskin') return iconOr('items/potion_07', '🪨')
+    if (first?.type === 'strengthen') return iconOr('items/potion_08', '⚡')
+    return iconOr('items/potion_09', '🧪')
+  }
+  const nm = (item.name ?? '').toLowerCase()
+  if (item.slot === 'weapon' || item.type === 'weapon') {
+    if (nm.includes('staff') || nm.includes('wand') || nm.includes('rod') || nm.includes('tome')) {
+      return iconOr('icons/staff_blue_crystal', '🪄')
+    }
+    if (nm.includes('bow')) return iconOr('icons/bow_gold', '🏹')
+    if (item.rarity === 'legendary' || item.rarity === 'epic' || item.rarity === 'mythic') {
+      return iconOr('icons/sword_dark', '⚔️')
+    }
+    if (item.rarity === 'rare') return iconOr('icons/sword_ice', '🗡️')
+    return iconOr('icons/sword_iron', '🗡️')
+  }
+  if (item.slot === 'helmet') return iconOr('icons/helmet_steel', '🪖')
+  if (item.slot === 'chestplate' || item.slot === 'armor') return iconOr('icons/armor_red_gold', '👕')
+  if (item.slot === 'boots') return iconOr('icons/boots_leather', '👢')
+  if (item.slot === 'offhand' || item.slot === 'relic') return iconOr('icons/shield_royal', '🛡️')
+  if (item.slot === 'tool') return iconOr('icons/pickaxe', '⛏️')
+  if (item.slot === 'accessory') return iconOr('icons/gem_pink_lotus', '💍')
+  return iconOr('icons/backpack', '📦')
+}
+
 /** Element aliases → the portrait we actually generate (fire=flame etc.). */
 const ELEMENT_PORTRAIT: Record<string, string> = {
   fire: 'flame',
