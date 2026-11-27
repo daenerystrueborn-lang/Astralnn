@@ -4,8 +4,21 @@
 
 import { gearMap, skillMap, skills } from '../data/index'
 import type { GearDef, SkillDef } from '../data/types'
+import { refreshAchievements } from '../engine/achievements'
 import { craftRecipe, craftableCount, getCraftBoard } from '../engine/craft'
-import { PHYSICAL_EQUIPMENT_SLOTS, equipItem, unequipSlot, equippedItemId } from '../engine/equipment'
+import {
+  ENCHANTS,
+  ENCHANT_BOOK_SOLARS,
+  ENCHANT_SOLARS,
+  applyItemEnchant,
+  buyEnchantingBook,
+  enchantBadge,
+  enchantLevel,
+  levelName,
+  levelText,
+  playerEnchantableItems,
+} from '../engine/enchant'
+import { PHYSICAL_EQUIPMENT_SLOTS, equipItem, unequipSlot, equippedItemId, physicalEquipmentSlot } from '../engine/equipment'
 import {
   MAX_SKILL_SLOTS,
   describeSkill,
@@ -22,6 +35,7 @@ import {
   sellInventoryItem,
   shopArmor,
   shopPotions,
+  shopTools,
   shopWeapons,
   useConsumable,
 } from '../engine/shop'
@@ -29,7 +43,7 @@ import { recordTutorialEvent } from '../engine/tutorial'
 import { gearIconOr, iconOr } from './icon'
 import type { UiContext } from './app'
 
-type ViewTab = 'bag' | 'skills' | 'forge' | 'potions' | 'weapons' | 'armor'
+type ViewTab = 'bag' | 'skills' | 'forge' | 'enchant' | 'potions' | 'weapons' | 'armor'
 
 export function renderInventory(root: HTMLElement, ctx: UiContext): void {
   // Tutorial hook: viewing the inventory is the step (event-driven only).
@@ -52,6 +66,7 @@ export function renderInventory(root: HTMLElement, ctx: UiContext): void {
     const slotsHtml = PHYSICAL_EQUIPMENT_SLOTS.map((slot) => {
       const id = equippedItemId(player.equipped, slot)
       const item = id ? gearMap[id] : null
+      const badge = id ? enchantBadge(player, id) : ''
       return `
         <div class="loc" style="cursor:default">
           <div class="item-row">
@@ -59,7 +74,7 @@ export function renderInventory(root: HTMLElement, ctx: UiContext): void {
             <div>
               <div class="loc-sub">${slot}</div>
               <div class="loc-name">${item ? escapeHtml(item.name) : '<span class="muted">empty</span>'}</div>
-              ${item ? `<div class="loc-sub">${describeGear(item)}</div>` : ''}
+              ${item ? `<div class="loc-sub">${describeGear(item)}${badge ? ` · <span style="color:var(--gold-bright)">${escapeHtml(badge)}</span>` : ''}</div>` : ''}
             </div>
           </div>
           ${item ? `<button class="btn btn-sm btn-ghost" data-unequip="${slot}" type="button">✕</button>` : ''}
@@ -70,6 +85,7 @@ export function renderInventory(root: HTMLElement, ctx: UiContext): void {
       .map(([id, qty]) => {
         const item = gearMap[id]
         if (!item) return ''
+        const badge = enchantBadge(player, id)
         const equippable = Boolean(
         item.slot && item.type !== 'consumable' && item.type !== 'material' && item.type !== 'trophy',
       )
@@ -81,7 +97,7 @@ export function renderInventory(root: HTMLElement, ctx: UiContext): void {
               <span class="item-icon">${gearIconOr(item)}</span>
               <div>
                 <div class="loc-name">${escapeHtml(item.name)}${qty > 1 ? ` <span class="muted">×${qty}</span>` : ''}</div>
-                <div class="loc-sub">${item.type === 'consumable' ? describeConsumable(item) : describeGear(item)}</div>
+                <div class="loc-sub">${item.type === 'consumable' ? describeConsumable(item) : describeGear(item)}${badge ? ` · <span style="color:var(--gold-bright)">${escapeHtml(badge)}</span>` : ''}</div>
               </div>
             </div>
             <div class="item-actions">
@@ -147,9 +163,10 @@ export function renderInventory(root: HTMLElement, ctx: UiContext): void {
         <button class="tab ${view === 'bag' ? 'active' : ''}" data-view="bag" type="button">🎒 Bag & Gear</button>
         <button class="tab ${view === 'skills' ? 'active' : ''}" data-view="skills" type="button">⚡ Skills (${getEquippedSkills(player).length}/${MAX_SKILL_SLOTS})</button>
         <button class="tab ${view === 'forge' ? 'active' : ''}" data-view="forge" type="button">🔨 Forge${craftableCount(player) ? ` · ${craftableCount(player)}` : ''}</button>
+        <button class="tab ${view === 'enchant' ? 'active' : ''}" data-view="enchant" type="button">✨ Enchant</button>
         <button class="tab ${view === 'potions' ? 'active' : ''}" data-view="potions" type="button">🧪 Potions</button>
         <button class="tab ${view === 'weapons' ? 'active' : ''}" data-view="weapons" type="button">⚔️ Weapons</button>
-        <button class="tab ${view === 'armor' ? 'active' : ''}" data-view="armor" type="button">🛡️ Armor</button>
+        <button class="tab ${view === 'armor' ? 'active' : ''}" data-view="armor" type="button">🛡️ Armor & Tools</button>
       </div>
 
       ${bannerMsg ? `<div class="shop-notice" role="status">${escapeHtml(bannerMsg)}</div>` : ''}
@@ -169,11 +186,14 @@ export function renderInventory(root: HTMLElement, ctx: UiContext): void {
             ? renderSkillLoadout(player)
             : view === 'forge'
               ? renderForgePanel(player, forgeCategory)
-              : view === 'potions'
-                ? `<div class="panel"><h3>🧪 Apothecary · Potions & Tonics</h3>${renderShelf(shopPotions, true)}</div>`
-                : view === 'weapons'
-                  ? `<div class="panel"><h3>⚔️ Blacksmith · Weapons</h3>${renderShelf(shopWeapons, false)}</div>`
-                  : `<div class="panel"><h3>🛡️ Armorer · Armor & Relics</h3>${renderShelf(shopArmor, false)}</div>`
+              : view === 'enchant'
+                ? renderEnchantPanel(player, counts)
+                : view === 'potions'
+                  ? `<div class="panel"><h3>🧪 Apothecary · Potions & Tonics</h3>${renderShelf(shopPotions, true)}</div>`
+                  : view === 'weapons'
+                    ? `<div class="panel"><h3>⚔️ Blacksmith · Weapons</h3>${renderShelf(shopWeapons, false)}</div>`
+                    : `<div class="panel"><h3>⛏️ Pickaxes & Gathering Tools</h3>${renderShelf(shopTools, false)}</div>
+                       <div class="panel"><h3>🛡️ Armorer · Armor & Relics</h3>${renderShelf(shopArmor, false)}</div>`
       }
     `
 
@@ -282,9 +302,37 @@ export function renderInventory(root: HTMLElement, ctx: UiContext): void {
         let res: ReturnType<typeof craftRecipe> | null = null
         ctx.store.update((p) => {
           res = craftRecipe(p, btn.dataset.forge!)
+          if (res.ok) refreshAchievements(p)
         })
         if (!res!.ok) alert(res!.error)
         else bannerMsg = `🔨 Forged ${res!.item?.name} (−☀️ ${res!.solarsSpent})!`
+        draw()
+      })
+    })
+    root.querySelector('#enchant-unlock')?.addEventListener('click', () => {
+      let res: ReturnType<typeof buyEnchantingBook> | null = null
+      ctx.store.update((p) => {
+        res = buyEnchantingBook(p)
+        if (res.ok) refreshAchievements(p)
+      })
+      if (!res!.ok) alert(res!.error)
+      else bannerMsg = `📖 Unlocked the Enchanting Book! You can now imbue your gear.`
+      draw()
+    })
+    root.querySelectorAll<HTMLButtonElement>('[data-enchant-apply]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const [itemId, enchantId] = (btn.dataset.enchantApply ?? '').split(':')
+        if (!itemId || !enchantId) return
+        let res: ReturnType<typeof applyItemEnchant> | null = null
+        ctx.store.update((p) => {
+          res = applyItemEnchant(p, itemId, enchantId)
+          if (res.ok) refreshAchievements(p)
+        })
+        if (!res!.ok) alert(res!.error)
+        else {
+          const item = gearMap[itemId]
+          bannerMsg = `✨ Applied ${levelName(enchantId, res!.newLevel!)} to ${item?.name ?? itemId}!`
+        }
         draw()
       })
     })
@@ -417,6 +465,94 @@ function renderForgePanel(
       </div>
       ${listHtml || '<p class="muted">No recipes in this category.</p>'}
     </div>`
+}
+
+function renderEnchantPanel(
+  player: Parameters<typeof playerEnchantableItems>[0],
+  counts: Map<string, number>,
+): string {
+  if (!player.enchantingBook?.unlocked) {
+    const canBuy = (player.wallet?.solars ?? 0) >= ENCHANT_BOOK_SOLARS
+    return `
+      <div class="panel">
+        <div class="row">
+          <div>
+            <h3>✨ Enchanting Table · Locked</h3>
+            <p class="muted">Unlock the Enchanting Book (☀️ ${ENCHANT_BOOK_SOLARS.toLocaleString()}) to imbue weapons, armor & pickaxes with Sharpness, Protection, Looting & Efficiency.</p>
+          </div>
+          <button class="btn btn-sm ${canBuy ? 'btn-primary' : 'btn-ghost'}" id="enchant-unlock" ${canBuy ? '' : 'disabled'} type="button">
+            📖 Unlock · ☀️${ENCHANT_BOOK_SOLARS.toLocaleString()}
+          </button>
+        </div>
+        <div style="margin-top:10px">
+          ${ENCHANTS.map(
+            (e) => `<div class="loc" style="cursor:default">
+              <div>
+                <div class="loc-name">${e.icon} ${escapeHtml(e.name)} <span class="muted">· up to Lv ${e.maxLevel} · ${e.slots.join(', ')}</span></div>
+                <div class="loc-sub">${escapeHtml(e.blurb)}</div>
+              </div>
+            </div>`,
+          ).join('')}
+        </div>
+      </div>`
+  }
+
+  const gearList = playerEnchantableItems(player)
+  if (!gearList.length) {
+    return `<div class="panel"><h3>✨ Enchanting Table</h3><p class="muted">Carry or equip a weapon, armor piece, or pickaxe to enchant it.</p></div>`
+  }
+
+  const cards = gearList
+    .map((item) => {
+      const slot = item.slot ? physicalEquipmentSlot(item.slot) : ''
+      const compatible = ENCHANTS.filter((e) => e.slots.includes(slot))
+      const rows = compatible
+        .map((enc) => {
+          const cur = enchantLevel(player, item.id, enc.id)
+          const maxed = cur >= enc.maxLevel
+          const next = cur + 1
+          const reqs = enc.cost[cur]?.items ?? []
+          const matText = reqs
+            .map((r) => {
+              const have = counts.get(r.itemId) ?? 0
+              const nm = gearMap[r.itemId]?.name ?? r.itemId
+              return `${nm} ${have}/${r.qty}`
+            })
+            .join(' · ')
+          const canAfford =
+            !maxed &&
+            (player.wallet?.solars ?? 0) >= ENCHANT_SOLARS &&
+            reqs.every((r) => (counts.get(r.itemId) ?? 0) >= r.qty)
+          return `
+            <div class="loc" style="cursor:default;margin-top:6px">
+              <div>
+                <div class="loc-name">${enc.icon} ${escapeHtml(enc.name)} ${cur > 0 ? `<span style="color:var(--gold-bright)">Lv ${cur}/${enc.maxLevel}</span>` : `<span class="muted">0/${enc.maxLevel}</span>`}</div>
+                <div class="loc-sub">${maxed ? escapeHtml(levelText(enc.id, cur)) : `Next: ${escapeHtml(levelText(enc.id, next))} · ${escapeHtml(matText)} · ☀️${ENCHANT_SOLARS.toLocaleString()}`}</div>
+              </div>
+              ${
+                maxed
+                  ? `<span class="conquered-pill">MAX</span>`
+                  : `<button class="btn btn-sm ${canAfford ? 'btn-primary' : 'btn-ghost'}" data-enchant-apply="${item.id}:${enc.id}" ${canAfford ? '' : 'disabled'} type="button">
+                       ✨ Imbue
+                     </button>`
+              }
+            </div>`
+        })
+        .join('')
+      return `
+        <div class="panel">
+          <h3>${gearIconOr(item)} ${escapeHtml(item.name)} <span class="muted">· ${slot}</span></h3>
+          ${rows}
+        </div>`
+    })
+    .join('')
+
+  return `
+    <div class="panel">
+      <h3>✨ Enchanting Table · Astral Sanctum</h3>
+      <p class="muted">Imbue your worn or carried equipment (☀️ ${ENCHANT_SOLARS.toLocaleString()} table fee + ores & reagents per tier).</p>
+    </div>
+    ${cards}`
 }
 
 function describeGear(item: GearDef): string {

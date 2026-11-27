@@ -8,7 +8,9 @@ import type {
   ClassDef,
   CurrencyDef,
   EffectivenessData,
+  EnchantmentCatalog,
   GearDef,
+  HousingCatalog,
   LevelsData,
   LocationDef,
   MonsterDef,
@@ -45,6 +47,8 @@ import auctionRaw from './raw/auction.json'
 import seasonPackItemsRaw from './raw/season-pack-items.json'
 import recipesRaw from './raw/recipes.json'
 import achievementsRaw from './raw/achievements.json'
+import enchantmentsRaw from './raw/enchantments.json'
+import housingRaw from './raw/housing.json'
 
 export const classes = classesRaw as unknown as Record<string, ClassDef>
 export const races = racesRaw as unknown as Record<string, RaceDef>
@@ -65,6 +69,8 @@ export const bossGear = bossGearRaw as unknown as GearDef[]
 export const tools = toolsRaw as unknown as GearDef[]
 export const recipes = recipesRaw as unknown as RecipeDef[]
 export const achievementsCatalog = achievementsRaw as unknown as AchievementCatalog
+export const enchantmentData = enchantmentsRaw as unknown as EnchantmentCatalog
+export const housingData = housingRaw as unknown as HousingCatalog
 
 const season1Items = season1ItemsRaw as unknown as GearDef[]
 const season1Weapons = season1WeaponsRaw as unknown as GearDef[]

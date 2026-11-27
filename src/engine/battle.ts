@@ -11,6 +11,7 @@ import {
   calcMonsterDamage,
   rollDrops,
 } from './combat'
+import { protectionMultiplier, type EnchantCarrier } from './enchant'
 import { skillMatchup } from './matchup'
 import { applyLevelUps, getRankForLevel, type ProgressPlayer } from './progression'
 import { expectedLevelAtFloor, regulateBossXp, regulateMonsterXp, survivalKillXp } from './xp'
@@ -279,7 +280,7 @@ export function startBattle(
  * Then XP lands, wallet fills, applyLevelUps runs (bot order).
  */
 export function creditKillV0(
-  player: ProgressPlayer & { wallet: Record<string, number>; inventory: string[] },
+  player: ProgressPlayer & EnchantCarrier & { wallet: Record<string, number>; inventory: string[] },
   enemy: Enemy,
   killTurns: number,
   rng: Rng = defaultRng,
@@ -293,7 +294,7 @@ export function creditKillV0(
   })
   const solars = enemy.solars
 
-  const drops = rollDrops(enemy.drops, rng)
+  const drops = rollDrops(enemy.drops, rng, player)
 
   player.xp += xp
   player.wallet.solars = (player.wallet.solars ?? 0) + solars
@@ -353,8 +354,16 @@ function effectivePlayerForRound<T extends { stats: Record<string, number> }>(
   return { ...player, stats: boosted }
 }
 
-function mitigateIncomingPlayerHit(rawDmg: number, session: BattleSession): number {
+function mitigateIncomingPlayerHit(
+  rawDmg: number,
+  session: BattleSession,
+  player?: EnchantCarrier | null,
+): number {
   let dmg = rawDmg
+  const protMult = protectionMultiplier(player)
+  if (protMult < 1) {
+    dmg = Math.max(1, Math.floor(dmg * protMult))
+  }
   if (session.ironskin && session.ironskin.hits > 0) {
     dmg = Math.max(1, Math.floor(dmg * (1 - session.ironskin.percent / 100)))
     session.ironskin.hits -= 1
@@ -519,7 +528,7 @@ export function playerAction(
     titles?: string[]
     quests: QuestStateShape
     tutorial: TutorialStateShape
-  },
+  } & EnchantCarrier,
   session: BattleSession,
   action: BattleAction,
   rng: Rng = defaultRng,
@@ -770,7 +779,7 @@ export function playerAction(
     } else {
       // Defending doubles effective DEF for the incoming strike (defend.js).
       landedDmg = calcMonsterDamage(effEnemyAtk, roundDef, session.defending, rng)
-      const hpLost = mitigateIncomingPlayerHit(landedDmg, session)
+      const hpLost = mitigateIncomingPlayerHit(landedDmg, session, player)
       player.hp = Math.max(0, player.hp - hpLost)
       events.push({
         kind: 'hurt',
@@ -793,7 +802,7 @@ export function playerAction(
         1,
         Math.round(refDmg * (Math.max(1.75, sig.multiplier ?? 1.75) - 1) * defFactor),
       )
-      const bonusDmg = mitigateIncomingPlayerHit(rawBonus, session)
+      const bonusDmg = mitigateIncomingPlayerHit(rawBonus, session, player)
       player.hp = Math.max(0, player.hp - bonusDmg)
       const castLine = cleanBotText(
         sig.castText || `${enemy.name} unleashes ${sig.name}!`,

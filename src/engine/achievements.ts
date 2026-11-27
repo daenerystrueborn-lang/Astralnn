@@ -51,6 +51,7 @@ export interface AchievementPlayerSlice extends RewardPlayer {
   title?: string
   quests: QuestStateShape
   achievements?: AchievementStateShape
+  enchantingBook?: { unlocked?: boolean }
   storyProgress?: { volumes?: Record<string, unknown> }
 }
 
@@ -70,7 +71,7 @@ const STAT_EVALUATORS: Record<string, (p: AchievementPlayerSlice) => number> = {
   level: (p) => p.level ?? 1,
   solars: (p) => Math.floor(p.wallet?.solars ?? 0),
   gems: (p) => Math.floor(p.wallet?.gems ?? 0),
-  vault: () => 0,
+  vault: (p) => Math.floor((p.wallet as Record<string, number> | undefined)?.vault ?? 0),
   seasonPoints: () => 0,
   characters: (p) => (p.ownedCharacters ?? []).length,
   pets: () => 0,
@@ -82,7 +83,7 @@ const STAT_EVALUATORS: Record<string, (p: AchievementPlayerSlice) => number> = {
   title: (p) => (p.title ? 1 : 0),
   chest: () => 0,
   ender: () => 0,
-  enchantBook: () => 0,
+  enchantBook: (p) => (p.enchantingBook?.unlocked ? 1 : 0),
   premium: () => 0,
   storyVolumes: (p) => Object.keys(p.storyProgress?.volumes ?? {}).length,
   pvpWins: () => 0,

@@ -257,6 +257,12 @@ export interface ItemEffectDef {
   finalFormThreshold?: number
 }
 
+export interface MiningBonus {
+  extraOreChance?: number
+  rareWeightMult?: number
+  bonusOreChance?: number
+}
+
 export interface GearDef {
   id: string
   name: string
@@ -265,6 +271,7 @@ export interface GearDef {
   rarity: string
   levelReq: number
   statBonuses: StatBlock & { maxHp: number; maxMp: number; atk?: number }
+  miningBonus?: MiningBonus
   sellPrice: number
   buyPrice?: number | null
   gemPrice?: number | null
@@ -309,4 +316,43 @@ export interface AchievementCatalog {
   tiers: Record<string, { label: string; emoji: string; points: number }>
   tracks: Record<string, string>
   achievements: AchievementDef[]
+}
+
+export interface EnchantLevelDef {
+  daily?: number
+  threshold?: number
+  chunk?: number
+  rescue?: number
+  wear?: number
+  damagePct?: number
+  reductionPct?: number
+  chance?: number
+}
+
+export interface EnchantDef {
+  id: string
+  name: string
+  icon: string
+  maxLevel: number
+  slots: string[]
+  blurb: string
+  levels: EnchantLevelDef[]
+  cost: { items: { itemId: string; qty: number }[] }[]
+}
+
+export interface EnchantmentCatalog {
+  prices: { bookSolars: number; perEnchantSolars: number }
+  enchants: EnchantDef[]
+}
+
+export interface FishDef {
+  id: string
+  name: string
+  weight: number
+  sell: number
+  difficulty: number
+}
+
+export interface HousingCatalog {
+  fish: FishDef[]
 }

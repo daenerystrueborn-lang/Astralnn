@@ -5,6 +5,12 @@ import { claimableAchievementCount, refreshAchievements } from '../engine/achiev
 import { syncEquippedCharacterBonus } from '../engine/equipment'
 import { innRestQuote, restAtInn, type InnRestMode } from '../engine/inn'
 import {
+  castFishingLine,
+  fishCooldownRemainingMs,
+  getFishBucketSummary,
+  sellFishBucket,
+} from '../engine/gather'
+import {
   JOBS,
   JOB_LIST,
   JOB_SHIFTS_PER_LEVEL,
@@ -30,6 +36,10 @@ function xpIntoLevel(level: number, xp: number, xpFor: (l: number) => number): {
 }
 
 export function renderHub(root: HTMLElement, ctx: UiContext): void {
+  let fishNotice = ''
+  drawHub()
+
+  function drawHub(): void {
   ctx.store.update((p) => {
     syncEquippedCharacterBonus(p)
     unlockEligibleSkills(p, skills)
@@ -44,6 +54,9 @@ export function renderHub(root: HTMLElement, ctx: UiContext): void {
   const activeJob = player.job ? JOBS[player.job] : null
   const workCoolMs = workCooldownRemainingMs(player)
   const workCoolMins = workCoolMs > 0 ? Math.max(1, Math.ceil(workCoolMs / 60_000)) : 0
+  const fishCoolMs = fishCooldownRemainingMs(player)
+  const fishCoolMins = fishCoolMs > 0 ? Math.max(1, Math.ceil(fishCoolMs / 60_000)) : 0
+  const bucket = getFishBucketSummary(player)
 
   // Tutorial card + quest/achievement badge.
   ensureQuestState(player)
@@ -189,6 +202,39 @@ export function renderHub(root: HTMLElement, ctx: UiContext): void {
       }
     </div>
 
+    <div class="panel">
+      <div class="row">
+        <div>
+          <h3>🎣 Astral Pier Fishing</h3>
+          <p class="muted">
+            ${
+              bucket.totalCount > 0
+                ? `Bucket: <b style="color:var(--ink)">${bucket.totalCount} fish</b> (☀️ ${bucket.totalWorth.toLocaleString()})`
+                : 'Pick a float spot to cast your line — land Silver Minnows up to Void Koi!'
+            }
+          </p>
+        </div>
+        <div class="item-actions">
+          ${
+            fishCoolMins
+              ? `<button class="btn btn-sm btn-ghost" disabled type="button">⏳ ${fishCoolMins}m</button>`
+              : [1, 2, 3, 4]
+                  .map(
+                    (spot) =>
+                      `<button class="btn btn-sm" data-fish-spot="${spot}" title="Cast at Spot ${spot}" type="button">🎣 #${spot}</button>`,
+                  )
+                  .join('')
+          }
+          ${
+            bucket.totalCount > 0
+              ? `<button class="btn btn-sm btn-primary" id="fish-sell" type="button">💰 Sell ☀️${bucket.totalWorth.toLocaleString()}</button>`
+              : ''
+          }
+        </div>
+      </div>
+      ${fishNotice ? `<div class="shop-notice" style="margin-top:8px" role="status">${fishNotice}</div>` : ''}
+    </div>
+
     <h2>Choose your battle</h2>
     <div id="loc-list">
       ${dungeonLocs
@@ -254,6 +300,36 @@ export function renderHub(root: HTMLElement, ctx: UiContext): void {
       resignJob(p)
     })
     ctx.navigate('hub')
+  })
+  root.querySelectorAll<HTMLButtonElement>('[data-fish-spot]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const spot = Number(btn.dataset.fishSpot) || 1
+      let res: ReturnType<typeof castFishingLine> | null = null
+      ctx.store.update((p) => {
+        res = castFishingLine(p, spot)
+        if (res.ok) refreshAchievements(p)
+      })
+      if (!res!.ok) {
+        fishNotice = `⏳ ${res!.error}`
+      } else if (res!.caught) {
+        fishNotice = `🐟 Landed ${res!.fish!.name} at Spot #${res!.winningSpot}! (Worth ☀️ ${res!.fish!.sell.toLocaleString()})`
+      } else {
+        fishNotice = `💦 Splash! A ${res!.fish!.name} nibbled Spot #${res!.winningSpot} (you cast #${res!.chosenSpot}/${res!.slots}) and slipped away.`
+      }
+      drawHub()
+    })
+  })
+  root.querySelector('#fish-sell')?.addEventListener('click', () => {
+    let soldMsg = ''
+    ctx.store.update((p) => {
+      const res = sellFishBucket(p)
+      if (res.ok) {
+        refreshAchievements(p)
+        soldMsg = `💰 Sold ${res.soldCount} fish for ☀️ ${res.earned!.toLocaleString()} Solars!`
+      }
+    })
+    if (soldMsg) fishNotice = soldMsg
+    drawHub()
   })
   root.querySelector('#job-work')?.addEventListener('click', () => {
     let summary = ''
@@ -359,5 +435,6 @@ export function renderHub(root: HTMLElement, ctx: UiContext): void {
         alert(err instanceof Error ? err.message : String(err))
       }
     })
+  }
   }
 }

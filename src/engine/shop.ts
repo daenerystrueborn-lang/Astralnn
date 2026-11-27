@@ -2,7 +2,7 @@
 // plugins/shop.js (handleBuy / handleSell), plugins/use.js, and
 // lib/boss-potions.js (BOSS_POTION_LIMIT = 7).
 
-import { gearMap, items, weapons } from '../data/index'
+import { gearMap, items, tools, weapons } from '../data/index'
 import type { GearDef, ItemEffectDef } from '../data/types'
 import { recordQuestEvent, type QuestStateShape } from './quests'
 
@@ -43,7 +43,10 @@ export const shopPotions: GearDef[] = items
   )
   .sort((a, b) => (a.buyPrice ?? 0) - (b.buyPrice ?? 0))
 
-// ── Buy & Sell (plugins/shop.js) ───────────────────────────────────────────
+/** Buyable Solars tools (pickaxes from tools.json). */
+export const shopTools: GearDef[] = tools
+  .filter((t) => typeof t.buyPrice === 'number' && t.buyPrice > 0)
+  .sort(byLevelThenPrice)
 
 export interface ShopPlayer {
   level: number

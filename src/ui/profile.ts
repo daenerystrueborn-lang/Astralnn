@@ -2,10 +2,12 @@
 // Opening the record records the tutorial's profile_viewed event.
 
 import { classes, races } from '../data/index'
+import { refreshAchievements } from '../engine/achievements'
 import { getTotalStats } from '../engine/stats'
 import { addAllocation, getRankForLevel, trainCostPerPoint, trainPlayer, statPointCap, getXpProgress } from '../engine/progression'
 import { claimDaily } from '../engine/daily'
 import { getCurrentStep, recordTutorialEvent, skipTutorial, tutorialProgress } from '../engine/tutorial'
+import { depositToVault, getVaultBalance, withdrawFromVault } from '../engine/vault'
 import { classBattler, iconOr } from './icon'
 import type { UiContext } from './app'
 import type { StatKey } from '../engine/stats'
@@ -106,6 +108,21 @@ export function renderProfile(root: HTMLElement, ctx: UiContext): void {
       <div class="panel">
         <div class="row">
           <div>
+            <h3>🏦 Astral Vault</h3>
+            <p class="muted">Stored safely: <b style="color:var(--gold-bright)">☀️ ${getVaultBalance(p).toLocaleString()}</b> · Wallet: ☀️ ${Math.floor(p.wallet.solars).toLocaleString()}</p>
+          </div>
+          <div class="item-actions">
+            <button class="btn btn-sm" data-vault-dep="1000" ${p.wallet.solars < 1000 ? 'disabled' : ''} type="button">+1k</button>
+            <button class="btn btn-sm" data-vault-dep="10000" ${p.wallet.solars < 10000 ? 'disabled' : ''} type="button">+10k</button>
+            <button class="btn btn-sm btn-primary" id="vault-dep-all" ${p.wallet.solars < 1 ? 'disabled' : ''} type="button">Deposit All</button>
+            <button class="btn btn-sm btn-ghost" id="vault-wd-all" ${getVaultBalance(p) < 1 ? 'disabled' : ''} type="button">Withdraw All</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="row">
+          <div>
             <h3>Daily reward</h3>
             <p class="muted">
               🔥 Streak ${p.dailyStreak}${p.bestDailyStreak ? ` (best ${p.bestDailyStreak})` : ''}
@@ -145,9 +162,35 @@ export function renderProfile(root: HTMLElement, ctx: UiContext): void {
       btn.addEventListener('click', () => {
         ctx.store.update((pl) => {
           pl.title = btn.dataset.title!
+          refreshAchievements(pl)
         })
         draw()
       })
+    })
+    root.querySelectorAll<HTMLButtonElement>('[data-vault-dep]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const amt = Number(btn.dataset.vaultDep) || 0
+        ctx.store.update((pl) => {
+          depositToVault(pl, amt)
+          refreshAchievements(pl)
+        })
+        draw()
+      })
+    })
+    root.querySelector('#vault-dep-all')?.addEventListener('click', () => {
+      ctx.store.update((pl) => {
+        const all = Math.floor(pl.wallet.solars)
+        if (all > 0) depositToVault(pl, all)
+        refreshAchievements(pl)
+      })
+      draw()
+    })
+    root.querySelector('#vault-wd-all')?.addEventListener('click', () => {
+      ctx.store.update((pl) => {
+        const all = getVaultBalance(pl)
+        if (all > 0) withdrawFromVault(pl, all)
+      })
+      draw()
     })
     for (const n of [5, 15]) {
       root.querySelector(`#train-${n}`)?.addEventListener('click', () => {
