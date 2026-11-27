@@ -76,12 +76,17 @@ export interface SkillEffect {
   multiplier?: number
   value?: number
   duration?: number
+  turns?: number
+  pct?: number
+  dmgPct?: number
 }
 
 export interface SkillDef {
   id: string
   name: string
   classId: string
+  universalNeutral?: boolean
+  source?: string
   tier: string
   unlockLevel: number
   mpCost: number
@@ -117,8 +122,13 @@ export interface CharacterDef {
   image?: string
   description?: string
   exclusive?: boolean
-  ability?: Record<string, unknown>
-  statBonuses?: Partial<StatBlock>
+  ability?: {
+    name?: string
+    description?: string
+    trigger?: string
+    [key: string]: unknown
+  }
+  statBonuses?: Partial<TotalStats & { atk: number }>
 }
 
 export interface MonsterRewards {

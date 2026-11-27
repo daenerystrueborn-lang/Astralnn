@@ -86,6 +86,8 @@ export interface Player {
 
   ownedCharacters: string[]
   equippedCharacter: string | null
+  /** Tracks which character's statBonuses are currently folded into live stats. */
+  characterBonusApplied?: string | null
 
   location: string
   inDungeon: boolean

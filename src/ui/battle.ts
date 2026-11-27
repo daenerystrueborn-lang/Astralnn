@@ -1,8 +1,9 @@
 // Battle screen — enemy/player panels, HP/MP bars, actions, combat log.
 // One round per click: playerAction() runs the bot's full turn math.
 
-import { gearMap, locationMap, skillMap } from '../data/index'
+import { characterMap, gearMap, locationMap, skillMap } from '../data/index'
 import { playerAction, type BattleSession, type BattleAction } from '../engine/battle'
+import { syncEquippedCharacterBonus } from '../engine/equipment'
 import {
   BOSS_POTION_LIMIT,
   bossPotionsRemaining,
@@ -15,6 +16,9 @@ import { classBattler, gearIconOr, monsterOr } from './icon'
 import type { Floater, UiContext } from './app'
 
 export function renderBattle(root: HTMLElement, ctx: UiContext): void {
+  ctx.store.update((p) => {
+    syncEquippedCharacterBonus(p)
+  })
   const player = ctx.store.requireState()
   const session = (player.battleState ?? null) as unknown as BattleSession | null
   if (!session || session.status !== 'active') {
@@ -23,6 +27,7 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
   }
 
   const enemy = session.enemy
+  const companion = player.equippedCharacter ? characterMap[player.equippedCharacter] : null
   const tierClass = enemy.isBoss ? 'boss' : enemy.tier === 'elite' ? 'elite' : ''
   const locTitle = locationMap[session.locationId]?.name ?? session.locationId
   const shieldVal = enemy.shield ?? 0
@@ -51,6 +56,30 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
   if (session.regen && session.regen.remaining > 0) {
     heroBuffTags.push(`<span class="tier-tag">💚 +${session.regen.amount}×${session.regen.remaining}t</span>`)
   }
+  if (companion) {
+    heroBuffTags.push(`<span class="tier-tag" title="${escapeHtml(companion.name)}">${companion.emoji}</span>`)
+  }
+
+  const enemyStatusTags = (session.enemyEffects ?? [])
+    .filter((fx) => fx.remaining > 0)
+    .map((fx) => {
+      const icon =
+        fx.type === 'burn'
+          ? '🔥'
+          : fx.type === 'poison'
+            ? '☠️'
+            : fx.type === 'bleed'
+              ? '🩸'
+              : fx.type === 'stun'
+                ? '💫'
+                : fx.type === 'freeze'
+                  ? '❄️'
+                  : fx.type === 'blind'
+                    ? '🌑'
+                    : '📉'
+      return `<span class="tier-tag">${icon} ${fx.remaining}t</span>`
+    })
+    .join(' ')
 
   const logHtml =
     ctx.battleLog.length === 0
@@ -81,6 +110,7 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
         <div class="cname">
           <span class="cname-name">${enemy.emoji} ${escapeHtml(enemy.name)}</span>
           <span>
+            ${enemyStatusTags ? `${enemyStatusTags} ` : ''}
             ${enemy.enraged ? `<span class="tier-tag overdrive">🔥 overdrive</span> ` : ''}
             ${shieldVal > 0 ? `<span class="shield-pill">🛡️ ${shieldVal}</span> ` : ''}
             <span class="tier-tag ${tierClass}">${enemy.tier}</span>
@@ -227,6 +257,9 @@ function floatersFrom(events: { kind: string; text: string }[]): Floater[] {
     } else if (e.kind === 'hurt') {
       const m = e.text.match(/for (\d+) damage/)
       out.push({ side: 'hero', kind: 'hurt', text: m ? `-${m[1]}` : 'OUCH' })
+    } else if (e.kind === 'heal') {
+      const m = e.text.match(/\+(\d+)/) ?? e.text.match(/(\d+)\s*HP/)
+      out.push({ side: 'hero', kind: 'heal', text: m ? `+${m[1]}` : 'BUFF' })
     } else if (e.kind === 'miss') {
       // Player misses read "strike misses"; enemy misses just "misses".
       const playerMissed = e.text.includes('strike misses')

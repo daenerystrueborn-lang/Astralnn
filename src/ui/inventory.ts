@@ -2,9 +2,18 @@
 // drink consumables, sell spare items, and browse/buy from the Town Shop.
 // Opening this screen records the tutorial's inventory_viewed event.
 
-import { gearMap } from '../data/index'
-import type { GearDef } from '../data/types'
+import { gearMap, skillMap, skills } from '../data/index'
+import type { GearDef, SkillDef } from '../data/types'
 import { PHYSICAL_EQUIPMENT_SLOTS, equipItem, unequipSlot, equippedItemId } from '../engine/equipment'
+import {
+  MAX_SKILL_SLOTS,
+  describeSkill,
+  equipSkillSlot,
+  getEquippedSkills,
+  resetBestSkillSlots,
+  unequipSkillSlot,
+  unlockEligibleSkills,
+} from '../engine/skills'
 import {
   buyShopItem,
   describeConsumable,
@@ -19,12 +28,13 @@ import { recordTutorialEvent } from '../engine/tutorial'
 import { gearIconOr, iconOr } from './icon'
 import type { UiContext } from './app'
 
-type ViewTab = 'bag' | 'potions' | 'weapons' | 'armor'
+type ViewTab = 'bag' | 'skills' | 'potions' | 'weapons' | 'armor'
 
 export function renderInventory(root: HTMLElement, ctx: UiContext): void {
   // Tutorial hook: viewing the inventory is the step (event-driven only).
   ctx.store.update((p) => {
     recordTutorialEvent(p, 'inventory_viewed')
+    unlockEligibleSkills(p, skills)
   })
 
   let view: ViewTab = 'bag'
@@ -131,6 +141,7 @@ export function renderInventory(root: HTMLElement, ctx: UiContext): void {
 
       <div class="tabs">
         <button class="tab ${view === 'bag' ? 'active' : ''}" data-view="bag" type="button">🎒 Bag & Gear</button>
+        <button class="tab ${view === 'skills' ? 'active' : ''}" data-view="skills" type="button">⚡ Skills (${getEquippedSkills(player).length}/${MAX_SKILL_SLOTS})</button>
         <button class="tab ${view === 'potions' ? 'active' : ''}" data-view="potions" type="button">🧪 Potions</button>
         <button class="tab ${view === 'weapons' ? 'active' : ''}" data-view="weapons" type="button">⚔️ Weapons</button>
         <button class="tab ${view === 'armor' ? 'active' : ''}" data-view="armor" type="button">🛡️ Armor</button>
@@ -149,11 +160,13 @@ export function renderInventory(root: HTMLElement, ctx: UiContext): void {
               <h3>Carried</h3>
               ${bagRows || '<p class="muted">Nothing carried — visit 🧪 Potions or ⚔️ Weapons to gear up.</p>'}
             </div>`
-          : view === 'potions'
-            ? `<div class="panel"><h3>🧪 Apothecary · Potions & Tonics</h3>${renderShelf(shopPotions, true)}</div>`
-            : view === 'weapons'
-              ? `<div class="panel"><h3>⚔️ Blacksmith · Weapons</h3>${renderShelf(shopWeapons, false)}</div>`
-              : `<div class="panel"><h3>🛡️ Armorer · Armor & Relics</h3>${renderShelf(shopArmor, false)}</div>`
+          : view === 'skills'
+            ? renderSkillLoadout(player)
+            : view === 'potions'
+              ? `<div class="panel"><h3>🧪 Apothecary · Potions & Tonics</h3>${renderShelf(shopPotions, true)}</div>`
+              : view === 'weapons'
+                ? `<div class="panel"><h3>⚔️ Blacksmith · Weapons</h3>${renderShelf(shopWeapons, false)}</div>`
+                : `<div class="panel"><h3>🛡️ Armorer · Armor & Relics</h3>${renderShelf(shopArmor, false)}</div>`
       }
     `
 
@@ -224,7 +237,101 @@ export function renderInventory(root: HTMLElement, ctx: UiContext): void {
         draw()
       })
     })
+    root.querySelectorAll<HTMLButtonElement>('[data-skill-equip]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        let res: ReturnType<typeof equipSkillSlot> | null = null
+        ctx.store.update((p) => {
+          res = equipSkillSlot(p, btn.dataset.skillEquip!, skills)
+        })
+        if (!res!.ok) alert(res!.error)
+        else bannerMsg = `⚡ Equipped ${res!.skill?.name} to battle slots.`
+        draw()
+      })
+    })
+    root.querySelectorAll<HTMLButtonElement>('[data-skill-unequip]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        ctx.store.update((p) => {
+          unequipSkillSlot(p, btn.dataset.skillUnequip!)
+        })
+        bannerMsg = ''
+        draw()
+      })
+    })
+    root.querySelector('#skill-autofill')?.addEventListener('click', () => {
+      ctx.store.update((p) => {
+        resetBestSkillSlots(p, skills)
+      })
+      bannerMsg = '⚡ Equipped your 4 highest-level active skills.'
+      draw()
+    })
   }
+}
+
+function renderSkillLoadout(player: {
+  level: number
+  classId: string
+  skills: string[]
+  equippedSkills: string[]
+}): string {
+  const equippedIds = getEquippedSkills(player)
+  const equippedSet = new Set(equippedIds)
+  const ownedDefs = player.skills
+    .map((id) => skillMap[id])
+    .filter((s): s is SkillDef => Boolean(s))
+    .sort((a, b) => (b.unlockLevel ?? 1) - (a.unlockLevel ?? 1))
+  const activePool = ownedDefs.filter((s) => s.type === 'active' && !equippedSet.has(s.id))
+  const nextUnlock = skills
+    .filter(
+      (s) =>
+        (s.classId === player.classId || s.universalNeutral === true) &&
+        !s.source &&
+        (s.unlockLevel ?? 1) > player.level,
+    )
+    .sort((a, b) => (a.unlockLevel ?? 1) - (b.unlockLevel ?? 1))[0]
+
+  const slotRows = Array.from({ length: MAX_SKILL_SLOTS }, (_, idx) => {
+    const id = equippedIds[idx]
+    const def = id ? skillMap[id] : null
+    return `
+      <div class="loc" style="cursor:default">
+        <div>
+          <div class="loc-sub">Slot ${idx + 1}</div>
+          <div class="loc-name">${def ? `✨ ${escapeHtml(def.name)} <span class="muted">· ${def.mpCost} MP</span>` : '<span class="muted">empty slot</span>'}</div>
+          ${def ? `<div class="loc-sub">${escapeHtml(describeSkill(def))}${def.universalNeutral ? ' · Martial' : ''}</div>` : ''}
+        </div>
+        ${def ? `<button class="btn btn-sm btn-ghost" data-skill-unequip="${def.id}" type="button">Unequip</button>` : ''}
+      </div>`
+  }).join('')
+
+  const poolRows = activePool
+    .map((s) => {
+      const full = equippedIds.length >= MAX_SKILL_SLOTS
+      return `
+        <div class="loc" style="cursor:default">
+          <div>
+            <div class="loc-name">✨ ${escapeHtml(s.name)} <span class="muted">· ${s.mpCost} MP · Lv${s.unlockLevel}</span></div>
+            <div class="loc-sub">${escapeHtml(describeSkill(s))}${s.universalNeutral ? ' · Universal Martial' : ` · ${s.tier}`}</div>
+          </div>
+          <button class="btn btn-sm ${full ? 'btn-ghost' : 'btn-primary'}" data-skill-equip="${s.id}" ${full ? 'disabled' : ''} type="button">
+            Equip
+          </button>
+        </div>`
+    })
+    .join('')
+
+  return `
+    <div class="panel">
+      <div class="row">
+        <h3>⚡ Battle Loadout (${equippedIds.length}/${MAX_SKILL_SLOTS})</h3>
+        <button class="btn btn-sm btn-ghost" id="skill-autofill" type="button">Auto-Best 4</button>
+      </div>
+      ${slotRows}
+      ${nextUnlock ? `<p class="muted" style="margin-top:6px">Next unlock at Lv ${nextUnlock.unlockLevel}: <b>${escapeHtml(nextUnlock.name)}</b> (${escapeHtml(describeSkill(nextUnlock))})</p>` : ''}
+    </div>
+    <div class="panel">
+      <h3>📘 Unlocked Active Skills (${activePool.length} in reserve)</h3>
+      ${poolRows || '<p class="muted">All unlocked active skills are equipped — level up to unlock more!</p>'}
+    </div>`
 }
 
 function describeGear(item: GearDef): string {

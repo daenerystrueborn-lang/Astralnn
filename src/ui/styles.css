@@ -369,6 +369,11 @@ button { font-family: inherit; }
   left: 10px;
   color: var(--danger);
 }
+.floater.f-heal {
+  right: auto;
+  left: 10px;
+  color: var(--xp);
+}
 .floater.f-miss {
   font-size: 14px;
   color: var(--ink-dim);
@@ -598,6 +603,7 @@ button { font-family: inherit; }
 .log .ev-hit, .log .ev-crit { color: var(--ink); }
 .log .ev-crit { color: var(--gold-bright); }
 .log .ev-hurt { color: #f0a3a0; }
+.log .ev-heal { color: var(--xp); font-weight: 600; }
 .log .ev-info { color: var(--ink-dim); }
 .log .ev-matchup { color: #9be0c8; }
 .log .ev-win { color: var(--xp); font-weight: 600; }

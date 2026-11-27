@@ -1,8 +1,11 @@
 // Home / hub — HUD, stats, nav, location list + floor picker → start a battle.
 
-import { classes, locations, races } from '../data/index'
+import { characterMap, classes, locations, races, skills } from '../data/index'
+import { syncEquippedCharacterBonus } from '../engine/equipment'
+import { innRestQuote, restAtInn, type InnRestMode } from '../engine/inn'
 import { getTotalStats } from '../engine/stats'
 import { getRankForLevel } from '../engine/progression'
+import { unlockEligibleSkills } from '../engine/skills'
 import { bossForFloor, nextBossFloor, startBattle } from '../engine/battle'
 import { claimableCount, ensureQuestState } from '../engine/quests'
 import { getCurrentStep, rewardLabel, skipTutorial, tutorialProgress } from '../engine/tutorial'
@@ -15,10 +18,16 @@ function xpIntoLevel(level: number, xp: number, xpFor: (l: number) => number): {
 }
 
 export function renderHub(root: HTMLElement, ctx: UiContext): void {
+  ctx.store.update((p) => {
+    syncEquippedCharacterBonus(p)
+    unlockEligibleSkills(p, skills)
+  })
   const player = ctx.store.requireState()
   const cls = classes[player.classId]
   const race = races[player.raceId]
   const total = getTotalStats(player.classId, player.raceId, player.level)
+  const activeCompanion = player.equippedCharacter ? characterMap[player.equippedCharacter] : null
+  const inn = innRestQuote(player)
 
   // Tutorial card + quest badge (cheap reads; mutation happens elsewhere).
   ensureQuestState(player)
@@ -76,6 +85,30 @@ export function renderHub(root: HTMLElement, ctx: UiContext): void {
 
     ${tutorialCard()}
 
+    ${
+      inn.needsRest
+        ? `<div class="panel" style="border-color:var(--gold)55">
+            <div class="row">
+              <div>
+                <h3>🏠 Astral Inn · ❤️ ${player.hp}/${player.maxHp} · 💙 ${player.mp}/${player.maxMp}</h3>
+                <p class="muted">Rest before your next expedition (0.5 ☀️/HP · 0.3 ☀️/MP)</p>
+              </div>
+              <div class="item-actions">
+                <button class="btn btn-sm btn-primary" data-inn="full" ${player.wallet.solars < inn.costFull ? 'disabled' : ''} type="button">
+                  Rest Full · ☀️${inn.costFull}
+                </button>
+                ${
+                  inn.missingHp > 0 && inn.missingMp > 0
+                    ? `<button class="btn btn-sm btn-ghost" data-inn="hp" ${player.wallet.solars < inn.costHp ? 'disabled' : ''} type="button">❤️ ☀️${inn.costHp}</button>
+                       <button class="btn btn-sm btn-ghost" data-inn="mp" ${player.wallet.solars < inn.costMp ? 'disabled' : ''} type="button">💙 ☀️${inn.costMp}</button>`
+                    : ''
+                }
+              </div>
+            </div>
+          </div>`
+        : ''
+    }
+
     <div class="panel">
       <h3>Stats ${player.statPoints.unallocated > 0 ? `<span class="muted">(${player.statPoints.unallocated} points)</span>` : ''}</h3>
       <div class="stats-grid">
@@ -88,15 +121,19 @@ export function renderHub(root: HTMLElement, ctx: UiContext): void {
             ['lck', 'LCK'],
           ] as const
         )
-          .map(
-            ([k, label]) =>
-              `<div class="stat-cell"><b>${total[k] ?? player.stats[k]}</b><span>${label}</span></div>`,
-          )
+          .map(([k, label]) => {
+            const live = player.stats[k] ?? total[k]
+            const bonus = live - (total[k] ?? live)
+            return `<div class="stat-cell"><b>${live}</b><span>${label}${bonus > 0 ? `+${bonus}` : ''}</span></div>`
+          })
           .join('')}
         <div class="stat-cell"><b>${player.maxHp}</b><span>HP</span></div>
         <div class="stat-cell"><b>${player.maxMp}</b><span>MP</span></div>
       </div>
-      <p class="muted center">${cls ? `Primary: ${cls.primaryStat}` : ''} · Rank: ${getRankForLevel(player.level).title}</p>
+      <p class="muted center">
+        ${cls ? `Primary: ${cls.primaryStat}` : ''} · Rank: ${getRankForLevel(player.level).title}
+        ${activeCompanion ? ` · ${activeCompanion.emoji} ${activeCompanion.name}` : ''}
+      </p>
     </div>
 
     <h2>Choose your battle</h2>
@@ -136,6 +173,17 @@ export function renderHub(root: HTMLElement, ctx: UiContext): void {
 
   root.querySelectorAll<HTMLElement>('[data-nav]').forEach((el) => {
     el.addEventListener('click', () => ctx.navigate(el.dataset.nav as never))
+  })
+  root.querySelectorAll<HTMLButtonElement>('[data-inn]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      let err: string | undefined
+      ctx.store.update((p) => {
+        const res = restAtInn(p, btn.dataset.inn as InnRestMode)
+        if (!res.ok) err = res.error
+      })
+      if (err) alert(err)
+      ctx.navigate('hub')
+    })
   })
   root.querySelector('#tut-skip-hub')?.addEventListener('click', () => {
     if (!confirm('Skip the tutorial? You will forfeit the graduation gift.')) return

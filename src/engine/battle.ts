@@ -17,7 +17,7 @@ import { expectedLevelAtFloor, regulateBossXp, regulateMonsterXp, survivalKillXp
 import { recordQuestEvent, type QuestStateShape } from './quests'
 import { recordTutorialEvent, type TutorialStateShape } from './tutorial'
 import { bossByLocFloor, monsters, locations, skillMap, gearMap } from '../data'
-import type { BossDef, BossEnrage, BossSignature, MonsterDef } from '../data/types'
+import type { BossDef, BossEnrage, BossSignature, MonsterDef, SkillEffect } from '../data/types'
 import { defaultRng, type Rng } from './rng'
 
 // ── Enemy / session shapes ─────────────────────────────────────────────────
@@ -54,6 +54,15 @@ export interface Enemy {
   floor: number
 }
 
+export interface EnemyStatusEffect {
+  type: 'burn' | 'poison' | 'bleed' | 'stun' | 'freeze' | 'blind' | 'weaken'
+  remaining: number
+  amount?: number
+  stat?: string
+  value?: number
+  sourceId?: string
+}
+
 export interface BattleSession {
   locationId: string
   floor: number
@@ -70,6 +79,7 @@ export interface BattleSession {
   ironskin?: { percent: number; hits: number } | null
   statBuffs?: Record<string, { value: number; remaining: number }>
   regen?: { stat: 'hp' | 'mp'; amount: number; remaining: number } | null
+  enemyEffects?: EnemyStatusEffect[]
 }
 
 export type BattleAction =
@@ -78,7 +88,7 @@ export type BattleAction =
   | { kind: 'defend' }
 
 export type EventKind =
-  | 'info' | 'hit' | 'crit' | 'miss' | 'hurt' | 'matchup'
+  | 'info' | 'hit' | 'crit' | 'miss' | 'hurt' | 'heal' | 'matchup'
   | 'overdrive' | 'telegraph'
   | 'reward' | 'levelup' | 'rank' | 'drop' | 'win' | 'lose' | 'error'
 
@@ -366,6 +376,131 @@ function cleanBotText(raw: string): string {
 }
 
 /**
+ * Exact port of lib/combat-engine.js buildEffectDef() for enemy-targeted
+ * secondary skill effects (burn, poison, bleed, stun, freeze, blind, weaken, slow).
+ */
+export function buildEnemyEffectDef(
+  effectSpec: SkillEffect | undefined,
+  enemy: Enemy,
+  sourceId?: string,
+): EnemyStatusEffect | null {
+  if (!effectSpec?.type) return null
+  const duration = effectSpec.turns ?? effectSpec.duration ?? 2
+  const maxHp = enemy.maxHp ?? enemy.hp ?? 1
+
+  switch (effectSpec.type) {
+    case 'stun':
+      return { type: 'stun', remaining: effectSpec.turns ?? 1, sourceId }
+    case 'freeze':
+      return { type: 'freeze', remaining: effectSpec.turns ?? 1, sourceId }
+    case 'blind':
+      return { type: 'blind', remaining: duration, sourceId }
+    case 'burn':
+      return {
+        type: 'burn',
+        remaining: duration,
+        amount: Math.max(1, Math.round(maxHp * (effectSpec.dmgPct ?? 0.05))),
+        sourceId,
+      }
+    case 'poison':
+      return {
+        type: 'poison',
+        remaining: duration,
+        amount: Math.max(1, Math.round(maxHp * (effectSpec.dmgPct ?? 0.04))),
+        sourceId,
+      }
+    case 'bleed':
+      return {
+        type: 'bleed',
+        remaining: duration,
+        amount: Math.max(1, Math.round(maxHp * (effectSpec.dmgPct ?? 0.03))),
+        sourceId,
+      }
+    case 'weaken': {
+      const stat = effectSpec.stat === 'atk' ? 'atk' : 'def'
+      const base = stat === 'def' ? enemy.def : enemy.atk
+      return {
+        type: 'weaken',
+        remaining: duration,
+        stat,
+        value: Math.max(1, Math.round(base * (effectSpec.pct ?? 0.15))),
+        sourceId,
+      }
+    }
+    case 'slow':
+      return {
+        type: 'weaken',
+        remaining: duration,
+        stat: 'agi',
+        value: Math.max(1, Math.round(15 * (effectSpec.pct ?? 0.15))),
+        sourceId,
+      }
+    default:
+      return null
+  }
+}
+
+function addEnemyStatusEffect(
+  session: BattleSession,
+  def: EnemyStatusEffect,
+  events: BattleEvent[],
+): void {
+  if (!session.enemyEffects) session.enemyEffects = []
+  const existing = session.enemyEffects.find(
+    (fx) => fx.type === def.type && (fx.stat ?? '') === (def.stat ?? ''),
+  )
+  if (existing) {
+    existing.remaining = Math.max(existing.remaining, def.remaining)
+    if (def.amount !== undefined) existing.amount = Math.max(existing.amount ?? 0, def.amount)
+    if (def.value !== undefined) existing.value = Math.max(existing.value ?? 0, def.value)
+  } else {
+    session.enemyEffects.push(def)
+  }
+
+  const foe = session.enemy.name
+  switch (def.type) {
+    case 'burn':
+      events.push({ kind: 'info', text: `🔥 ${foe} is burning (${def.amount}/turn for ${def.remaining}t)!` })
+      break
+    case 'poison':
+      events.push({ kind: 'info', text: `☠️ ${foe} is poisoned (${def.amount}/turn for ${def.remaining}t)!` })
+      break
+    case 'bleed':
+      events.push({ kind: 'info', text: `🩸 ${foe} is bleeding (${def.amount}/turn for ${def.remaining}t)!` })
+      break
+    case 'stun':
+      events.push({ kind: 'info', text: `💫 ${foe} is stunned!` })
+      break
+    case 'freeze':
+      events.push({ kind: 'info', text: `❄️ ${foe} is frozen solid!` })
+      break
+    case 'blind':
+      events.push({ kind: 'info', text: `🌑 ${foe} is blinded (-70% accuracy for ${def.remaining}t)!` })
+      break
+    case 'weaken':
+      events.push({
+        kind: 'info',
+        text: `📉 ${foe}'s ${(def.stat ?? 'def').toUpperCase()} is weakened (-${def.value} for ${def.remaining}t)!`,
+      })
+      break
+  }
+}
+
+function enemyWeakenDelta(session: BattleSession, stat: string): number {
+  let delta = 0
+  for (const fx of session.enemyEffects ?? []) {
+    if (fx.type === 'weaken' && fx.stat === stat && fx.remaining > 0) {
+      delta += fx.value ?? 0
+    }
+  }
+  return delta
+}
+
+function hasEnemyEffect(session: BattleSession, type: EnemyStatusEffect['type']): boolean {
+  return (session.enemyEffects ?? []).some((fx) => fx.type === type && fx.remaining > 0)
+}
+
+/**
  * playerAction — one full round: the player acts, the enemy counters unless
  * it died first, then the turn advances. Mutates player + session; returns
  * the event log (UI renders it, tests assert on it).
@@ -424,48 +559,109 @@ export function playerAction(
       events.push({ kind: 'info', text: `⚔️ ${player.name} attacks!` })
     }
 
-    // Accuracy roll first — a miss spends the action and the enemy still hits.
     const effPlayer = effectivePlayerForRound(player, session)
-    const hitChance = calcPlayerHitChance(effPlayer, session.enemy)
-    if (rng() >= hitChance) {
-      events.push({ kind: 'miss', text: `💨 ${player.name}'s strike misses! (${(hitChance * 100).toFixed(1)}%)` })
-    } else {
-      let warcryMult = 1
-      if (session.warcry && session.warcry.hits > 0) {
-        warcryMult = 1 + session.warcry.percent / 100
-        session.warcry.hits -= 1
-        if (session.warcry.hits <= 0) session.warcry = null
+    const primaryType = skill?.effects?.[0]?.type
+
+    if (skill && (primaryType === 'shield' || primaryType === 'regen')) {
+      // Self-targeted support skills (plugins/skill.js) — always land, no accuracy check.
+      const spec = skill.effects[0]!
+      const dur = spec.turns ?? spec.duration ?? 2
+      if (primaryType === 'shield') {
+        const amt = Math.max(1, Math.round(player.maxHp * (spec.pct ?? 0.2)))
+        session.playerShield = (session.playerShield ?? 0) + amt
+        events.push({
+          kind: 'heal',
+          text: `🛡️ ${player.name} raises a ${amt} HP barrier!`,
+        })
+      } else {
+        const amt = Math.max(1, Math.round(player.maxHp * (spec.pct ?? 0.06)))
+        session.regen = { stat: 'hp', amount: amt, remaining: dur }
+        events.push({
+          kind: 'heal',
+          text: `💚 ${player.name} regenerates +${amt} HP/turn for ${dur} turns!`,
+        })
       }
-      const { rawDmg, isCrit } = calcPlayerDamage(effPlayer, skill, warcryMult, 0, rng)
-      let dmg = applyDefense(rawDmg, session.enemy.def)
-      const matchup = skillMatchup(skill, session.enemy)
-      if (matchup.mult !== 1) {
-        dmg = Math.max(1, Math.floor(dmg * matchup.mult))
-        if (matchup.text) {
-          events.push({ kind: 'matchup', text: `${matchup.text} (${matchup.element}, ×${matchup.mult})` })
+      const sec = buildEnemyEffectDef(skill.effects[1], session.enemy, skill.id)
+      if (sec) addEnemyStatusEffect(session, sec, events)
+    } else if (skill && primaryType === 'heal') {
+      // Self-targeted heal skills (plugins/skill.js) — always land, no accuracy check.
+      const { rawDmg } = calcPlayerDamage(effPlayer, skill, 1, 0, () => 1)
+      const amt = Math.max(1, Math.floor(rawDmg))
+      const before = player.hp
+      player.hp = Math.min(player.maxHp, before + amt)
+      const actual = player.hp - before
+      events.push({
+        kind: 'heal',
+        text: `💚 ${player.name} heals +${actual > 0 ? actual : amt} HP! (${player.hp}/${player.maxHp})`,
+      })
+      const sec = buildEnemyEffectDef(skill.effects[1], session.enemy, skill.id)
+      if (sec) addEnemyStatusEffect(session, sec, events)
+    } else {
+      // Accuracy roll first — a miss spends the action and the enemy still hits.
+      const hitChance = calcPlayerHitChance(effPlayer, session.enemy)
+      if (rng() >= hitChance) {
+        events.push({ kind: 'miss', text: `💨 ${player.name}'s strike misses! (${(hitChance * 100).toFixed(1)}%)` })
+      } else {
+        let warcryMult = 1
+        if (session.warcry && session.warcry.hits > 0) {
+          warcryMult = 1 + session.warcry.percent / 100
+          session.warcry.hits -= 1
+          if (session.warcry.hits <= 0) session.warcry = null
+        }
+        const { rawDmg, isCrit } = calcPlayerDamage(effPlayer, skill, warcryMult, 0, rng)
+        const effEnemyDef = Math.max(0, session.enemy.def - enemyWeakenDelta(session, 'def'))
+        let dmg = applyDefense(rawDmg, effEnemyDef)
+        const matchup = skillMatchup(skill, session.enemy)
+        if (matchup.mult !== 1) {
+          dmg = Math.max(1, Math.floor(dmg * matchup.mult))
+          if (matchup.text) {
+            events.push({ kind: 'matchup', text: `${matchup.text} (${matchup.element}, ×${matchup.mult})` })
+          }
+        }
+        let shieldBroken = false
+        if ((session.enemy.shield ?? 0) > 0) {
+          const absorbed = Math.min(session.enemy.shield!, dmg)
+          session.enemy.shield! -= absorbed
+          const hpDmg = dmg - absorbed
+          session.enemy.hp = Math.max(0, session.enemy.hp - hpDmg)
+          if (absorbed > 0 && session.enemy.shield === 0) shieldBroken = true
+        } else {
+          session.enemy.hp = Math.max(0, session.enemy.hp - dmg)
+        }
+        events.push({
+          kind: isCrit ? 'crit' : 'hit',
+          text: isCrit
+            ? `💥 CRIT! ${dmg} damage to ${session.enemy.name}!`
+            : `🎯 ${dmg} damage to ${session.enemy.name}.`,
+        })
+        if (shieldBroken) {
+          recordQuestEvent(player, 'shield_break', 1)
+          events.push({ kind: 'info', text: `🛡️ ${session.enemy.name}'s barrier shatters!` })
+        }
+        if (skill && session.enemy.hp > 0) {
+          const sec = buildEnemyEffectDef(skill.effects[1], session.enemy, skill.id)
+          if (sec) addEnemyStatusEffect(session, sec, events)
         }
       }
-      let shieldBroken = false
-      if ((session.enemy.shield ?? 0) > 0) {
-        const absorbed = Math.min(session.enemy.shield!, dmg)
-        session.enemy.shield! -= absorbed
-        const hpDmg = dmg - absorbed
-        session.enemy.hp = Math.max(0, session.enemy.hp - hpDmg)
-        if (absorbed > 0 && session.enemy.shield === 0) shieldBroken = true
-      } else {
-        session.enemy.hp = Math.max(0, session.enemy.hp - dmg)
-      }
-      events.push({
-        kind: isCrit ? 'crit' : 'hit',
-        text: isCrit
-          ? `💥 CRIT! ${dmg} damage to ${session.enemy.name}!`
-          : `🎯 ${dmg} damage to ${session.enemy.name}.`,
-      })
-      if (shieldBroken) {
-        recordQuestEvent(player, 'shield_break', 1)
-        events.push({ kind: 'info', text: `🛡️ ${session.enemy.name}'s barrier shatters!` })
+    }
+  }
+
+  // Tick enemy damage-over-time effects (burn / poison / bleed) before victory check.
+  if (session.enemy.hp > 0 && session.enemyEffects && session.enemyEffects.length > 0) {
+    for (const fx of session.enemyEffects) {
+      if ((fx.type === 'burn' || fx.type === 'poison' || fx.type === 'bleed') && fx.remaining > 0) {
+        const tick = Math.max(1, fx.amount ?? 1)
+        session.enemy.hp = Math.max(0, session.enemy.hp - tick)
+        fx.remaining -= 1
+        const icon = fx.type === 'burn' ? '🔥' : fx.type === 'poison' ? '☠️' : '🩸'
+        events.push({
+          kind: 'hit',
+          text: `${icon} ${session.enemy.name} suffers ${tick} ${fx.type} damage.`,
+        })
+        if (session.enemy.hp <= 0) break
       }
     }
+    session.enemyEffects = session.enemyEffects.filter((fx) => fx.remaining > 0)
   }
 
   // ── Enemy fell? Settle before it can swing back. ─────────────────────────
@@ -552,23 +748,38 @@ export function playerAction(
     events.push({ kind: 'overdrive', text: `${msg} (+${atkGain} ATK, 🛡️ +${shieldAmt})` })
   }
 
-  const roundDef = effectivePlayerForRound(player, session).stats.def
+  const roundPlayer = effectivePlayerForRound(player, session)
+  const roundDef = roundPlayer.stats.def
+  const effEnemyAtk = Math.max(1, enemy.atk - enemyWeakenDelta(session, 'atk'))
+  const hardCc = session.enemyEffects?.find(
+    (fx) => (fx.type === 'stun' || fx.type === 'freeze') && fx.remaining > 0,
+  )
+
   let landedDmg = 0
-  const enemyHit = calcMonsterHitChance(enemy, effectivePlayerForRound(player, session))
-  if (rng() >= enemyHit) {
-    events.push({ kind: 'miss', text: `💨 ${enemy.name} misses!` })
-  } else {
-    // Defending doubles effective DEF for the incoming strike (defend.js).
-    landedDmg = calcMonsterDamage(enemy.atk, roundDef, session.defending, rng)
-    const hpLost = mitigateIncomingPlayerHit(landedDmg, session)
-    player.hp = Math.max(0, player.hp - hpLost)
+  if (hardCc) {
+    hardCc.remaining -= 1
     events.push({
-      kind: 'hurt',
-      text: `${enemy.name} hits for ${hpLost} damage. ❤️ ${player.hp}/${player.maxHp}`,
+      kind: 'info',
+      text: `💫 ${enemy.name} is ${hardCc.type === 'freeze' ? 'frozen solid' : 'stunned'} and cannot act!`,
     })
+  } else {
+    const blindMult = hasEnemyEffect(session, 'blind') ? 0.3 : 1
+    const enemyHit = calcMonsterHitChance(enemy, roundPlayer) * blindMult
+    if (rng() >= enemyHit) {
+      events.push({ kind: 'miss', text: `💨 ${enemy.name} misses!` })
+    } else {
+      // Defending doubles effective DEF for the incoming strike (defend.js).
+      landedDmg = calcMonsterDamage(effEnemyAtk, roundDef, session.defending, rng)
+      const hpLost = mitigateIncomingPlayerHit(landedDmg, session)
+      player.hp = Math.max(0, player.hp - hpLost)
+      events.push({
+        kind: 'hurt',
+        text: `${enemy.name} hits for ${hpLost} damage. ❤️ ${player.hp}/${player.maxHp}`,
+      })
+    }
   }
 
-  if (enemy.signature && player.hp > 0) {
+  if (!hardCc && enemy.signature && player.hp > 0) {
     const sig = enemy.signature
     if (enemy.signatureArmed) {
       enemy.signatureArmed = false
@@ -576,7 +787,7 @@ export function playerAction(
       const refDmg =
         landedDmg > 0
           ? landedDmg
-          : calcMonsterDamage(enemy.atk, roundDef, session.defending, rng)
+          : calcMonsterDamage(effEnemyAtk, roundDef, session.defending, rng)
       const defFactor = session.defending ? 0.42 : 1
       const rawBonus = Math.max(
         1,
@@ -635,6 +846,14 @@ export function playerAction(
       v.remaining -= 1
       if (v.remaining <= 0) delete session.statBuffs[k]
     }
+  }
+  if (session.enemyEffects && session.enemyEffects.length > 0) {
+    for (const fx of session.enemyEffects) {
+      if (fx.type === 'blind' || fx.type === 'weaken') {
+        fx.remaining -= 1
+      }
+    }
+    session.enemyEffects = session.enemyEffects.filter((fx) => fx.remaining > 0)
   }
 
   session.turn += 1

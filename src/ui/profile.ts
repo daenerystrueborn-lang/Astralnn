@@ -67,12 +67,16 @@ export function renderProfile(root: HTMLElement, ctx: UiContext): void {
         <h3>Stats <span class="muted">· ${sp.unallocated} unallocated (${sp.earned}/${cap} earned)</span></h3>
         <div class="stats-grid">
           ${STAT_LABELS.map(
-            ([k, label]) => `
+            ([k, label]) => {
+              const live = p.stats[k] ?? total[k]
+              const bonus = live - (total[k] ?? live)
+              return `
             <div class="stat-cell">
-              <b>${total[k] ?? p.stats[k]}</b>
-              <span>${label}</span>
+              <b>${live}</b>
+              <span>${label}${bonus > 0 ? ` (+${bonus})` : ''}</span>
               ${sp.unallocated > 0 ? `<button class="btn btn-sm btn-ghost" data-alloc="${k}" type="button" style="margin-top:4px;width:100%">+1</button>` : ''}
-            </div>`,
+            </div>`
+            },
           ).join('')}
           <div class="stat-cell"><b>${p.maxHp}</b><span>HP</span></div>
           <div class="stat-cell"><b>${p.maxMp}</b><span>MP</span></div>
@@ -83,6 +87,21 @@ export function renderProfile(root: HTMLElement, ctx: UiContext): void {
         </div>
         <p class="muted center">Rate at Lv ${p.level}: ☀️ ${trainRate} per point · allocation applies to live stats</p>
       </div>
+
+      ${
+        (p.titles?.length ?? 0) > 1
+          ? `<div class="panel">
+              <h3>👑 Conquest Titles (${p.titles!.length})</h3>
+              <div class="potion-belt-list" style="margin-top:6px">
+                ${p.titles!
+                  .map(
+                    (t) => `<button class="btn btn-sm ${p.title === t ? 'btn-primary' : 'btn-ghost'}" data-title="${t.replace(/"/g, '&quot;')}" type="button">👑 ${t}</button>`,
+                  )
+                  .join('')}
+              </div>
+            </div>`
+          : ''
+      }
 
       <div class="panel">
         <div class="row">
@@ -118,6 +137,14 @@ export function renderProfile(root: HTMLElement, ctx: UiContext): void {
       btn.addEventListener('click', () => {
         ctx.store.update((pl) => {
           addAllocation(pl, btn.dataset.alloc as StatKey, 1)
+        })
+        draw()
+      })
+    })
+    root.querySelectorAll<HTMLButtonElement>('[data-title]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        ctx.store.update((pl) => {
+          pl.title = btn.dataset.title!
         })
         draw()
       })
