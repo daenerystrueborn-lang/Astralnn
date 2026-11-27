@@ -1,12 +1,24 @@
 // Battle screen — enemy/player panels, HP/MP bars, actions, combat log.
 // One round per click: playerAction() runs the bot's full turn math.
 
-import { skillMap } from '../data/index'
+import { characterMap, gearMap, locationMap, skillMap } from '../data/index'
 import { playerAction, type BattleSession, type BattleAction } from '../engine/battle'
-import { classBattler, monsterOr } from './icon'
+import { syncEquippedCharacterBonus } from '../engine/equipment'
+import {
+  BOSS_POTION_LIMIT,
+  bossPotionsRemaining,
+  describeConsumable,
+  isBossPotion,
+  isUsableConsumable,
+  useConsumable,
+} from '../engine/shop'
+import { classBattler, gearIconOr, monsterOr } from './icon'
 import type { Floater, UiContext } from './app'
 
 export function renderBattle(root: HTMLElement, ctx: UiContext): void {
+  ctx.store.update((p) => {
+    syncEquippedCharacterBonus(p)
+  })
   const player = ctx.store.requireState()
   const session = (player.battleState ?? null) as unknown as BattleSession | null
   if (!session || session.status !== 'active') {
@@ -15,10 +27,59 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
   }
 
   const enemy = session.enemy
-  const tierClass = enemy.tier === 'elite' ? 'elite' : ''
+  const companion = player.equippedCharacter ? characterMap[player.equippedCharacter] : null
+  const tierClass = enemy.isBoss ? 'boss' : enemy.tier === 'elite' ? 'elite' : ''
+  const locTitle = locationMap[session.locationId]?.name ?? session.locationId
+  const shieldVal = enemy.shield ?? 0
+  const sigArmed = Boolean(enemy.signatureArmed && enemy.signature)
   const equipped = player.equippedSkills
     .map((id) => skillMap[id])
     .filter((s): s is NonNullable<typeof s> => Boolean(s))
+
+  const potionCounts = new Map<string, number>()
+  for (const id of player.inventory) {
+    const it = gearMap[id]
+    if (!isUsableConsumable(it, true)) continue
+    if (enemy.isBoss && !isBossPotion(it)) continue
+    potionCounts.set(id, (potionCounts.get(id) ?? 0) + 1)
+  }
+  const bossPotsLeft = enemy.isBoss ? bossPotionsRemaining(session) : null
+  const heroShield = session.playerShield ?? 0
+  const heroBuffTags: string[] = []
+  if (heroShield > 0) heroBuffTags.push(`<span class="shield-pill">🛡️ ${heroShield}</span>`)
+  if (session.warcry && session.warcry.hits > 0) {
+    heroBuffTags.push(`<span class="tier-tag overdrive">🔥 +${session.warcry.percent}%×${session.warcry.hits}</span>`)
+  }
+  if (session.ironskin && session.ironskin.hits > 0) {
+    heroBuffTags.push(`<span class="shield-pill">🪨 -${session.ironskin.percent}%×${session.ironskin.hits}</span>`)
+  }
+  if (session.regen && session.regen.remaining > 0) {
+    heroBuffTags.push(`<span class="tier-tag">💚 +${session.regen.amount}×${session.regen.remaining}t</span>`)
+  }
+  if (companion) {
+    heroBuffTags.push(`<span class="tier-tag" title="${escapeHtml(companion.name)}">${companion.emoji}</span>`)
+  }
+
+  const enemyStatusTags = (session.enemyEffects ?? [])
+    .filter((fx) => fx.remaining > 0)
+    .map((fx) => {
+      const icon =
+        fx.type === 'burn'
+          ? '🔥'
+          : fx.type === 'poison'
+            ? '☠️'
+            : fx.type === 'bleed'
+              ? '🩸'
+              : fx.type === 'stun'
+                ? '💫'
+                : fx.type === 'freeze'
+                  ? '❄️'
+                  : fx.type === 'blind'
+                    ? '🌑'
+                    : '📉'
+      return `<span class="tier-tag">${icon} ${fx.remaining}t</span>`
+    })
+    .join(' ')
 
   const logHtml =
     ctx.battleLog.length === 0
@@ -41,21 +102,26 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
   const stageImpact = hitSide ? ' impact' : ''
 
   root.innerHTML = `
-    <h1>BATTLE</h1>
-    <p class="subtitle">${session.locationId} · Floor ${session.floor} · Turn ${session.turn}</p>
+    <h1>${enemy.isBoss ? '👑 BOSS BATTLE' : 'BATTLE'}</h1>
+    <p class="subtitle">${escapeHtml(locTitle)} · Floor ${session.floor} · Turn ${session.turn}</p>
 
-    <div class="battlefield">
-      <div class="combatant${hitSide === 'foe' ? ' hit' : ''}">
+    <div class="battlefield${enemy.isBoss ? ' boss-arena' : ''}">
+      <div class="combatant${enemy.isBoss ? ' boss' : ''}${hitSide === 'foe' ? ' hit' : ''}">
         <div class="cname">
           <span class="cname-name">${enemy.emoji} ${escapeHtml(enemy.name)}</span>
-          <span class="tier-tag ${tierClass}">${enemy.tier}</span>
+          <span>
+            ${enemyStatusTags ? `${enemyStatusTags} ` : ''}
+            ${enemy.enraged ? `<span class="tier-tag overdrive">🔥 overdrive</span> ` : ''}
+            ${shieldVal > 0 ? `<span class="shield-pill">🛡️ ${shieldVal}</span> ` : ''}
+            <span class="tier-tag ${tierClass}">${enemy.tier}</span>
+          </span>
         </div>
         <div class="bar hp"><i style="width:${pct(enemy.hp, enemy.maxHp)}%"></i><span>${enemy.hp}/${enemy.maxHp}</span></div>
         ${floatHtml('foe')}
       </div>
 
       <div class="stage${stageImpact}" aria-hidden="true">
-        <span class="stage-foe">${monsterOr(enemy.id, enemy.emoji, enemy.element)}</span>
+        <span class="stage-foe${enemy.isBoss ? ' boss' : ''}">${monsterOr(enemy.id, enemy.emoji, enemy.element)}</span>
         <span class="stage-vs">⚔️</span>
         <span class="stage-hero">${playerSprite || '🛡️'}</span>
       </div>
@@ -63,16 +129,22 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
       <div class="combatant${hitSide === 'hero' ? ' hit' : ''}">
         <div class="cname">
           <span class="cname-name">🛡️ ${escapeHtml(player.name)}</span>
-          <span class="muted">Lv ${player.level}</span>
+          <span>${heroBuffTags.join(' ')} <span class="muted">Lv ${player.level}</span></span>
         </div>
         <div class="bar hp"><i style="width:${pct(player.hp, player.maxHp)}%"></i><span>HP ${player.hp}/${player.maxHp}</span></div>
         <div class="bar mp" style="margin-top:4px"><i style="width:${pct(player.mp, player.maxMp)}%"></i><span>MP ${player.mp}/${player.maxMp}</span></div>
         ${floatHtml('hero')}
       </div>
 
+      ${
+        sigArmed
+          ? `<div class="telegraph-banner" role="status">⚠️ <b>${escapeHtml(enemy.signature!.name)}</b> incoming next strike — hit <b>🛡️ Defend</b> to guard!</div>`
+          : ''
+      }
+
       <div class="actions">
         <button class="btn" data-act="attack" type="button">⚔️ Attack</button>
-        <button class="btn" data-act="defend" type="button">🛡️ Defend</button>
+        <button class="btn${sigArmed ? ' btn-telegraph' : ''}" data-act="defend" type="button">🛡️ Defend</button>
         ${equipped
           .map((s) => {
             const unaffordable = s.mpCost > player.mp
@@ -81,6 +153,29 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
           })
           .join('')}
       </div>
+
+      ${
+        potionCounts.size > 0
+          ? `<div class="potion-belt">
+              <div class="potion-belt-head">
+                <span>🧪 Quick Potions</span>
+                ${bossPotsLeft !== null ? `<span class="muted">Boss limit: ${bossPotsLeft}/${BOSS_POTION_LIMIT} left</span>` : '<span class="muted">Free action</span>'}
+              </div>
+              <div class="potion-belt-list">
+                ${[...potionCounts.entries()]
+                  .map(([id, qty]) => {
+                    const it = gearMap[id]!
+                    const capReached = bossPotsLeft !== null && bossPotsLeft <= 0
+                    return `<button class="btn btn-sm btn-ghost potion-chip" data-potion="${id}" ${capReached ? 'disabled' : ''}
+                      title="${escapeHtml(describeConsumable(it))}" type="button">
+                      ${gearIconOr(it)} ${escapeHtml(it.name)} <span class="muted">×${qty}</span>
+                    </button>`
+                  })
+                  .join('')}
+              </div>
+            </div>`
+          : ''
+      }
 
       <div class="log" id="battle-log">${logHtml}</div>
     </div>
@@ -117,6 +212,34 @@ export function renderBattle(root: HTMLElement, ctx: UiContext): void {
   root.querySelectorAll<HTMLButtonElement>('[data-skill]').forEach((btn) => {
     btn.addEventListener('click', () => act({ kind: 'skill', skillId: btn.dataset.skill! }))
   })
+  root.querySelectorAll<HTMLButtonElement>('[data-potion]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      let err: string | undefined
+      const lines: { kind: string; text: string }[] = []
+      ctx.store.update((p) => {
+        const s = p.battleState as unknown as BattleSession
+        const out = useConsumable(p, btn.dataset.potion!, s)
+        if (!out.ok) {
+          err = out.error
+          return
+        }
+        const suffix =
+          out.bossPotionsLeft !== null && out.bossPotionsLeft !== undefined
+            ? ` (${out.bossPotionsLeft}/${BOSS_POTION_LIMIT} boss potions left)`
+            : ''
+        lines.push({
+          kind: 'info',
+          text: `🧪 Used ${out.item?.name}: ${(out.lines ?? []).join(' ')}${suffix}`,
+        })
+      })
+      if (err) {
+        ctx.pushLog([{ kind: 'error', text: err }])
+      } else {
+        ctx.pushLog(lines)
+      }
+      ctx.navigate('battle')
+    })
+  })
 }
 
 function pct(cur: number, max: number): number {
@@ -134,6 +257,9 @@ function floatersFrom(events: { kind: string; text: string }[]): Floater[] {
     } else if (e.kind === 'hurt') {
       const m = e.text.match(/for (\d+) damage/)
       out.push({ side: 'hero', kind: 'hurt', text: m ? `-${m[1]}` : 'OUCH' })
+    } else if (e.kind === 'heal') {
+      const m = e.text.match(/\+(\d+)/) ?? e.text.match(/(\d+)\s*HP/)
+      out.push({ side: 'hero', kind: 'heal', text: m ? `+${m[1]}` : 'BUFF' })
     } else if (e.kind === 'miss') {
       // Player misses read "strike misses"; enemy misses just "misses".
       const playerMissed = e.text.includes('strike misses')

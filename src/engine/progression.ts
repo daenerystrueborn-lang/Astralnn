@@ -3,8 +3,9 @@
 // V0: no reborn, no stat packs, no prestige titles — those hook points are
 // noted where the bot adds bonuses we drop to 0.
 
-import { levelsData, classes, races, ranks } from '../data'
+import { levelsData, classes, races, ranks, skills } from '../data'
 import { getTotalStats, STAT_KEYS, type StatKey } from './stats'
+import { unlockEligibleSkills } from './skills'
 
 export const STAT_POINT_VERSION = 2
 
@@ -31,6 +32,8 @@ export interface ProgressPlayer {
   baseStats: Record<string, number>
   statPoints: StatPointsState
   wallet: Record<string, number>
+  skills?: string[]
+  equippedSkills?: string[]
 }
 
 export function emptyAllocations(): Record<StatKey, number> {
@@ -233,6 +236,19 @@ export function applyLevelUps(player: ProgressPlayer): LevelUpResult {
         `❤️ HP: ${player.maxHp} 💧 MP: ${player.maxMp}`,
     )
   }
+
+  if (levelled && Array.isArray(player.skills)) {
+    const unlocked = unlockEligibleSkills(
+      player as ProgressPlayer & { skills: string[]; equippedSkills: string[] },
+      skills,
+    )
+    for (const s of unlocked) {
+      msgs.push(
+        `📘 Skill unlocked: ${s.name} (${s.type === 'passive' ? 'Passive' : `${s.mpCost} MP`})`,
+      )
+    }
+  }
+
   return { player, msgs, levelled }
 }
 

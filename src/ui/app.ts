@@ -21,7 +21,7 @@ export type ScreenId =
   | 'profile'
   | 'settings'
 
-export type FloaterKind = 'hit' | 'crit' | 'hurt' | 'miss'
+export type FloaterKind = 'hit' | 'crit' | 'hurt' | 'miss' | 'heal'
 
 /** One-shot damage feedback shown over a combatant after an action. */
 export interface Floater {

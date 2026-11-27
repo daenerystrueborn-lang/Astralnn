@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import {
+  bossForFloor,
+  nextBossFloor,
   pickMonsterForFloor,
+  spawnBossForFloor,
   startBattle,
   playerAction,
   creditKillV0,
@@ -14,6 +17,7 @@ import {
   xpForLevel,
   expectedLevelAtFloor,
   monsterTierAtFloor,
+  regulateBossXp,
   regulateMonsterXp,
   survivalKillXp,
 } from '../src/engine/xp'
@@ -60,6 +64,14 @@ describe('xp-regulator (bot parity)', () => {
     [1, true, 50, 18], // elite: 2.5× then clamped to the 50 floor
   ])('regulateMonsterXp(nh, %i, elite=%s) → %i xp / %i solars', (floor, elite, xp, solars) => {
     expect(regulateMonsterXp('newbie_hollow', floor, elite)).toMatchObject({ xp, solars })
+  })
+
+  it.each([
+    ['newbie_hollow', 50, 554, 194],
+    ['season_01_ruins', 100, 895, 313],
+    ['stormpeak', 100, 1084, 379],
+  ])('regulateBossXp(%s, %i) → %i xp / %i solars', (locId, floor, xp, solars) => {
+    expect(regulateBossXp(locId, floor)).toEqual({ xp, solars, tier: 'boss' })
   })
 
   it.each([
@@ -145,6 +157,29 @@ describe('spawn (pickMonsterForFloor)', () => {
 
   it('startBattle throws when a floor has no monster pool', () => {
     expect(() => startBattle('astral_town', 1)).toThrow('No monsters')
+  })
+
+  it('boss floors spawn their authored boss with regulated milestone rewards', () => {
+    expect(bossForFloor('newbie_hollow', 50)?.id).toBe('nh_hollow_gatekeeper')
+    expect(nextBossFloor('newbie_hollow', 1)).toBe(50)
+    expect(nextBossFloor('gambits_dungeon', 21)).toBe(30)
+
+    const nh50 = startBattle('newbie_hollow', 50)
+    expect(nh50.enemy.isBoss).toBe(true)
+    expect(nh50.enemy.tier).toBe('boss')
+    expect(nh50.enemy.id).toBe('nh_hollow_gatekeeper')
+    expect(nh50.enemy.conquestTitle).toBe('Hollow Graduate')
+    expect(nh50.enemy.xp).toBe(554)
+    expect(nh50.enemy.solars).toBe(194)
+
+    // season_01_ruins F100 has NO regular pool — only The Last Prayer boss
+    const s1 = startBattle('season_01_ruins', 100)
+    expect(s1.enemy.id).toBe('the_last_prayer')
+    expect(s1.enemy.isBoss).toBe(true)
+
+    const stm = spawnBossForFloor('stormpeak', 100)!
+    expect(stm.id).toBe('boss_storm_100')
+    expect(stm.conquestTitle).toBe('Stormbreaker')
   })
 })
 
@@ -355,6 +390,80 @@ describe('settlement helpers', () => {
     expect(player.stats.losses).toBe(1)
     expect(player.location).toBe('astral_town')
     expect(player.inDungeon).toBe(false)
+  })
+})
+
+describe('boss combat mechanics (Overdrive, Signature telegraph, Conquest)', () => {
+  it('Phase-2 Overdrive triggers once below threshold, boosts ATK + barrier, and player shatters barrier', () => {
+    const player = createNewPlayer({ name: 'Astra', classId: 'warrior', raceId: 'human' }, NOW)
+    player.stats.str = 500
+    player.maxHp = 5000
+    player.hp = 5000
+    const session = startBattle('newbie_hollow', 50)
+    session.enemy.hp = Math.floor(session.enemy.maxHp * 0.45) // below 0.50 threshold
+    const atkBefore = session.enemy.atk
+
+    // Player hits (0), no crit (1), enemy misses (1), signature roll fails (1)
+    const r1 = playerAction(player, session, { kind: 'attack' }, seq(0, 1, 1, 1))
+    expect(session.enemy.enraged).toBe(true)
+    expect(session.enemy.atk).toBeGreaterThan(atkBefore)
+    expect(session.enemy.shield).toBeGreaterThan(0)
+    expect(r1.events.some((e) => e.kind === 'overdrive')).toBe(true)
+
+    // Crush through the barrier on the next swing and verify shield_break
+    session.enemy.shield = 10
+    const r2 = playerAction(player, session, { kind: 'attack' }, seq(0, 1, 1, 1))
+    expect(session.enemy.shield).toBe(0)
+    expect(r2.events.some((e) => e.text.includes('barrier shatters'))).toBe(true)
+    expect(player.quests.lifetime.shield_break).toBe(1)
+  })
+
+  it('Telegraphed signature arms on turn >= 2 and Defend cuts the bonus blow on the next turn', () => {
+    const runSignature = (guardNextTurn: boolean): number => {
+      const player = createNewPlayer({ name: 'Astra', classId: 'warrior', raceId: 'human' }, NOW)
+      player.maxHp = 10000
+      player.hp = 10000
+      player.stats.def = 100
+      const session = startBattle('newbie_hollow', 50)
+      session.turn = 2
+      // Turn 2: defend so player doesn't swing; enemy hits (0, var 0.5), sig roll 0.1 (< 0.48) → arms!
+      const armRes = playerAction(player, session, { kind: 'defend' }, seq(0, 0.5, 0.1))
+      expect(session.enemy.signatureArmed).toBe(true)
+      expect(armRes.events.some((e) => e.kind === 'telegraph')).toBe(true)
+
+      const hpBeforeUlt = player.hp
+      if (guardNextTurn) {
+        playerAction(player, session, { kind: 'defend' }, seq(0, 0.5))
+      } else {
+        // Player misses (1), enemy lands basic + signature with identical 0, 0.5
+        playerAction(player, session, { kind: 'attack' }, seq(1, 0, 0.5))
+      }
+      expect(session.enemy.signatureArmed).toBe(false)
+      return hpBeforeUlt - player.hp
+    }
+
+    const guardedLoss = runSignature(true)
+    const unguardedLoss = runSignature(false)
+    expect(guardedLoss).toBeGreaterThan(0)
+    expect(guardedLoss).toBeLessThan(unguardedLoss)
+  })
+
+  it('defeating a final-floor boss conquers the dungeon and unlocks conquestTitle', () => {
+    const player = createNewPlayer({ name: 'Astra', classId: 'warrior', raceId: 'human' }, NOW)
+    player.inDungeon = true
+    player.location = 'newbie_hollow'
+    player.dungeonProgress.newbie_hollow = { highestFloor: 49 }
+    const session = startBattle('newbie_hollow', 50)
+    session.enemy.hp = 1
+    session.enemy.def = 0
+
+    const res = playerAction(player, session, { kind: 'attack' }, seq(0, 1, 1))
+    expect(res.status).toBe('won')
+    expect(res.rewards?.dungeonConquered).toBe(true)
+    expect(res.rewards?.conquestTitle).toBe('Hollow Graduate')
+    expect(player.dungeonProgress.newbie_hollow?.conquered).toBe(true)
+    expect(player.title).toBe('Hollow Graduate')
+    expect(player.quests.lifetime.boss_clear).toBe(1)
   })
 })
 

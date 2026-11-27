@@ -90,8 +90,25 @@ describe('asset helpers (src/ui/icon)', () => {
     // …but unknown/absent elements still degrade to emoji
     expect(monsterOr('x_unknown', '👾', 'banana')).toBe('👾')
     expect(monsterOr('x_unknown', '👾')).toBe('👾')
-    // specific art still wins over element
+    // specific art still wins over element (incl. Season 01 Ruins + Stormpeak + Crystaldeep + bosses)
     expect(monsterOr('nh_hollow_gatekeeper', '🗝️', 'void')).toContain('nh_hollow_gatekeeper')
+    expect(monsterOr('the_last_prayer', '🕯️', 'flame')).toContain('the_last_prayer')
+    expect(monsterOr('boss_storm_100', '⚡', 'storm')).toContain('boss_storm_100')
+    expect(monsterOr('boss_crystal_50', '💎', 'ice')).toContain('boss_crystal_50')
+    expect(monsterOr('boss_gloom_50', '🕷️', 'poison')).toContain('boss_gloom_50')
+    expect(monsterOr('boss_quiet_15', '🌙', 'ice')).toContain('boss_quiet_15')
+    expect(monsterOr('boss_entry_100', '🏰', 'earth')).toContain('boss_entry_100')
+    expect(monsterOr('boss_gambit_1000', '🃏', 'arcane')).toContain('boss_gambit_1000')
+    expect(monsterOr('boss_centurion_1000', '🔥', 'flame')).toContain('boss_centurion_1000')
+  })
+
+  it('gearIconOr maps potions and equipment slots to registered manifest icons', async () => {
+    const { gearIconOr } = await import('../src/ui/icon')
+    const { gearMap } = await import('../src/data/index')
+    expect(gearIconOr(gearMap.health_potion)).toContain('icons/health_potion')
+    expect(gearIconOr(gearMap.mana_potion)).toContain('items/potion_01')
+    expect(gearIconOr(gearMap.elixir)).toContain('items/potion_02')
+    expect(gearIconOr(gearMap.leather_armor)).toContain('icons/armor_red_gold')
   })
 
   it('every class maps to an owned battler sheet with an idle animation', async () => {

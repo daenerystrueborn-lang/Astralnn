@@ -61,8 +61,8 @@ export interface Player {
   baseStats: Record<string, number>
   statPoints: StatPointsState
 
-  /** V0 currencies only: solars + gems (GAME_SPEC decision). */
-  wallet: { solars: number; gems: number }
+  /** Currencies: solars + gems (+ optional safe vault Solars). */
+  wallet: { solars: number; gems: number; vault?: number }
 
   equipped: {
     weapon: string | null
@@ -86,17 +86,41 @@ export interface Player {
 
   ownedCharacters: string[]
   equippedCharacter: string | null
+  /** Tracks which character's statBonuses are currently folded into live stats. */
+  characterBonusApplied?: string | null
 
   location: string
   inDungeon: boolean
   dungeonFloor: number
   dungeonCheckpoint: number
   battleState: BattleState | null
-  dungeonProgress: Record<string, { highestFloor: number }>
+  dungeonProgress: Record<string, { highestFloor: number; conquered?: boolean }>
+  /** Active conquest title earned from clearing a dungeon's final boss. */
+  title?: string
+  titles?: string[]
 
   stamina: StaminaState
   quests: QuestState
+  achievements?: { unlocked: string[]; claimed: string[] }
   tutorial: TutorialState
+
+  job?: string | null
+  jobLevel?: number
+  jobShifts?: number
+  lastWorkAt?: number | null
+  lastMineAt?: number | null
+  miningStats?: { date: string; count: number }
+  enchants?: Record<string, Record<string, number>>
+  enchantingBook?: { unlocked: boolean; unlockedAt?: number }
+  home?: {
+    bucket?: Record<string, number>
+    lastFish?: number | null
+  }
+  survivalProgress?: {
+    workShifts?: number
+    soloFloors?: Record<string, boolean>
+    personalFloorsVersion?: number
+  }
 
   dailyStreak: number
   lastDailyClaim: number | null

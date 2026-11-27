@@ -2,24 +2,45 @@
 // Entering records the tutorial's dungeon_entered event (stateCheck covers
 // returning players; the trigger gives immediate feedback).
 
-import { locations } from '../data/index'
-import { startBattle } from '../engine/battle'
+import { gearMap, locations } from '../data/index'
+import { refreshAchievements } from '../engine/achievements'
+import { bossForFloor, nextBossFloor, startBattle } from '../engine/battle'
+import { equippedItemId } from '../engine/equipment'
+import { MINE_STAMINA_COST, mineOre } from '../engine/gather'
 import { recordTutorialEvent } from '../engine/tutorial'
+import { monsterOr } from './icon'
 import type { UiContext } from './app'
 
 export function renderDungeon(root: HTMLElement, ctx: UiContext): void {
+  let mineMsg = ''
   draw()
 
   function draw(): void {
     const player = ctx.store.requireState()
     const dungeonLocs = locations.filter((l) => l.floors && l.floors > 0 && l.type !== 'town')
+    const toolId = equippedItemId(player.equipped, 'tool')
+    const tool = toolId ? gearMap[toolId] : null
 
     root.innerHTML = `
       <h1>DUNGEON</h1>
-      <p class="subtitle">One floor, one win — progress saves</p>
+      <p class="subtitle">One floor, one win — progress saves · ⚡ ${player.stamina.current}/${player.stamina.max} Stamina</p>
 
       <div class="tabs">
         <button class="tab" data-nav="hub" type="button">← Hub</button>
+      </div>
+
+      <div class="panel">
+        <div class="row">
+          <div>
+            <h3>⛏️ Ore Veins · ${tool ? tool.name : '<span class="muted">No Pickaxe Equipped</span>'}</h3>
+            <p class="muted">${tool ? 'Mine dungeon veins for forging & enchanting ores (⚡3 Stamina).' : 'Buy & equip a Pickaxe in Bag & Shop to mine ores.'}</p>
+          </div>
+          <button class="btn btn-sm ${tool && player.stamina.current >= MINE_STAMINA_COST ? 'btn-primary' : 'btn-ghost'}"
+            id="mine-btn" ${tool && player.stamina.current >= MINE_STAMINA_COST ? '' : 'disabled'} type="button">
+            ⛏️ Mine (⚡${MINE_STAMINA_COST})
+          </button>
+        </div>
+        ${mineMsg ? `<div class="shop-notice" style="margin-top:8px" role="status">${mineMsg}</div>` : ''}
       </div>
 
       <div id="loc-list">
@@ -31,18 +52,21 @@ export function renderDungeon(root: HTMLElement, ctx: UiContext): void {
             const next = Math.min(highest + 1, total)
             const locked = loc.levelRange && player.level < loc.levelRange[0]
             const checkpoint = loc.checkpointInterval ? Math.floor(highest / loc.checkpointInterval) * loc.checkpointInterval : 0
+            const upcomingBoss = nextBossFloor(loc.id, next)
+            const bossAtNext = bossForFloor(loc.id, next)
             return `
             <div class="loc ${locked ? 'locked' : ''}" data-id="${loc.id}" ${locked ? '' : 'data-open="1"'}>
               <div>
-                <div class="loc-name">${loc.name}</div>
+                <div class="loc-name">${loc.name}${prog?.conquered ? ' <span class="conquered-pill">🏆 Conquered</span>' : ''}</div>
                 <div class="loc-sub">
                   Floor ${next}/${total} · cleared ${highest}
                   ${checkpoint ? ` · checkpoint ${checkpoint}` : ''}
+                  ${upcomingBoss ? ` · 👑 Boss F${upcomingBoss}` : ''}
                   ${loc.levelRange ? ` · Lv ${loc.levelRange[0]}–${loc.levelRange[1]}` : ''}
                   ${locked ? ' · locked' : ''}
                 </div>
               </div>
-              <div>${locked ? '🔒' : '⬇️'}</div>
+              <div>${locked ? '🔒' : bossAtNext ? '👑' : '⬇️'}</div>
             </div>`
           })
           .join('')}
@@ -53,6 +77,21 @@ export function renderDungeon(root: HTMLElement, ctx: UiContext): void {
 
     root.querySelectorAll<HTMLElement>('[data-nav]').forEach((el) => {
       el.addEventListener('click', () => ctx.navigate(el.dataset.nav as never))
+    })
+    root.querySelector('#mine-btn')?.addEventListener('click', () => {
+      let out: ReturnType<typeof mineOre> | null = null
+      ctx.store.update((p) => {
+        out = mineOre(p)
+        if (out.ok) refreshAchievements(p)
+      })
+      if (!out!.ok) {
+        mineMsg = `⏳ ${out!.error}`
+      } else {
+        const rare = out!.bonusOreName ? ` + 🎉 Rare ${out!.bonusOreName}!` : ''
+        const eff = out!.efficiencyExtra ? ' (+1 Efficiency)' : ''
+        mineMsg = `⛏️ Mined ${out!.oreName} ×${out!.qty}${eff}${rare} (⚡ ${out!.staminaAfter} left)`
+      }
+      draw()
     })
 
     const panel = root.querySelector<HTMLElement>('#floor-panel')!
@@ -72,6 +111,7 @@ export function renderDungeon(root: HTMLElement, ctx: UiContext): void {
     function renderPanel(loc: (typeof locations)[number], highest: number): void {
       const total = loc.floors ?? 1
       const maxEnter = Math.min(highest + 1, total)
+      const boss = bossForFloor(loc.id, floor)
       panel.hidden = false
       panel.innerHTML = `
         <div class="panel center">
@@ -81,8 +121,20 @@ export function renderDungeon(root: HTMLElement, ctx: UiContext): void {
             <div class="floor-no">F${floor}</div>
             <button class="btn btn-sm" id="f-plus" type="button">+</button>
           </div>
+          ${
+            boss
+              ? `<div class="boss-preview">
+                  <span class="boss-preview-art">${monsterOr(boss.id, boss.emoji ?? '👑', boss.element)}</span>
+                  <div>
+                    <div class="boss-preview-tag">👑 BOSS FLOOR</div>
+                    <div class="boss-preview-name">${boss.name}</div>
+                    ${boss.conquestTitle ? `<div class="muted">Title: "${boss.conquestTitle}"</div>` : ''}
+                  </div>
+                </div>`
+              : ''
+          }
           <p class="muted">cleared ${highest} · next unclaimed ${maxEnter}</p>
-          <button class="btn btn-primary" id="f-enter" type="button">ENTER FLOOR ${floor}</button>
+          <button class="btn btn-primary" id="f-enter" type="button">${boss ? `👑 CHALLENGE BOSS · FLOOR ${floor}` : `ENTER FLOOR ${floor}`}</button>
           <button class="btn btn-ghost btn-sm mt" id="f-cancel" type="button">cancel</button>
         </div>
       `

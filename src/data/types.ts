@@ -76,12 +76,17 @@ export interface SkillEffect {
   multiplier?: number
   value?: number
   duration?: number
+  turns?: number
+  pct?: number
+  dmgPct?: number
 }
 
 export interface SkillDef {
   id: string
   name: string
   classId: string
+  universalNeutral?: boolean
+  source?: string
   tier: string
   unlockLevel: number
   mpCost: number
@@ -117,8 +122,13 @@ export interface CharacterDef {
   image?: string
   description?: string
   exclusive?: boolean
-  ability?: Record<string, unknown>
-  statBonuses?: Partial<StatBlock>
+  ability?: {
+    name?: string
+    description?: string
+    trigger?: string
+    [key: string]: unknown
+  }
+  statBonuses?: Partial<TotalStats & { atk: number }>
 }
 
 export interface MonsterRewards {
@@ -147,6 +157,45 @@ export interface MonsterDef {
   isBoss?: boolean
   evasion?: number
   abilities?: string[]
+}
+
+export interface BossSignature {
+  id: string
+  name: string
+  element?: string
+  multiplier?: number
+  cooldown?: number
+  telegraphText?: string
+  castText?: string
+}
+
+export interface BossEnrage {
+  threshold?: number
+  atkBoost?: number
+  shieldPct?: number
+  text?: string
+}
+
+export interface BossDef {
+  id: string
+  name: string
+  emoji?: string
+  locationId: string
+  tier: 'boss'
+  floor: number
+  stats: { hp: number; def: number; atk: number }
+  rewards?: { xp: number; solars: number }
+  drops?: { itemId: string; chance: number }[]
+  conquestTitle?: string
+  description?: string
+  sprite?: string
+  element?: string
+  type?: string
+  weakTo?: string[]
+  resistTo?: string[]
+  evasion?: number
+  signature?: BossSignature
+  enrage?: BossEnrage
 }
 
 export interface LocationDef {
@@ -193,18 +242,117 @@ export interface EffectivenessData {
   season01Enemies?: Record<string, { type: string; weakTo?: string[]; resistTo?: string[] }>
 }
 
+export interface ItemEffectDef {
+  type: string
+  stat?: string
+  amount?: number | string
+  value?: number
+  percent?: number
+  duration?: number
+  hits?: number
+  targets?: string[] | string
+  target?: string
+  slots?: number
+  fights?: number
+  finalFormThreshold?: number
+}
+
+export interface MiningBonus {
+  extraOreChance?: number
+  rareWeightMult?: number
+  bonusOreChance?: number
+}
+
 export interface GearDef {
   id: string
   name: string
   type: string
-  slot: string
+  slot: string | null
   rarity: string
   levelReq: number
-  statBonuses: StatBlock & { maxHp: number; maxMp: number }
+  statBonuses: StatBlock & { maxHp: number; maxMp: number; atk?: number }
+  miningBonus?: MiningBonus
   sellPrice: number
-  buyPrice?: number
-  effect?: Record<string, unknown> | null
+  buyPrice?: number | null
+  gemPrice?: number | null
+  seasonId?: string
+  guildBound?: boolean
+  exclusive?: boolean
+  starterPackExclusive?: boolean
+  bossId?: string
+  passiveId?: string
+  named?: boolean
+  effect?: ItemEffectDef | ItemEffectDef[] | null
   description: string
   maxDurability?: number
   image?: string
+}
+
+export interface RecipeMaterialReq {
+  itemId: string
+  qty: number
+}
+
+export interface RecipeDef {
+  id: string
+  output: string
+  materials: RecipeMaterialReq[]
+  solarsCost: number
+  category: 'armor' | 'weapon' | 'potion' | 'named' | string
+}
+
+export interface AchievementDef {
+  id: string
+  name: string
+  desc: string
+  tier: 'bronze' | 'silver' | 'gold' | 'diamond' | string
+  track: string
+  check: { metric?: string; stat?: string; goal: number }
+  reward: QuestReward
+  emblem?: string
+}
+
+export interface AchievementCatalog {
+  tiers: Record<string, { label: string; emoji: string; points: number }>
+  tracks: Record<string, string>
+  achievements: AchievementDef[]
+}
+
+export interface EnchantLevelDef {
+  daily?: number
+  threshold?: number
+  chunk?: number
+  rescue?: number
+  wear?: number
+  damagePct?: number
+  reductionPct?: number
+  chance?: number
+}
+
+export interface EnchantDef {
+  id: string
+  name: string
+  icon: string
+  maxLevel: number
+  slots: string[]
+  blurb: string
+  levels: EnchantLevelDef[]
+  cost: { items: { itemId: string; qty: number }[] }[]
+}
+
+export interface EnchantmentCatalog {
+  prices: { bookSolars: number; perEnchantSolars: number }
+  enchants: EnchantDef[]
+}
+
+export interface FishDef {
+  id: string
+  name: string
+  weight: number
+  sell: number
+  difficulty: number
+}
+
+export interface HousingCatalog {
+  fish: FishDef[]
 }

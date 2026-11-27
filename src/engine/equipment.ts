@@ -7,9 +7,10 @@
 // (no items.json entry carries those fields) — the code paths are stubbed to
 // the bot's null-set behavior.
 
-import { gearMap } from '../data/index'
-import type { GearDef } from '../data/types'
+import { characterMap, gearMap } from '../data/index'
+import type { CharacterDef, GearDef, TotalStats } from '../data/types'
 import { attackStatKey } from './stats'
+import { recordTutorialEvent, type TutorialStateShape } from './tutorial'
 
 /** The slots a character actually wears. `relic` is an alias, not a slot. */
 export const PHYSICAL_EQUIPMENT_SLOTS = [
@@ -186,7 +187,11 @@ export interface EquipmentPlayer {
  * live stats. `atk` folds into the class primary stat. maxMp clamps current MP.
  * The starter armor set bonus is a no-op in V0 data (no set pieces exist).
  */
-export function applyEquipmentBonus(player: EquipmentPlayer, item: Partial<GearDef>, sign: 1 | -1): void {
+export function applyEquipmentBonus(
+  player: EquipmentPlayer,
+  item: { slot?: string | null; statBonuses?: Partial<TotalStats & { atk: number }> },
+  sign: 1 | -1,
+): void {
   const b = (item?.statBonuses ?? {}) as Record<string, number>
   player.stats = player.stats ?? {}
 
@@ -251,18 +256,19 @@ export function equipItem(player: EquipmentPlayerFull, query: string): EquipOutc
   if (item.type === 'consumable') {
     return { ok: false, error: `❌ ${item.name} is a consumable — it can't be equipped.` }
   }
-  if (item.type === 'material') {
-    return { ok: false, error: `❌ ${item.name} is a crafting material — it can't be equipped.` }
+  if (item.type === 'material' || item.type === 'trophy') {
+    return { ok: false, error: `❌ ${item.name} is a crafting material — forge it at the Blacksmith instead.` }
   }
 
   const slot = item.slot === 'relic' ? 'offhand' : item.slot
   if (!slot) {
     return { ok: false, error: `❌ Don't know how to equip item type "${item.type}".` }
   }
-  if (player.level < item.levelReq) {
+  const reqLv = item.levelReq ?? 1
+  if (player.level < reqLv) {
     return {
       ok: false,
-      error: `❌ You need to be level ${item.levelReq} to equip ${item.name}. You are level ${player.level}.`,
+      error: `❌ You need to be level ${reqLv} to equip ${item.name}. You are level ${player.level}.`,
     }
   }
   const refusal = gearRefusal(player, item)
@@ -305,4 +311,105 @@ export function unequipSlot(player: EquipmentPlayerFull, rawSlot: string): Equip
   player.inventory.push(current)
   clearEquipmentSlot(player.equipped, slot)
   return { ok: true, itemId: current, slot }
+}
+
+// ── Character Companion Equip / Unequip (plugins/character.js) ──────────────
+
+export interface CharacterEquipPlayer extends EquipmentPlayer {
+  ownedCharacters: string[]
+  equippedCharacter: string | null
+  characterBonusApplied?: string | null
+  wallet?: Record<string, number>
+  tutorial?: TutorialStateShape
+}
+
+export interface CharacterEquipOutcome {
+  ok: boolean
+  error?: string
+  character?: CharacterDef | null
+}
+
+/**
+ * Idempotently ensure a save whose `equippedCharacter` was set before character
+ * stat folding existed has its active character's `statBonuses` applied once.
+ */
+export function syncEquippedCharacterBonus(player: CharacterEquipPlayer): void {
+  const activeId = player.equippedCharacter ?? null
+  const appliedId = player.characterBonusApplied ?? null
+  if (activeId === appliedId) return
+
+  if (appliedId) {
+    const oldDef = characterMap[appliedId]
+    if (oldDef?.statBonuses) applyEquipmentBonus(player, oldDef, -1)
+  }
+  if (activeId) {
+    const newDef = characterMap[activeId]
+    if (newDef?.statBonuses) applyEquipmentBonus(player, newDef, +1)
+  }
+  player.characterBonusApplied = activeId
+}
+
+/**
+ * Equip or unequip an owned character companion (port of plugins/character.js):
+ *  - Swaps outgoing/incoming `statBonuses` via `applyEquipmentBonus`.
+ *  - Fires `character_claimed` tutorial step on equip.
+ */
+export function equipCharacter(
+  player: CharacterEquipPlayer,
+  charId: string | null,
+): CharacterEquipOutcome {
+  syncEquippedCharacterBonus(player)
+
+  if (!charId) {
+    const prevId = player.equippedCharacter
+    if (!prevId) return { ok: true, character: null }
+    const oldDef = characterMap[prevId]
+    if (oldDef?.statBonuses) applyEquipmentBonus(player, oldDef, -1)
+    player.equippedCharacter = null
+    player.characterBonusApplied = null
+    return { ok: true, character: null }
+  }
+
+  if (!(player.ownedCharacters ?? []).includes(charId)) {
+    return { ok: false, error: 'You do not own that character.' }
+  }
+  const nextDef = characterMap[charId]
+  if (!nextDef) {
+    return { ok: false, error: `Unknown character "${charId}".` }
+  }
+  if (player.equippedCharacter === charId) {
+    return { ok: true, character: nextDef }
+  }
+
+  const prevId = player.equippedCharacter
+  if (prevId) {
+    const oldDef = characterMap[prevId]
+    if (oldDef?.statBonuses) applyEquipmentBonus(player, oldDef, -1)
+  }
+  if (nextDef.statBonuses) applyEquipmentBonus(player, nextDef, +1)
+  player.equippedCharacter = charId
+  player.characterBonusApplied = charId
+  if (player.tutorial && player.wallet) {
+    recordTutorialEvent(
+      player as CharacterEquipPlayer & { wallet: Record<string, number>; tutorial: TutorialStateShape },
+      'character_claimed',
+    )
+  }
+  return { ok: true, character: nextDef }
+}
+
+/** Format a character's statBonuses for Roster / HUD badges. */
+export function describeCharacterBonuses(char: Pick<CharacterDef, 'statBonuses' | 'combat'>): string {
+  const b = char.statBonuses ?? {}
+  const parts: string[] = []
+  if (b.atk) parts.push(`ATK+${b.atk}`)
+  if (b.str) parts.push(`STR+${b.str}`)
+  if (b.agi) parts.push(`AGI+${b.agi}`)
+  if (b.int) parts.push(`INT+${b.int}`)
+  if (b.def) parts.push(`DEF+${b.def}`)
+  if (b.lck) parts.push(`LCK+${b.lck}`)
+  if (b.maxHp) parts.push(`HP+${b.maxHp}`)
+  if (b.maxMp) parts.push(`MP+${b.maxMp}`)
+  if (parts.length > 0) return parts.join(' · ')
+  return `Duel ATK ${char.combat.atk} · DEF ${char.combat.def} · AGI ${char.combat.agi}`
 }

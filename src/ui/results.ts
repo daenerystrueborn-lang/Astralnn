@@ -29,6 +29,11 @@ export function renderResults(root: HTMLElement, ctx: UiContext): void {
           : ''
       }
       ${
+        rewards?.dungeonConquered
+          ? `<div class="levelup-box">👑 DUNGEON CONQUERED!${rewards.conquestTitle ? `<br/>🎖️ Title: "${escapeHtml(rewards.conquestTitle)}"` : ''}</div>`
+          : ''
+      }
+      ${
         rewards?.rankChange
           ? `<div class="levelup-box">🎖️ ${escapeHtml(rewards.rankChange.from)} → ${escapeHtml(rewards.rankChange.to)}</div>`
           : ''

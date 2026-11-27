@@ -1,0 +1,793 @@
+{
+  "_doc": "Achievement catalog. One track of permanent, claim once goals, read by lib/achievement-engine.js. Every achievement has a `track` (board section: combat, adventure, collection, wealth, social, mastery), a `tier` (see `tiers`), a `check`, and a `reward`. A check is EITHER { metric, goal } (progress from player.quests.lifetime, the shared counter store fed by recordQuestEvent) OR { stat, goal } (progress snapshotted live from the player record by achievement-engine's STATS evaluators). Stat progress is stamped sticky on first observation: once an achievement counts as unlocked it stays unlocked even if the stat later drops (you spend your hoard, the hoard achievement stays yours). Rewards use the quest reward vocabulary (see quests.json): solars|xp|gems|stamina|seasonPoints as a plain amount, or item|character through addOwnedSeasonContent. Copy is player-facing: no dashes, commas and colons only.",
+  "tiers": {
+    "bronze": {
+      "emoji": "🥉",
+      "points": 10
+    },
+    "silver": {
+      "emoji": "🥈",
+      "points": 25
+    },
+    "gold": {
+      "emoji": "🥇",
+      "points": 50
+    },
+    "diamond": {
+      "emoji": "💎",
+      "points": 100
+    }
+  },
+  "tracks": {
+    "combat": "Battles, duels, monsters",
+    "adventure": "Dungeons, floors, the wild",
+    "collection": "Characters, pets, Pokemon, skills",
+    "wealth": "Solars, gems, the vault",
+    "social": "Guilds, profile, streaks, premium",
+    "mastery": "Long term goals and endgame unlocks"
+  },
+  "stats": {
+    "level": "player.level",
+    "solars": "wallet.solars held right now",
+    "gems": "wallet.gems held right now",
+    "vault": "wallet.vault deposits",
+    "seasonPoints": "player.seasonPoints",
+    "characters": "ownedCharacters.length",
+    "pets": "pets.length",
+    "skills": "skills.length",
+    "streak": "dailyStreak",
+    "guild": "1 once guildId is set",
+    "bio": "1 once a bio is set",
+    "pfp": "1 once a profile picture is set",
+    "title": "1 once a title is set",
+    "chest": "1 once the safe chest is unlocked",
+    "ender": "1 once the ender chest is unlocked",
+    "enchantBook": "1 once the enchanting book is bought",
+    "premium": "1 while a premium plan is active",
+    "storyVolumes": "storyProgress.volumes finished",
+    "pvpWins": "player.pvp.wins",
+    "pokeWins": "player.pokemonBattle.wins",
+    "pvpStreak": "player.pvp.bestStreak",
+    "pvpRating": "player.pvp.rating",
+    "reborn": "1 once the rebirth ritual is survived",
+    "achievements": "achievements already claimed"
+  },
+  "achievements": [
+    {
+      "id": "ach_first_blood",
+      "name": "First Blood",
+      "desc": "Defeat your first monster.",
+      "tier": "bronze",
+      "track": "combat",
+      "check": {
+        "metric": "kill",
+        "goal": 1
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 250
+      },
+      "emblem": "emblem_01"
+    },
+    {
+      "id": "ach_bone_breaker",
+      "name": "Bone Breaker",
+      "desc": "Defeat 50 monsters in total.",
+      "tier": "bronze",
+      "track": "combat",
+      "check": {
+        "metric": "kill",
+        "goal": 50
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 750
+      },
+      "emblem": "emblem_02"
+    },
+    {
+      "id": "ach_monster_hunter",
+      "name": "Monster Hunter",
+      "desc": "Defeat 500 monsters in total.",
+      "tier": "silver",
+      "track": "combat",
+      "check": {
+        "metric": "kill",
+        "goal": 500
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 3000
+      },
+      "emblem": "emblem_03"
+    },
+    {
+      "id": "ach_nightmare",
+      "name": "The Nightmare",
+      "desc": "Defeat 5,000 monsters in total.",
+      "tier": "gold",
+      "track": "combat",
+      "check": {
+        "metric": "kill",
+        "goal": 5000
+      },
+      "reward": {
+        "type": "gems",
+        "amount": 5
+      },
+      "emblem": "emblem_04"
+    },
+    {
+      "id": "ach_first_duel",
+      "name": "First Duel",
+      "desc": "Win your first PvP duel.",
+      "tier": "bronze",
+      "track": "combat",
+      "check": {
+        "metric": "pvp_win",
+        "goal": 1
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 300
+      },
+      "emblem": "emblem_05"
+    },
+    {
+      "id": "ach_duelist",
+      "name": "Duelist",
+      "desc": "Win 25 PvP duels.",
+      "tier": "silver",
+      "track": "combat",
+      "check": {
+        "metric": "pvp_win",
+        "goal": 25
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 2500
+      },
+      "emblem": "emblem_06"
+    },
+    {
+      "id": "ach_arena_legend",
+      "name": "Arena Legend",
+      "desc": "Win 250 PvP duels.",
+      "tier": "gold",
+      "track": "combat",
+      "check": {
+        "metric": "pvp_win",
+        "goal": 250
+      },
+      "reward": {
+        "type": "gems",
+        "amount": 6
+      },
+      "emblem": "emblem_07"
+    },
+    {
+      "id": "ach_unbroken",
+      "name": "Unbroken",
+      "desc": "Reach a 10 duel win streak.",
+      "tier": "silver",
+      "track": "combat",
+      "check": {
+        "stat": "pvpStreak",
+        "goal": 10
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 2000
+      },
+      "emblem": "emblem_08"
+    },
+    {
+      "id": "ach_gladiator",
+      "name": "Gladiator",
+      "desc": "Reach a PvP rating of 1,400.",
+      "tier": "gold",
+      "track": "combat",
+      "check": {
+        "stat": "pvpRating",
+        "goal": 1400
+      },
+      "reward": {
+        "type": "gems",
+        "amount": 5
+      },
+      "emblem": "emblem_09"
+    },
+    {
+      "id": "ach_first_sparring",
+      "name": "First Sparring",
+      "desc": "Win your first Pokemon battle.",
+      "tier": "bronze",
+      "track": "combat",
+      "check": {
+        "metric": "poke_win",
+        "goal": 1
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 300
+      },
+      "emblem": "emblem_10"
+    },
+    {
+      "id": "ach_poke_champion",
+      "name": "Pokemon Champion",
+      "desc": "Win 100 Pokemon battles.",
+      "tier": "gold",
+      "track": "combat",
+      "check": {
+        "metric": "poke_win",
+        "goal": 100
+      },
+      "reward": {
+        "type": "gems",
+        "amount": 5
+      },
+      "emblem": "emblem_11"
+    },
+    {
+      "id": "ach_first_step",
+      "name": "First Step",
+      "desc": "Clear your first dungeon floor.",
+      "tier": "bronze",
+      "track": "adventure",
+      "check": {
+        "metric": "floor",
+        "goal": 1
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 250
+      },
+      "emblem": "emblem_12"
+    },
+    {
+      "id": "ach_delver",
+      "name": "Delver",
+      "desc": "Clear 50 dungeon floors.",
+      "tier": "bronze",
+      "track": "adventure",
+      "check": {
+        "metric": "floor",
+        "goal": 50
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 1000
+      },
+      "emblem": "emblem_13"
+    },
+    {
+      "id": "ach_deep_delver",
+      "name": "Deep Delver",
+      "desc": "Clear 500 dungeon floors.",
+      "tier": "silver",
+      "track": "adventure",
+      "check": {
+        "metric": "floor",
+        "goal": 500
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 4000
+      },
+      "emblem": "emblem_14"
+    },
+    {
+      "id": "ach_abyss_walker",
+      "name": "Abyss Walker",
+      "desc": "Clear 5,000 dungeon floors.",
+      "tier": "gold",
+      "track": "adventure",
+      "check": {
+        "metric": "floor",
+        "goal": 5000
+      },
+      "reward": {
+        "type": "gems",
+        "amount": 8
+      },
+      "emblem": "emblem_15"
+    },
+    {
+      "id": "ach_first_cast",
+      "name": "First Cast",
+      "desc": "Catch your first fish.",
+      "tier": "bronze",
+      "track": "adventure",
+      "check": {
+        "metric": "fish",
+        "goal": 1
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 250
+      },
+      "emblem": "emblem_16"
+    },
+    {
+      "id": "ach_angler",
+      "name": "Angler",
+      "desc": "Catch 100 fish.",
+      "tier": "silver",
+      "track": "adventure",
+      "check": {
+        "metric": "fish",
+        "goal": 100
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 2000
+      },
+      "emblem": "emblem_17"
+    },
+    {
+      "id": "ach_first_vein",
+      "name": "First Vein",
+      "desc": "Mine your first ore vein.",
+      "tier": "bronze",
+      "track": "adventure",
+      "check": {
+        "metric": "mine",
+        "goal": 1
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 250
+      },
+      "emblem": "emblem_18"
+    },
+    {
+      "id": "ach_miner",
+      "name": "Miner",
+      "desc": "Mine 250 ore veins.",
+      "tier": "silver",
+      "track": "adventure",
+      "check": {
+        "metric": "mine",
+        "goal": 250
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 2000
+      },
+      "emblem": "emblem_19"
+    },
+    {
+      "id": "ach_peak_form",
+      "name": "Peak Form",
+      "desc": "Reach level 25.",
+      "tier": "bronze",
+      "track": "adventure",
+      "check": {
+        "stat": "level",
+        "goal": 25
+      },
+      "reward": {
+        "type": "xp",
+        "amount": 500
+      },
+      "emblem": "emblem_20"
+    },
+    {
+      "id": "ach_transcendent",
+      "name": "Transcendent",
+      "desc": "Reach level 100.",
+      "tier": "gold",
+      "track": "adventure",
+      "check": {
+        "stat": "level",
+        "goal": 100
+      },
+      "reward": {
+        "type": "gems",
+        "amount": 5
+      },
+      "emblem": "emblem_21"
+    },
+    {
+      "id": "ach_reborn",
+      "name": "Reborn",
+      "desc": "Survive the rebirth ritual.",
+      "tier": "diamond",
+      "track": "adventure",
+      "check": {
+        "stat": "reborn",
+        "goal": 1
+      },
+      "reward": {
+        "type": "gems",
+        "amount": 15
+      },
+      "emblem": "emblem_22"
+    },
+    {
+      "id": "ach_first_catch",
+      "name": "First Catch",
+      "desc": "Catch your first wild Pokemon.",
+      "tier": "bronze",
+      "track": "collection",
+      "check": {
+        "metric": "catch",
+        "goal": 1
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 250
+      },
+      "emblem": "emblem_23"
+    },
+    {
+      "id": "ach_field_researcher",
+      "name": "Field Researcher",
+      "desc": "Catch 25 wild Pokemon.",
+      "tier": "silver",
+      "track": "collection",
+      "check": {
+        "metric": "catch",
+        "goal": 25
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 2000
+      },
+      "emblem": "emblem_24"
+    },
+    {
+      "id": "ach_pokemon_master",
+      "name": "Pokemon Master",
+      "desc": "Catch 250 wild Pokemon.",
+      "tier": "gold",
+      "track": "collection",
+      "check": {
+        "metric": "catch",
+        "goal": 250
+      },
+      "reward": {
+        "type": "gems",
+        "amount": 6
+      },
+      "emblem": "emblem_25"
+    },
+    {
+      "id": "ach_summoner",
+      "name": "Summoner",
+      "desc": "Own your first character.",
+      "tier": "bronze",
+      "track": "collection",
+      "check": {
+        "stat": "characters",
+        "goal": 1
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 400
+      },
+      "emblem": "emblem_26"
+    },
+    {
+      "id": "ach_party_leader",
+      "name": "Party Leader",
+      "desc": "Own 5 characters.",
+      "tier": "silver",
+      "track": "collection",
+      "check": {
+        "stat": "characters",
+        "goal": 5
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 2500
+      },
+      "emblem": "emblem_27"
+    },
+    {
+      "id": "ach_legendary_circle",
+      "name": "Legendary Circle",
+      "desc": "Own 15 characters.",
+      "tier": "gold",
+      "track": "collection",
+      "check": {
+        "stat": "characters",
+        "goal": 15
+      },
+      "reward": {
+        "type": "gems",
+        "amount": 6
+      },
+      "emblem": "emblem_28"
+    },
+    {
+      "id": "ach_beast_tamer",
+      "name": "Beast Tamer",
+      "desc": "Own 5 pets.",
+      "tier": "silver",
+      "track": "collection",
+      "check": {
+        "stat": "pets",
+        "goal": 5
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 2000
+      },
+      "emblem": "emblem_29"
+    },
+    {
+      "id": "ach_skill_collector",
+      "name": "Skill Collector",
+      "desc": "Learn 10 skills.",
+      "tier": "silver",
+      "track": "collection",
+      "check": {
+        "stat": "skills",
+        "goal": 10
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 2000
+      },
+      "emblem": "emblem_30"
+    },
+    {
+      "id": "ach_story_reader",
+      "name": "Story Reader",
+      "desc": "Finish 3 story volumes.",
+      "tier": "silver",
+      "track": "collection",
+      "check": {
+        "stat": "storyVolumes",
+        "goal": 3
+      },
+      "reward": {
+        "type": "seasonPoints",
+        "amount": 50
+      },
+      "emblem": "emblem_31"
+    },
+    {
+      "id": "ach_first_purse",
+      "name": "First Purse",
+      "desc": "Hold 1,000 Solars at once.",
+      "tier": "bronze",
+      "track": "wealth",
+      "check": {
+        "stat": "solars",
+        "goal": 1000
+      },
+      "reward": {
+        "type": "xp",
+        "amount": 200
+      },
+      "emblem": "emblem_32"
+    },
+    {
+      "id": "ach_hoarder",
+      "name": "Hoarder",
+      "desc": "Hold 50,000 Solars at once.",
+      "tier": "silver",
+      "track": "wealth",
+      "check": {
+        "stat": "solars",
+        "goal": 50000
+      },
+      "reward": {
+        "type": "gems",
+        "amount": 2
+      },
+      "emblem": "emblem_33"
+    },
+    {
+      "id": "ach_tycoon",
+      "name": "Tycoon",
+      "desc": "Hold 500,000 Solars at once.",
+      "tier": "gold",
+      "track": "wealth",
+      "check": {
+        "stat": "solars",
+        "goal": 500000
+      },
+      "reward": {
+        "type": "gems",
+        "amount": 8
+      },
+      "emblem": "emblem_34"
+    },
+    {
+      "id": "ach_gem_hoard",
+      "name": "Gem Hoard",
+      "desc": "Hold 25 Gems at once.",
+      "tier": "silver",
+      "track": "wealth",
+      "check": {
+        "stat": "gems",
+        "goal": 25
+      },
+      "reward": {
+        "type": "xp",
+        "amount": 1500
+      },
+      "emblem": "emblem_35"
+    },
+    {
+      "id": "ach_vault_keeper",
+      "name": "Vault Keeper",
+      "desc": "Deposit 50,000 Solars into your vault.",
+      "tier": "silver",
+      "track": "wealth",
+      "check": {
+        "stat": "vault",
+        "goal": 50000
+      },
+      "reward": {
+        "type": "gems",
+        "amount": 2
+      },
+      "emblem": "emblem_36"
+    },
+    {
+      "id": "ach_guildmate",
+      "name": "Guildmate",
+      "desc": "Join a guild.",
+      "tier": "bronze",
+      "track": "social",
+      "check": {
+        "stat": "guild",
+        "goal": 1
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 500
+      },
+      "emblem": "emblem_37"
+    },
+    {
+      "id": "ach_seven_day_flame",
+      "name": "Seven Day Flame",
+      "desc": "Keep a 7 day daily streak.",
+      "tier": "silver",
+      "track": "social",
+      "check": {
+        "stat": "streak",
+        "goal": 7
+      },
+      "reward": {
+        "type": "solars",
+        "amount": 1500
+      },
+      "emblem": "emblem_38"
+    },
+    {
+      "id": "ach_novelist",
+      "name": "Novelist",
+      "desc": "Write a bio on your profile.",
+      "tier": "bronze",
+      "track": "social",
+      "check": {
+        "stat": "bio",
+        "goal": 1
+      },
+      "reward": {
+        "type": "xp",
+        "amount": 100
+      },
+      "emblem": "emblem_39"
+    },
+    {
+      "id": "ach_face_claim",
+      "name": "Face Claim",
+      "desc": "Set a profile picture.",
+      "tier": "bronze",
+      "track": "social",
+      "check": {
+        "stat": "pfp",
+        "goal": 1
+      },
+      "reward": {
+        "type": "xp",
+        "amount": 100
+      },
+      "emblem": "emblem_40"
+    },
+    {
+      "id": "ach_titled",
+      "name": "Titled",
+      "desc": "Earn a title.",
+      "tier": "bronze",
+      "track": "social",
+      "check": {
+        "stat": "title",
+        "goal": 1
+      },
+      "reward": {
+        "type": "xp",
+        "amount": 300
+      },
+      "emblem": "emblem_41"
+    },
+    {
+      "id": "ach_patron",
+      "name": "Patron",
+      "desc": "Activate a premium plan.",
+      "tier": "silver",
+      "track": "social",
+      "check": {
+        "stat": "premium",
+        "goal": 1
+      },
+      "reward": {
+        "type": "seasonPoints",
+        "amount": 100
+      },
+      "emblem": "emblem_42"
+    },
+    {
+      "id": "ach_treasure_keeper",
+      "name": "Treasure Keeper",
+      "desc": "Unlock your safe chest.",
+      "tier": "bronze",
+      "track": "mastery",
+      "check": {
+        "stat": "chest",
+        "goal": 1
+      },
+      "reward": {
+        "type": "xp",
+        "amount": 150
+      },
+      "emblem": "emblem_43"
+    },
+    {
+      "id": "ach_ender_born",
+      "name": "Ender Born",
+      "desc": "Unlock the ender chest.",
+      "tier": "silver",
+      "track": "mastery",
+      "check": {
+        "stat": "ender",
+        "goal": 1
+      },
+      "reward": {
+        "type": "gems",
+        "amount": 2
+      },
+      "emblem": "emblem_44"
+    },
+    {
+      "id": "ach_enchanter",
+      "name": "Enchanter",
+      "desc": "Buy the enchanting book.",
+      "tier": "silver",
+      "track": "mastery",
+      "check": {
+        "stat": "enchantBook",
+        "goal": 1
+      },
+      "reward": {
+        "type": "xp",
+        "amount": 2000
+      },
+      "emblem": "emblem_45"
+    },
+    {
+      "id": "ach_completionist",
+      "name": "Completionist",
+      "desc": "Claim 30 achievements.",
+      "tier": "diamond",
+      "track": "mastery",
+      "check": {
+        "stat": "achievements",
+        "goal": 30
+      },
+      "reward": {
+        "type": "gems",
+        "amount": 20
+      },
+      "emblem": "emblem_46"
+    }
+  ]
+}

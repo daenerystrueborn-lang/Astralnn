@@ -6,12 +6,13 @@
 // crit × situational) and keeps the product shape so V1 multipliers slot in
 // without touching call sites.
 
+import { lootingChance, sharpnessMultiplier, type EnchantCarrier } from './enchant'
 import { attackStatKey } from './stats'
 import { defaultRng, type Rng } from './rng'
 import type { SkillDef } from '../data/types'
 
 /** Player-shaped inputs the combat functions read. */
-export interface Combatant {
+export interface Combatant extends EnchantCarrier {
   classId: string
   stats: { str: number; agi: number; int: number; def: number; lck: number }
 }
@@ -54,7 +55,8 @@ export function calcPlayerDamage(
   const isCrit = rng() < critChance
   const critMult = isCrit ? 1.5 : 1.0
 
-  const rawDmg = Math.floor(base * mult * critMult * damageMultiplier)
+  const sharpMult = sharpnessMultiplier(player)
+  const rawDmg = Math.floor(base * mult * critMult * damageMultiplier * sharpMult)
   return { rawDmg, isCrit, critMult }
 }
 
@@ -134,9 +136,15 @@ export function calcMonsterDamage(
 export function rollDrops(
   drops: { itemId: string; chance: number }[] = [],
   rng: Rng = defaultRng,
+  looter?: EnchantCarrier | null,
 ): string[] {
+  const bonus = lootingChance(looter)
   return drops
-    .filter((d) => d.chance > 0 && rng() < Math.min(1, d.chance))
+    .filter(
+      (d) =>
+        (d.chance > 0 && rng() < Math.min(1, d.chance)) ||
+        (bonus > 0 && d.chance > 0 && rng() < bonus),
+    )
     .map((d) => d.itemId)
 }
 

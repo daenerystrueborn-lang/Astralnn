@@ -2,10 +2,12 @@
 // Opening the record records the tutorial's profile_viewed event.
 
 import { classes, races } from '../data/index'
+import { refreshAchievements } from '../engine/achievements'
 import { getTotalStats } from '../engine/stats'
 import { addAllocation, getRankForLevel, trainCostPerPoint, trainPlayer, statPointCap, getXpProgress } from '../engine/progression'
 import { claimDaily } from '../engine/daily'
 import { getCurrentStep, recordTutorialEvent, skipTutorial, tutorialProgress } from '../engine/tutorial'
+import { depositToVault, getVaultBalance, withdrawFromVault } from '../engine/vault'
 import { classBattler, iconOr } from './icon'
 import type { UiContext } from './app'
 import type { StatKey } from '../engine/stats'
@@ -52,6 +54,7 @@ export function renderProfile(root: HTMLElement, ctx: UiContext): void {
 
       <div class="panel center">
         <h3>${rank.emoji} ${rank.title}</h3>
+        ${p.title ? `<p style="color:var(--gold-bright);font-family:'Cinzel',serif;font-size:13px;margin:2px 0">👑 "${p.title}"</p>` : ''}
         <p class="muted">${rank.epithet} · Lv ${p.level} · 🏆 ${p.stats.wins}W / ${p.stats.losses}L</p>
         <div class="bar xp"><i style="width:${xpPct(p)}%"></i><span>XP ${p.xp} → Lv ${p.level + 1}</span></div>
         <div class="mt">${classBattler(p.classId, { scale: 0.75 })}</div>
@@ -66,12 +69,16 @@ export function renderProfile(root: HTMLElement, ctx: UiContext): void {
         <h3>Stats <span class="muted">· ${sp.unallocated} unallocated (${sp.earned}/${cap} earned)</span></h3>
         <div class="stats-grid">
           ${STAT_LABELS.map(
-            ([k, label]) => `
+            ([k, label]) => {
+              const live = p.stats[k] ?? total[k]
+              const bonus = live - (total[k] ?? live)
+              return `
             <div class="stat-cell">
-              <b>${total[k] ?? p.stats[k]}</b>
-              <span>${label}</span>
+              <b>${live}</b>
+              <span>${label}${bonus > 0 ? ` (+${bonus})` : ''}</span>
               ${sp.unallocated > 0 ? `<button class="btn btn-sm btn-ghost" data-alloc="${k}" type="button" style="margin-top:4px;width:100%">+1</button>` : ''}
-            </div>`,
+            </div>`
+            },
           ).join('')}
           <div class="stat-cell"><b>${p.maxHp}</b><span>HP</span></div>
           <div class="stat-cell"><b>${p.maxMp}</b><span>MP</span></div>
@@ -81,6 +88,36 @@ export function renderProfile(root: HTMLElement, ctx: UiContext): void {
           <button class="btn btn-sm" id="train-15" type="button">Train 15 pts · ☀️ ${trainRate * 15}</button>
         </div>
         <p class="muted center">Rate at Lv ${p.level}: ☀️ ${trainRate} per point · allocation applies to live stats</p>
+      </div>
+
+      ${
+        (p.titles?.length ?? 0) > 1
+          ? `<div class="panel">
+              <h3>👑 Conquest Titles (${p.titles!.length})</h3>
+              <div class="potion-belt-list" style="margin-top:6px">
+                ${p.titles!
+                  .map(
+                    (t) => `<button class="btn btn-sm ${p.title === t ? 'btn-primary' : 'btn-ghost'}" data-title="${t.replace(/"/g, '&quot;')}" type="button">👑 ${t}</button>`,
+                  )
+                  .join('')}
+              </div>
+            </div>`
+          : ''
+      }
+
+      <div class="panel">
+        <div class="row">
+          <div>
+            <h3>🏦 Astral Vault</h3>
+            <p class="muted">Stored safely: <b style="color:var(--gold-bright)">☀️ ${getVaultBalance(p).toLocaleString()}</b> · Wallet: ☀️ ${Math.floor(p.wallet.solars).toLocaleString()}</p>
+          </div>
+          <div class="item-actions">
+            <button class="btn btn-sm" data-vault-dep="1000" ${p.wallet.solars < 1000 ? 'disabled' : ''} type="button">+1k</button>
+            <button class="btn btn-sm" data-vault-dep="10000" ${p.wallet.solars < 10000 ? 'disabled' : ''} type="button">+10k</button>
+            <button class="btn btn-sm btn-primary" id="vault-dep-all" ${p.wallet.solars < 1 ? 'disabled' : ''} type="button">Deposit All</button>
+            <button class="btn btn-sm btn-ghost" id="vault-wd-all" ${getVaultBalance(p) < 1 ? 'disabled' : ''} type="button">Withdraw All</button>
+          </div>
+        </div>
       </div>
 
       <div class="panel">
@@ -120,6 +157,40 @@ export function renderProfile(root: HTMLElement, ctx: UiContext): void {
         })
         draw()
       })
+    })
+    root.querySelectorAll<HTMLButtonElement>('[data-title]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        ctx.store.update((pl) => {
+          pl.title = btn.dataset.title!
+          refreshAchievements(pl)
+        })
+        draw()
+      })
+    })
+    root.querySelectorAll<HTMLButtonElement>('[data-vault-dep]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const amt = Number(btn.dataset.vaultDep) || 0
+        ctx.store.update((pl) => {
+          depositToVault(pl, amt)
+          refreshAchievements(pl)
+        })
+        draw()
+      })
+    })
+    root.querySelector('#vault-dep-all')?.addEventListener('click', () => {
+      ctx.store.update((pl) => {
+        const all = Math.floor(pl.wallet.solars)
+        if (all > 0) depositToVault(pl, all)
+        refreshAchievements(pl)
+      })
+      draw()
+    })
+    root.querySelector('#vault-wd-all')?.addEventListener('click', () => {
+      ctx.store.update((pl) => {
+        const all = getVaultBalance(pl)
+        if (all > 0) withdrawFromVault(pl, all)
+      })
+      draw()
     })
     for (const n of [5, 15]) {
       root.querySelector(`#train-${n}`)?.addEventListener('click', () => {

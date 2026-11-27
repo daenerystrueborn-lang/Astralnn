@@ -73,6 +73,22 @@ export function regulateMonsterXp(
   return { xp, solars, tier }
 }
 
+/**
+ * regulateBossXp — XP/solars for a dungeon boss at a given floor slot
+ * (port of lib/xp-regulator.js:145). Bosses sit at TIER_PCT.boss (20% of
+ * expected level gap, unclamped at 700); solars = 35% of XP.
+ */
+export function regulateBossXp(
+  locationId: string,
+  floor: number,
+): { xp: number; solars: number; tier: 'boss' } {
+  const level = expectedLevelAtFloor(locationId, floor)
+  const need = xpForLevel(level)
+  const xp = Math.max(1, Math.round(need * TIER_PCT.boss))
+  const solars = Math.max(1, Math.round(xp * SOLARS_PER_XP))
+  return { xp, solars, tier: 'boss' }
+}
+
 // ── Survival progression (survival-progression.js) ─────────────────────────
 
 export function levelGap(level: number): number {
